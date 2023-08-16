@@ -80,7 +80,7 @@ function createWindow () {
     win.removeMenu();
 
     // Maybe open the DevTools.
-    if (config.opendevtools) {
+    if (JSON.parse(config).opendevtools) {
         win.webContents.openDevTools();
     }
 }

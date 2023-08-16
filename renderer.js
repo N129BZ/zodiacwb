@@ -116,6 +116,8 @@ window.onload = async () => {
 	totalWt.value = config.emptyweight;
 	totalCG.value = config.emptycg;
 	totalMoment.value = config.emptymoment;
+
+	calcWB();
 };
 
 const calcFuel = function() {
