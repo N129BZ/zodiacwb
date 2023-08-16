@@ -117,7 +117,7 @@ window.onload = async () => {
 	totalCG.value = config.emptycg;
 	totalMoment.value = config.emptymoment;
 
-	calcWB();
+	calcWB(true);
 };
 
 const calcFuel = function() {
@@ -134,9 +134,9 @@ const calcFuel = function() {
 	return [fwt, fum];
 }
 
-const calcWB = function(wbox) {
+const calcWB = function(isOnLoad = false) {
 	
-	saveBtn.disabled = false;
+	saveBtn.disabled = isOnLoad;
 
 	let rmw = parseInt(rmWt.value);
 	let rma = parseInt(rmArm.value);
