@@ -4,9 +4,60 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require("fs");
 
-let config = fs.readFileSync(path.join(__dirname, "zodiacwb.conf"),
-    { encoding: "utf8", flag: "r" });
+let configpath = `${app.getPath("userData")}/zodiacwb.conf`; 
 
+const defaultcfg = {
+    "maxgross": 1320,
+    "rmweight": 0,
+    "rmarm": 635,
+    "rmmoment": 0,
+    "lmweight": 0,
+    "lmarm": 635,
+    "lmmoment": 0,
+    "nwweight": 0,
+    "nwarm": -533,
+    "nwmoment": 0,
+    "emptyweight": 0,
+    "emptycg": 0,
+    "emptymoment": 0,
+    "pilotweight": 0,
+    "pilotarm": 710,
+    "pilotmoment": 0,
+    "psgrweight": 0,
+    "psgrarm": 710,
+    "psgrmoment": 0,
+    "rwlockweight": 0,
+    "rwlockarm": 560,
+    "rwlockmoment": 0,
+    "lwlockweight": 0,
+    "lwlockarm": 560,
+    "lwlockmoment": 0,
+    "fuelgals": 0,
+    "fuelweight": 0,
+    "fuelarm": 180,
+    "fuelmoment": 0,
+    "rbagweight": 0,
+    "rbagarm": 1600,
+    "rbagmoment": 0,
+    "totalweight": 0,
+    "totalcg": 0,
+    "totalmoment": 0,
+    "opendevtools": false
+}
+
+const loadConfig = function() {
+    let cfg = "";
+    if (!fs.existsSync(configpath)) {
+        cfg = JSON.stringify(defaultcfg);
+    }
+    else {
+        cfg = fs.readFileSync(configpath, { encoding: "utf8", flag: "r" });
+    }
+    return cfg;
+}
+
+
+let config = loadConfig();
 console.log(config);
 
 function createWindow () {
@@ -20,8 +71,7 @@ function createWindow () {
     })
 
     ipcMain.on('saveConfig', (event, newconfig) => {
-        let fname = path.join(__dirname, "zodiacwb.conf");
-        fs.writeFileSync(fname, JSON.stringify(newconfig, null, 4));
+        fs.writeFileSync(configpath, JSON.stringify(newconfig, null, 4));
         console.log(newconfig);
     });
 
@@ -30,8 +80,7 @@ function createWindow () {
     win.removeMenu();
 
     // Maybe open the DevTools.
-    let thisconfig = JSON.parse(config);
-    if (thisconfig.opendevtools) {
+    if (config.opendevtools) {
         win.webContents.openDevTools();
     }
 }
@@ -60,3 +109,4 @@ app.on('window-all-closed', function () {
 async function handleConfig() {
     return config;
 }
+
