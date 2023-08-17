@@ -120,7 +120,7 @@ window.onload = async () => {
 	calcWB(true);
 };
 
-const calcFuel = function() {
+function calcFuel() {
 	let fgals = parseInt(fuelGals.value);
 	let fwt =  fgals * 6;
 	let fua = parseInt(fuelArm.value);
@@ -134,7 +134,7 @@ const calcFuel = function() {
 	return [fwt, fum];
 }
 
-const calcWB = function(isOnLoad = false) {
+function calcWB(isOnLoad = false) {
 	
 	saveBtn.disabled = isOnLoad;
 
@@ -231,7 +231,7 @@ const calcWB = function(isOnLoad = false) {
 	placeDot(tcg, twt);
 }
 
-const placeDot = function(acMoment, acWeight) {
+function placeDot(acMoment, acWeight) {
 	let color = "red";
 	let x = momentMap.get(acMoment);
 	let y = weightMap.get(acWeight);
@@ -259,7 +259,7 @@ const placeDot = function(acMoment, acWeight) {
 	}
 }
 
-const saveConfig = function() {
+function saveConfig() {
 	window.electronAPI.saveConfig(config);
 	saveBtn.disabled = true;
 }
