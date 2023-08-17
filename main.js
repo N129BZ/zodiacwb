@@ -45,7 +45,7 @@ const defaultcfg = {
     "opendevtools": false
 }
 
-const loadConfig = function() {
+function loadConfig() {
     let cfg = "";
     if (!fs.existsSync(configpath)) {
         cfg = JSON.stringify(defaultcfg);
