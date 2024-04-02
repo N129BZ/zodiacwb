@@ -7,7 +7,7 @@ body {
 	width: 370px;
 	position: absolute;
 	left: 60px;
-	top:85px;
+	top:100px;
 }
 .weighthdr1 {
 	font-family: Arial, Helvetica, sans-serif;
@@ -75,6 +75,14 @@ body {
 	font-size: x-small;
 	text-align: left;
 	top: -6px;
+	left:-35px;
+}
+.w1440 {
+	font-family: Arial, Helvetica, sans-serif;
+	position: absolute;
+	font-size: x-small;
+	text-align: left;
+	top: -86px;
 	left:-35px;
 }
 .a270 {
