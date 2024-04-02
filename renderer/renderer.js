@@ -53,9 +53,6 @@ const  totalCG = document.getElementById("totcg");
 const  totalMoment = document.getElementById("totmom"); 
 const  cog = document.getElementById("cog"); 
 
-//var weightMap = new Map();
-//var momentMap = new Map();
-
 window.onload = async () => {
 	const cfg = await window.electronAPI.getconfig();
 	console.log(cfg);
