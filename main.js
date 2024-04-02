@@ -59,7 +59,7 @@ if (require('electron-squirrel-startup')) app.quit();
 
 function createWindow () {
     var w = 900;
-    var h = 600;
+    var h = 630;
     if (confObj.debug) {
         w = 1800;
         h = 900;
