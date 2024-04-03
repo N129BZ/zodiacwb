@@ -1,12 +1,12 @@
 
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
-const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main')
+const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main');
+const appData = require("./zodiacwb.json");
+
 const fs = require("fs");
 const path = require("path");
 
 const isMac = process.platform === 'darwin'
-
-var appData = loadAppData();
 
 setupTitlebar();
 
@@ -35,16 +35,7 @@ const template = [
           isMac ? { role: 'close' } : { role: 'quit' }
         ]
     },
-    // { role: 'editMenu' }
-    { 
-        label: 'Edit',
-        submenu: [
-          { 
-            label: 'Toggle debug mode',
-            click: () => app.emit('toggledebug'),
-          }
-        ]
-    },
+    
     // { role: 'viewMenu' }
     {
         label: 'View',
@@ -59,12 +50,6 @@ const template = [
 
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
-
-function loadAppData() {
-    let datafile = path.join(__dirname, "zodiacwb.json");
-    let data = fs.readFileSync(datafile, { encoding: "utf8", flag: "r" });
-    return JSON.parse(data);
-}
 
 function getAppDataAsString() {
     return JSON.stringify(appData, null, 4);
@@ -113,15 +98,7 @@ app.on('window-all-closed', function () {
     if (isMac) app.quit()
 });
 
-app.on('toggledebug', () => {
-    appData.debug = !appData.debug;
-    saveAppData(appData);
-    app.relaunch();
-    app.exit();
-});
-
 ipcMain.on('appdata:save', (e, newappdata) => {
-    appData = newappdata;
     saveAppData(appData);
 });
 
