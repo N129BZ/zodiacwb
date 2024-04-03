@@ -1,7 +1,6 @@
 
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main')
-
 const fs = require("fs");
 const path = require("path");
 
@@ -102,12 +101,12 @@ function createWindow () {
         frame: false,
         webPreferences: {
             sandbox: false,
-            sandbox: false,
             preload: path.join(__dirname, "preload.js")
         }
     });
 
     mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
+
     attachTitlebarToWindow(mainWindow);
 
     if (confObj.debug) {
