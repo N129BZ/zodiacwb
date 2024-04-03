@@ -1,6 +1,6 @@
 "use strict";
 
-var config = {};
+var appData = {};
 
 const  saveBtn = document.getElementById("savebutton");
 const  container = document.getElementById("container");
@@ -54,55 +54,55 @@ const  totalMoment = document.getElementById("totmom");
 const  cog = document.getElementById("cog"); 
 
 window.onload = async () => {
-	const cfg = await window.electronAPI.getconfig();
-	console.log(cfg);
-	config = JSON.parse(cfg);
+	const data = await window.electronAPI.getappdata();
+	console.log(data);
+	appData = JSON.parse(data);
 
-	maxgross.value = config.maxgross;
-	rmWt.value = config.rmweight;
-	rmArm.value = config.rmarm;
-	rmMoment.value = config.rmmoment;
+	maxgross.value = appData.maxgross;
+	rmWt.value = appData.rmweight;
+	rmArm.value = appData.rmarm;
+	rmMoment.value = appData.rmmoment;
 	
-	lmWt.value = config.lmweight;
-	lmArm.value = config.lmarm;
-	lmMoment.value = config.lmmoment;
+	lmWt.value = appData.lmweight;
+	lmArm.value = appData.lmarm;
+	lmMoment.value = appData.lmmoment;
 
-	noseWt.value = config.nwweight;
-	noseArm.value = config.nwarm;
-	noseMoment.value = config.nwmoment;
+	noseWt.value = appData.nwweight;
+	noseArm.value = appData.nwarm;
+	noseMoment.value = appData.nwmoment;
 
-	emptyWt.value = config.emptyweight;
-	emptyCG.value = config.emptycg;
-	emptyMoment.value = config.emptymoment;
+	emptyWt.value = appData.emptyweight;
+	emptyCG.value = appData.emptycg;
+	emptyMoment.value = appData.emptymoment;
 
-	pilotWt.value = config.pilotweight;
-	pilotArm.value = config.pilotarm;
-	pilotMoment.value = config.pilotmoment;
+	pilotWt.value = appData.pilotweight;
+	pilotArm.value = appData.pilotarm;
+	pilotMoment.value = appData.pilotmoment;
 
-	psgrWt.value = config.psgrweight;
-	psgrArm.value = config.psgrarm;
-	psgrMoment.value = config.psgrmoment;
+	psgrWt.value = appData.psgrweight;
+	psgrArm.value = appData.psgrarm;
+	psgrMoment.value = appData.psgrmoment;
 
-	rwLockWt.value = config.rwlockweight;
-	rwLockArm.value = config.rwlockarm;
-	rwLockMoment.value = config.rwlockmoment;
+	rwLockWt.value = appData.rwlockweight;
+	rwLockArm.value = appData.rwlockarm;
+	rwLockMoment.value = appData.rwlockmoment;
 
-	lwLockWt.value = config.lwlockweight;
-	lwlockArm.value = config.lwlockarm;
-	lwlockMoment.value = config.lwlockmoment;
+	lwLockWt.value = appData.lwlockweight;
+	lwlockArm.value = appData.lwlockarm;
+	lwlockMoment.value = appData.lwlockmoment;
 
-	fuelGals.value = config.fuelgals;
-	fuelWt.value = config.fuelweight;
-	fuelArm.value = config.fuelarm;
-	fuelMoment.value = config.fuelmoment;
+	fuelGals.value = appData.fuelgals;
+	fuelWt.value = appData.fuelweight;
+	fuelArm.value = appData.fuelarm;
+	fuelMoment.value = appData.fuelmoment;
 
-	rbagWt.value = config.rbagweight;
-	rbagArm.value = config.rbagarm;
-	rbagMoment.value = config.rbagmoment;
+	rbagWt.value = appData.rbagweight;
+	rbagArm.value = appData.rbagarm;
+	rbagMoment.value = appData.rbagmoment;
 
-	totalWt.value = config.emptyweight;
-	totalCG.value = config.emptycg;
-	totalMoment.value = config.emptymoment;
+	totalWt.value = appData.emptyweight;
+	totalCG.value = appData.emptycg;
+	totalMoment.value = appData.emptymoment;
 
 	calcWB(true);
 };
@@ -114,10 +114,10 @@ const calcFuel = function() {
 	let fum = fwt * fua; 
 	fuelWt.value = fwt;
 	fuelMoment.value = fum;
-	config.fuelgals = fgals;
-	config.fuelweight = fwt;
-	config.fuelarm = fua;
-	config.fuelmoment = fum;
+	appData.fuelgals = fgals;
+	appData.fuelweight = fwt;
+	appData.fuelarm = fua;
+	appData.fuelmoment = fum;
 	return [fwt, fum];
 }
 
@@ -129,25 +129,25 @@ const calcWB = function(isOnLoad = false) {
 	let rma = parseInt(rmArm.value);
 	let rmm = rmw * rma;
 	rmMoment.value = rmm;
-	config.rmweight = rmw;
-	config.rmarm = rma;
-	config.rmmoment = rmm;
+	appData.rmweight = rmw;
+	appData.rmarm = rma;
+	appData.rmmoment = rmm;
 
 	let lmw = parseInt(lmWt.value)
 	let lma = parseInt(lmArm.value);
 	let lmm =  lmw * lma;
 	lmMoment.value = lmm;
-	config.lmweight = lmw;
-	config.lmarm = lma;
-	config.lmmoment = lmm;
+	appData.lmweight = lmw;
+	appData.lmarm = lma;
+	appData.lmmoment = lmm;
 
 	let nww = parseInt(noseWt.value);
 	let nwa = parseInt(noseArm.value);
 	let nwm = nww * nwa;
 	noseMoment.value = nwm;
-	config.nwweight = nww;
-	config.nwarm = nwa;
-	config.nwmoment = nwm;
+	appData.nwweight = nww;
+	appData.nwarm = nwa;
+	appData.nwmoment = nwm;
 
 	let ewt = + lmw + rmw + nww;
 	let emom = lmm + rmm + nwm;
@@ -155,41 +155,41 @@ const calcWB = function(isOnLoad = false) {
 	emptyWt.value = ewt;
 	emptyCG.value = ecg;
 	emptyMoment.value = emom; 
-	config.emptyweight = ewt;
-	config.emptycg = ecg;
-	config.emptymoment = emom;
+	appData.emptyweight = ewt;
+	appData.emptycg = ecg;
+	appData.emptymoment = emom;
 	
 	let piw = parseInt(pilotWt.value); 
 	let pia = parseInt(pilotArm.value);
 	let pim = piw * pia;
 	pilotMoment.value = pim;
-	config.pilotweight = piw;
-	config.pilotarm = pia;
-	config.pilotmoment = pim;
+	appData.pilotweight = piw;
+	appData.pilotarm = pia;
+	appData.pilotmoment = pim;
 
 	let paw = parseInt(psgrWt.value);
 	let paa = parseInt(psgrArm.value);
 	let pam = paw * paa; 
 	psgrMoment.value = pam;
-	config.psgrweight = paw;
-	config.psgrarm = paa;
-	config.psgrmoment = pam;
+	appData.psgrweight = paw;
+	appData.psgrarm = paa;
+	appData.psgrmoment = pam;
 
 	let rwlw = parseInt(rwLockWt.value);
 	let rwla = parseInt(rwLockArm.value);
 	let rwlm = rwlw * rwla;
 	rwLockMoment.value = rwlm;
-	config.rwlockweight = rwlw;
-	config.rwlockarm = rwla;
-	config.rwlockmoment = rwlm;
+	appData.rwlockweight = rwlw;
+	appData.rwlockarm = rwla;
+	appData.rwlockmoment = rwlm;
 
 	let lwlw = parseInt(lwLockWt.value); 
 	let lwla = parseInt(lwlockArm.value);
 	let lwlm = lwlw * lwla;
 	lwlockMoment.value = lwlm;
-	config.lwlockweight = lwlw;
-	config.lwlockarm = lwla;
-	config.lwlockmoment = lwlm;
+	appData.lwlockweight = lwlw;
+	appData.lwlockarm = lwla;
+	appData.lwlockmoment = lwlm;
 
 	let fnums = calcFuel(); // returns [weight, moment]
 	
@@ -197,9 +197,9 @@ const calcWB = function(isOnLoad = false) {
 	let rba = parseInt(rbagArm.value);  
 	let rbm = rbw * rba;
 	rbagMoment.value = rbm;
-	config.rbagweight = rbw;
-	config.rbagarm = rba;
-	config.rbagmoment = rbm;
+	appData.rbagweight = rbw;
+	appData.rbagarm = rba;
+	appData.rbagmoment = rbm;
 
 	let twt = ewt + piw + paw + rwlw + lwlw + fnums[0] + rbw;
 	let tmom = emom + pim + pam + rwlm + lwlm + fnums[1] + rbm;
@@ -207,9 +207,9 @@ const calcWB = function(isOnLoad = false) {
 	totalWt.value = twt;
 	totalCG.value = tcg;
 	totalMoment.value = tmom; 
-	config.totalweight = twt;
-	config.totalcg = tcg;
-	config.totalmoment = tmom;
+	appData.totalweight = twt;
+	appData.totalcg = tcg;
+	appData.totalmoment = tmom;
 	
 	let cogtxt = `(${tcg}, ${twt})`
 	cog.value = cogtxt;
@@ -247,7 +247,7 @@ const placeDot = function(acMoment, acWeight) {
 	}
 }
 
-const saveConfig = function() {
-	window.electronAPI.saveconfig(config);
+const saveAppData = function() {
+	window.electronAPI.saveappdata(appData);
 	saveBtn.disabled = true;
 }

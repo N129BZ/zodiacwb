@@ -61,8 +61,8 @@ const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
 
 function loadAppData() {
-    let datafile = path.join(__dirname, "zodiacwb.data");
-    let data = fs.readFileSync(cfgfile, { encoding: "utf8", flag: "r" });
+    let datafile = path.join(__dirname, "zodiacwb.json");
+    let data = fs.readFileSync(datafile, { encoding: "utf8", flag: "r" });
     return JSON.parse(data);
 }
 
@@ -102,7 +102,7 @@ function createWindow () {
 }
 
 app.whenReady().then(() => {
-    ipcMain.handle('getappdata', getAppDataAsString);
+    ipcMain.handle('appdata:get', getAppDataAsString);
     createWindow();
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -120,13 +120,13 @@ app.on('toggledebug', () => {
     app.exit();
 });
 
-ipcMain.on('saveappdata', (e, newappdata) => {
+ipcMain.on('appdata:save', (e, newappdata) => {
     appData = newappdata;
     saveAppData(appData);
 });
 
 function saveAppData(appdata) {
-    let datafile = path.join(__dirname, "zodiacwb.data");
+    let datafile = path.join(__dirname, "zodiacwb.json");
     fs.writeFileSync(datafile, JSON.stringify(appdata, null, 4));
     console.log(appdata);
 }

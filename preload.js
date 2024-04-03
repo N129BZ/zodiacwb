@@ -2,8 +2,8 @@ const { contextBridge, ipcRenderer } = require("electron");
 const { CustomTitlebar, TitlebarColor } = require('custom-electron-titlebar')
 
 contextBridge.exposeInMainWorld('electronAPI', {
-   saveconfig: (newconfig) => ipcRenderer.send('saveconfig', newconfig),
-   getconfig: () => ipcRenderer.invoke('getconfig'),
+   saveappdata: (newappdata) => ipcRenderer.send('appdata:save', newappdata),
+   getappdata: () => ipcRenderer.invoke('appdata:get'),
 });
 
 window.addEventListener('DOMContentLoaded', () => {
