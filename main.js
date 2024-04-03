@@ -57,7 +57,6 @@ const template = [
     },
 ]
 
-setupTitlebar();
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
 
