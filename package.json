@@ -21,10 +21,13 @@
     "@electron-forge/plugin-fuses": "^7.3.1",
     "@electron-forge/publisher-s3": "^7.3.1",
     "electron": "^29.1.6",
+    "electron-packager": "^17.1.2",
     "fs": "^0.0.1-security",
     "path": "^0.12.7"
   },
   "dependencies": {
+    "custom-electron-titlebar": "^4.2.8",
+    "electron-builder": "^24.13.3",
     "electron-squirrel-startup": "^1.0.0"
   },
   "config": {
@@ -33,8 +36,11 @@
       "makers": [],
       "publishers": [
         {
-        "name": "@electron-forge/publisher-s3",
-        "platforms": ["darwin", "linux"],
+          "name": "@electron-forge/publisher-s3",
+          "platforms": [
+            "darwin",
+            "linux"
+          ],
           "config": {
             "bucket": "my-bucket",
             "folder": "my/key/prefix"
