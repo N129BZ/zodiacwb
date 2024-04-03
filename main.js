@@ -1,10 +1,15 @@
 
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main')
+
 const fs = require("fs");
 const path = require("path");
 
-var confObj = loadConfig();
 const isMac = process.platform === 'darwin'
+
+var confObj = loadConfig();
+setupTitlebar();
+
 const template = [
     ...(isMac
         ? [{
@@ -28,6 +33,16 @@ const template = [
         label: 'File',
         submenu: [
           isMac ? { role: 'close' } : { role: 'quit' }
+        ]
+    },
+    // { role: 'editMenu' }
+    { 
+        label: 'Edit',
+        submenu: [
+          { 
+            label: 'Toggle debug mode',
+            click: () => app.emit('toggledebug'),
+          }
         ]
     },
     // { role: 'viewMenu' }
@@ -68,17 +83,22 @@ function createWindow () {
     const mainWindow = new BrowserWindow({
         width: w,
         height: h,
+        titleBarStyle: "hidden",
+        titleBarOverlay: true,
+        frame: false,
         webPreferences: {
+            sandbox: false,
             preload: path.join(__dirname, "preload.js")
         }
     });
 
-    //mainWindow.setMenu(null);
     mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
-    
+    mainWindow.
+    attachTitlebarToWindow(mainWindow);
+
     if (confObj.debug) {
         mainWindow.webContents.openDevTools();
-    }
+    } 
 }
 
 app.whenReady().then(() => {
@@ -90,14 +110,24 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') app.quit()
+    if (isMac) app.quit()
+});
+
+app.on('toggledebug', () => {
+    let dbg = !confObj.debug;
+    confObj.debug = dbg;
+    saveConfig(confObj);
+    app.relaunch();
+    app.exit();
 });
 
 ipcMain.on('saveconfig', (e, newconfig) => {
-    let cfgfile = path.join(__dirname, "zodiacwb.conf");
-    fs.writeFileSync(cfgfile, JSON.stringify(newconfig, null, 4));
     confObj = newconfig;
-    console.log(confObj);
+    saveConfig(confObj);
 });
     
-
+function saveConfig(newconfig) {
+    let cfgfile = path.join(__dirname, "zodiacwb.conf");
+    fs.writeFileSync(cfgfile, JSON.stringify(newconfig, null, 4));
+    console.log(confObj);
+}
