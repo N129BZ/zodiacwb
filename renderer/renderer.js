@@ -243,7 +243,6 @@ const placeDot = function(acMoment, acWeight) {
 	finally { 
 		let dot = document.getElementById("dot");
 		dot.setAttribute("style", `height:10px;width:10px;border-radius:50%;position:absolute;top:${y-5}px;left:${x-5}px;background-color:${color};`);
-		//mycog.setAttribute("style", `visibility:visible;position:absolute;top:${y+10}px;left:${x-30}px;color:${color};`);
 		mycog.setAttribute("style", `font-size:x-small;visibility:visible;position:absolute;top:${y+10}px;left:${x-25}px;`);
 	}
 }

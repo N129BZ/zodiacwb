@@ -82,6 +82,7 @@ body {
 	position: absolute;
 	font-size: x-small;
 	text-align: left;
+	color: red;
 	top: -86px;
 	left:-35px;
 }
