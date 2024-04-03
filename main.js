@@ -57,6 +57,7 @@ const template = [
     },
 ]
 
+setupTitlebar();
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
 
@@ -70,11 +71,25 @@ function getConfigAsString() {
     return JSON.stringify(confObj, null, 4);
 }
 
+/* function getTitleBarOptions() {
+    const tbColor = TitlebarColor.fromHex(confObj.titlebarcolor);
+    const tboptions = {
+        icon: path.join(__dirname, "icons", "20.png"),
+        iconSize: 20,
+        backgroundColor: tbColor,
+        titleHorizontalAlignment: "center",
+        minimizable: true,
+        maximizable: true,
+        closeable: true
+    }
+    return tboptions;
+} */
+
 if (require('electron-squirrel-startup')) app.quit();
 
 function createWindow () {
     var w = 900;
-    var h = 630;
+    var h = 630; 
     if (confObj.debug) {
         w = 1800;
         h = 900;
@@ -87,6 +102,7 @@ function createWindow () {
         titleBarOverlay: true,
         frame: false,
         webPreferences: {
+            sandbox: false,
             sandbox: false,
             preload: path.join(__dirname, "preload.js")
         }
