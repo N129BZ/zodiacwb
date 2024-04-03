@@ -88,6 +88,7 @@ function createWindow () {
         width: w,
         height: h,
         titleBarStyle: "hidden",
+        frame: false,
         titleBarOverlay: true,
         webPreferences: {
             sandbox: false,
