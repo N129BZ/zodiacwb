@@ -18,6 +18,7 @@
     "@electron-forge/maker-squirrel": "^7.3.1",
     "@electron-forge/maker-zip": "^7.3.1",
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
+    "@electron-forge/plugin-fuses": "^7.3.1",
     "@electron-forge/publisher-s3": "^7.3.1",
     "electron": "^29.1.6",
     "fs": "^0.0.1-security",
