@@ -9,7 +9,7 @@ const isMac = process.platform === 'darwin'
 var appData = loadAppData()
 
 function loadAppData() {
-    let adf = fs.openSync(path.join(__dirname, "zodiacwb.json"), "r");
+    let adf = fs.openSync(path.join(__dirname, "zodiacwb.json"));
     return JSON.parse(adf);
 };
 
