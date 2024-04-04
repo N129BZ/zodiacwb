@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "custom-electron-titlebar": "^4.2.8",
-    "electron-builder": "^24.13.3",
     "electron-squirrel-startup": "^1.0.0"
   },
   "config": {
@@ -39,7 +38,8 @@
           "name": "@electron-forge/publisher-s3",
           "platforms": [
             "darwin",
-            "linux"
+            "linux",
+            "win32"
           ],
           "config": {
             "bucket": "my-bucket",
