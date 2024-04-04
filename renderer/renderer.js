@@ -242,8 +242,9 @@ const placeDot = function(acMoment, acWeight) {
 	}
 	finally { 
 		let dot = document.getElementById("dot");
+		let tcolor = color === "limegreen" ? "black" : "red";
 		dot.setAttribute("style", `height:10px;width:10px;border-radius:50%;position:absolute;top:${y-5}px;left:${x-5}px;background-color:${color};`);
-		mycog.setAttribute("style", `font-size:x-small;visibility:visible;position:absolute;top:${y+10}px;left:${x-25}px;`);
+		mycog.setAttribute("style", `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${y+10}px;left:${x-25}px;`);
 	}
 }
 
@@ -251,7 +252,3 @@ const saveAppData = function() {
 	window.electronAPI.saveappdata(appData);
 	saveBtn.disabled = true;
 }
-
-// window.electronAPI.receive('toggletheme', () => {
-// 	//window.darkMode.toggle()
-// });
