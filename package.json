@@ -10,7 +10,7 @@
     "dist": "electron-builder"
   },
   "repository": "https://github.com/n129bz/zodiacwb",
-  "author": "Brian A. Manlove",
+  "author": "Brian A. Manlove <n129bz@outlook.com>",
   "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^7.3.1",
