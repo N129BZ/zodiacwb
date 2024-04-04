@@ -103,7 +103,7 @@ function createWindow () {
         h = 900;
     }
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    var mainWindow = new BrowserWindow({
         width: w,
         height: h,
         frame: true,
