@@ -52,6 +52,7 @@ const  totalWt = document.getElementById("totwt");
 const  totalCG = document.getElementById("totcg");
 const  totalMoment = document.getElementById("totmom"); 
 const  cog = document.getElementById("cog"); 
+const  dot = document.getElementById("dot");
 
 window.onload = async () => {
 	const data = await window.electronAPI.getappdata();
@@ -242,11 +243,11 @@ const placeDot = function(acMoment, acWeight) {
 	catch (error) {
 		console.log(error.message)
 	}
-	finally { 
-		let dot = document.getElementById("dot");
-		dot.setAttribute("style", `height:10px;width:10px;border-radius:50%;position:absolute;top:${y-5}px;left:${x-5}px;background-color:${color};`);
-		mycog.setAttribute("style", `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${y+10}px;left:${x-25}px;`);
-	}
+	
+	let dstyle = `height:10px;width:10px;border-radius:50%;position:absolute;top:${y-5}px;left:${x-5}px;background-color:${color};`
+	let cstyle = `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${y+10}px;left:${x-25}px;`;
+	dot.setAttribute("style", dstyle);
+	mycog.setAttribute("style", cstyle);
 }
 
 const saveAppData = function() {
