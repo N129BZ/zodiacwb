@@ -220,6 +220,7 @@ const calcWB = function(isOnLoad = false) {
 
 const placeDot = function(acMoment, acWeight) {
 	let color = "red";
+	let tcolor = "red";
 	let svg = document.getElementById("wbcontainer");
 	let path = document.getElementById("wbpath");
 	let x = 0;
@@ -235,6 +236,7 @@ const placeDot = function(acMoment, acWeight) {
 
 		if (path.isPointInFill(point)) {
 			color = "limegreen";
+			tcolor = "black";
 		}
 	}
 	catch (error) {
@@ -242,7 +244,6 @@ const placeDot = function(acMoment, acWeight) {
 	}
 	finally { 
 		let dot = document.getElementById("dot");
-		let tcolor = color === "limegreen" ? "black" : "red";
 		dot.setAttribute("style", `height:10px;width:10px;border-radius:50%;position:absolute;top:${y-5}px;left:${x-5}px;background-color:${color};`);
 		mycog.setAttribute("style", `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${y+10}px;left:${x-25}px;`);
 	}
