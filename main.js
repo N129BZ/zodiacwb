@@ -78,8 +78,6 @@ function createWindow () {
 
     mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
 
-    //attachTitlebarToWindow(mainWindow);
-
     if (appData.debug) {
         mainWindow.webContents.openDevTools();
     } 
