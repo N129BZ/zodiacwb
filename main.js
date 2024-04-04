@@ -59,10 +59,13 @@ const template = [
         submenu: [
             { role: 'togglefullscreen' },
             { label: 'Toggle Dark Mode',
-                accelerator: process.platform === 'darwin' ? 'Alt+Cmd+T' : 'Alt+Shift+T',
+                accelerator: process.platform === 'darwin' ? 'Alt+Cmd+T' : 'Alt+Ctrl+T',
                 click: () => app.emit('toggletheme')
             },
-            { role: 'toggleDevTools' }
+            { label: 'Toggle Developer Tools',
+                accelerator: process.platform === 'darwin' ? 'Alt+Cmd+D' : 'Alt+Ctrl+D',
+                click: () => app.emit('toggledev')
+            }
         ]
     },
 ]
@@ -92,10 +95,11 @@ Menu.setApplicationMenu(menu);
 if (require('electron-squirrel-startup')) app.quit();
 
 function createWindow () {
+    var dtoggled = false;
     var w = 900;
     var h = 670; 
     if (appData.debug) {
-        w = 1800;
+        w = 1400;
         h = 900;
     }
     // Create the browser window.
@@ -116,10 +120,29 @@ function createWindow () {
         mainWindow.webContents.openDevTools();
     } 
 
+    mainWindow.on("close", () => {
+        mainWindow = null;
+    }); 
+
     app.on('toggletheme', () => {
         toggleTheme();
         saveAppData();
         mainWindow.webContents.send('toggletheme');
+    });
+
+    app.on('toggledev', () => {
+        if (!dtoggled) {
+            mainWindow.webContents.openDevTools();
+            dtoggled = true;
+            h = 900;
+            w = 1400;
+        } else {
+            mainWindow.webContents.closeDevTools();
+            dtoggled = false;
+            h = 670;
+            w = 900;
+        }
+        mainWindow.setSize(w, h, true);
     });
 }
 
