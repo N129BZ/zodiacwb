@@ -100,5 +100,5 @@ app.on('window-all-closed', function () {
 ipcMain.on('appdata:save', (e, newappdata) => {
     appData = newappdata;
     fs.writeFileSync(jsonPath, JSON.stringify(appData, null, 4));
-    console.log(appData);
+    //console.log(appData);
 });
