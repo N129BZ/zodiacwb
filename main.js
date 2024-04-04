@@ -13,6 +13,8 @@ const path = require("path");
 const isMac = process.platform === 'darwin'
 const jsonPath = path.join(app.getPath("userData"), "zodiacwb.json");
 
+app.commandLine.appendSwitch ("disable-http-cache");
+
 var appData = loadAppData();
 
 function loadAppData() {
