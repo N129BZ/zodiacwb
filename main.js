@@ -64,8 +64,8 @@ function createWindow () {
     const mainWindow = new BrowserWindow({
         width: w,
         height: h,
-        //titleBarStyle: "hidden",
-        //titleBarOverlay: true,
+        titleBarStyle: "hidden",
+        titleBarOverlay: true,
         frame: false,
         webPreferences: {
             sandbox: false,
@@ -75,7 +75,7 @@ function createWindow () {
 
     mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
 
-    //attachTitlebarToWindow(mainWindow);
+    attachTitlebarToWindow(mainWindow);
 
     if (appData.debug) {
         mainWindow.webContents.openDevTools();
