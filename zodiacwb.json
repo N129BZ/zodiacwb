@@ -34,6 +34,6 @@
     "totalweight": 1186,
     "totalcg": 337,
     "totalmoment": 399660,
-    "titlebarcolor": "#0987C1",
+    "theme": "dark",
     "debug": false
 }

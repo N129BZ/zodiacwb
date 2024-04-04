@@ -251,3 +251,7 @@ const saveAppData = function() {
 	window.electronAPI.saveappdata(appData);
 	saveBtn.disabled = true;
 }
+
+// window.electronAPI.receive('toggletheme', () => {
+// 	//window.darkMode.toggle()
+// });
