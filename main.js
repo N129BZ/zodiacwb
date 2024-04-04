@@ -1,6 +1,5 @@
 
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
-const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main');
 const fs = require("fs");
 const path = require("path");
 
@@ -12,8 +11,6 @@ function loadAppData() {
     let adf = fs.readFileSync(path.join(__dirname, "zodiacwb.json"));
     return JSON.parse(adf);
 };
-
-setupTitlebar();
 
 const template = [
     ...(isMac
@@ -36,16 +33,13 @@ const template = [
     { 
         label: 'File',
         submenu: [
-          isMac ? { role: 'close' } : { role: 'quit' }
+            isMac ? { role: 'close' } : { role: 'quit' }
         ]
     },
     {
         label: 'View',
         submenu: [
-        { role: 'reload' },
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
-        { role: 'togglefullscreen' }
+            { role: 'togglefullscreen' }
         ]
     },
 ]
@@ -57,7 +51,7 @@ if (require('electron-squirrel-startup')) app.quit();
 
 function createWindow () {
     var w = 900;
-    var h = 630; 
+    var h = 670; 
     if (appData.debug) {
         w = 1800;
         h = 900;
@@ -66,9 +60,9 @@ function createWindow () {
     const mainWindow = new BrowserWindow({
         width: w,
         height: h,
-        titleBarStyle: "hidden",
-        titleBarOverlay: true,
-        frame: false,
+        //titleBarStyle: "hidden",
+        //titleBarOverlay: true,
+        //frame: false,
         webPreferences: {
             sandbox: false,
             preload: path.join(__dirname, "preload.js")
@@ -77,7 +71,7 @@ function createWindow () {
 
     mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
 
-    attachTitlebarToWindow(mainWindow);
+    //attachTitlebarToWindow(mainWindow);
 
     if (appData.debug) {
         mainWindow.webContents.openDevTools();
@@ -101,6 +95,6 @@ app.on('window-all-closed', function () {
 ipcMain.on('appdata:save', (e, newappdata) => {
     appData = newappdata;
     let datafile = path.join(__dirname, "zodiacwb.json");
-    fs.writeFileSync(datafile, JSON.stringify(appdata, null, 4));
+    fs.writeFileSync(datafile, JSON.stringify(appData, null, 4));
     console.log(appData);
 });
