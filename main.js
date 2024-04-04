@@ -6,7 +6,9 @@ const path = require("path");
 
 const isMac = process.platform === 'darwin'
 
-var appData = () => {
+var appData = loadAppData()
+
+function loadAppData() {
     let adf = fs.openSync(path.join(__dirname, "zodiacwb.json"), "r");
     return JSON.parse(adf);
 };
