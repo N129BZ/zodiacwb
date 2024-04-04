@@ -26,7 +26,12 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-rpm',
-      config: {},
+      config: {
+        options: {
+          maintainer: 'Brian A. Manlove',
+          homepage: 'https://github.com/n129bz/zodiacwb'
+        }
+      },
     },
   ],
   plugins: [
