@@ -4,11 +4,20 @@ const fs = require("fs");
 const path = require("path");
 
 const isMac = process.platform === 'darwin'
+const jsonPath = path.join(app.getPath("userData"), "zodiacwb.json");
 
-var appData = loadAppData()
+var appData = loadAppData();
 
 function loadAppData() {
-    let adf = fs.readFileSync(path.join(__dirname, "zodiacwb.json"));
+    let adf = "";
+    // make sure the file is stored in userData folder
+    if (!fs.existsSync(jsonPath)) {
+        adf = fs.readFileSync(path.join(__dirname, "zodiacwb.json"));
+        fs.writeFileSync(jsonPath, adf);
+    }
+    else {
+        adf = fs.readFileSync(jsonPath);
+    }
     return JSON.parse(adf);
 };
 
@@ -60,9 +69,7 @@ function createWindow () {
     const mainWindow = new BrowserWindow({
         width: w,
         height: h,
-        //titleBarStyle: "hidden",
-        //titleBarOverlay: true,
-        //frame: false,
+        frame: true,
         webPreferences: {
             sandbox: false,
             preload: path.join(__dirname, "preload.js")
@@ -94,7 +101,6 @@ app.on('window-all-closed', function () {
 
 ipcMain.on('appdata:save', (e, newappdata) => {
     appData = newappdata;
-    let datafile = path.join(__dirname, "zodiacwb.json");
-    fs.writeFileSync(datafile, JSON.stringify(appData, null, 4));
+    fs.writeFileSync(jsonPath, JSON.stringify(appData, null, 4));
     console.log(appData);
 });
