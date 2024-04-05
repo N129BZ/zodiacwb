@@ -1,6 +1,8 @@
 "use strict";
 
 var appData = {};
+var devstate = { "state": false };
+var clickcount = 0;
 
 const  saveBtn = document.getElementById("savebutton");
 const  container = document.getElementById("container");
@@ -253,4 +255,18 @@ const placeDot = function(acMoment, acWeight) {
 const saveAppData = function() {
 	window.electronAPI.saveappdata(appData);
 	saveBtn.disabled = true;
+}
+
+function countClicks() {
+	clickcount++;
+	console.log(`clickcount: ${clickcount}`);
+	if (clickcount === 10) {
+		devstate.state = !appData.debug;
+		saveAppData();
+		showDev();
+	}
+}
+
+const showDev = function() {
+	window.electronAPI.showdev(devstate);
 }

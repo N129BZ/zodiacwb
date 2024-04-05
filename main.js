@@ -1,4 +1,5 @@
 
+const { subtle } = require('crypto');
 const { 
     app, 
     BrowserWindow, 
@@ -14,8 +15,8 @@ const isMac = process.platform === 'darwin'
 const jsonPath = path.join(app.getPath("userData"), "zodiacwb.json");
 
 app.commandLine.appendSwitch ("disable-http-cache");
-
 var appData = loadAppData();
+const isDebug = appData.debug;
 
 function loadAppData() {
     let adf = "";
@@ -62,13 +63,22 @@ const template = [
                 accelerator: process.platform === 'darwin' ? 'Alt+Cmd+T' : 'Alt+Ctrl+T',
                 click: () => app.emit('toggletheme')
             },
-            { label: 'Toggle Developer Tools',
-                accelerator: process.platform === 'darwin' ? 'Alt+Cmd+D' : 'Alt+Ctrl+D',
-                click: () => app.emit('toggledev')
-            }
         ]
     },
+    ...(isDebug
+        ? [{
+            label: "Debug",
+            submenu: [
+                { label: 'Toggle Developer Tools',
+                    accelerator: process.platform === 'darwin' ? 'Alt+Cmd+D' : 'Alt+Ctrl+D',
+                    click: () => app.emit('toggledev')
+                }
+              ]
+            }] 
+        : []  
+    )
 ]
+
 var appData = loadAppData();
 nativeTheme.themeSource = appData.theme;
 
@@ -103,7 +113,7 @@ function createWindow () {
         h = 900;
     }
     // Create the browser window.
-    var mainWindow = new BrowserWindow({
+    const mainWindow = new BrowserWindow({
         width: w,
         height: h,
         frame: true,
@@ -119,10 +129,6 @@ function createWindow () {
     if (appData.debug) {
         mainWindow.webContents.openDevTools();
     } 
-
-    mainWindow.on("close", () => {
-        mainWindow = null;
-    }); 
 
     app.on('toggletheme', () => {
         toggleTheme();
@@ -175,4 +181,11 @@ app.on('window-all-closed', function () {
 ipcMain.on('appdata:save', (e, newappdata) => {
     appData = newappdata;
     saveAppData();
+});
+
+ipcMain.on('menu:showdev', (e, devstate) => {
+    appData.debug = devstate.state;
+    saveAppData();
+    app.relaunch();
+    app.exit(0);
 });
