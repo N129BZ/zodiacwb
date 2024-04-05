@@ -175,7 +175,7 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', function () {
-    if (isMac) app.quit()
+    app.quit()
 });
 
 ipcMain.on('appdata:save', (e, newappdata) => {
