@@ -64,19 +64,19 @@ const template = [
                 click: () => app.emit('toggletheme')
             },
         ]
-    },
-    ...(isDebug
-        ? [{
-            label: "Debug",
-            submenu: [
-                { label: 'Toggle Developer Tools',
-                    accelerator: process.platform === 'darwin' ? 'Alt+Cmd+D' : 'Alt+Ctrl+D',
-                    click: () => app.emit('toggledev')
-                }
-              ]
-            }] 
-        : []  
-    )
+    }
+    // ...(isDebug
+    //     ? [{
+    //         label: "Debug",
+    //         submenu: [
+    //             { label: 'Toggle Developer Tools',
+    //                 accelerator: process.platform === 'darwin' ? 'Alt+Cmd+D' : 'Alt+Ctrl+D',
+    //                 click: () => app.emit('toggledev')
+    //             }
+    //           ]
+    //         }] 
+    //     : []  
+    // )
 ]
 
 var appData = loadAppData();
