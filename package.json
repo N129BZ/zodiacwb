@@ -3,7 +3,7 @@
   "version": "1.0.9",
   "description": "Zenith Zodiac 601xl/650 Weight and Balance",
   "main": "main.js",
-  "icon": "./zwblogo.png",
+  "icon": "zwblogo.png",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -64,7 +64,7 @@
     },
     "win": {
       "target": "NSIS",
-      "icon": "build/icon.ico"
+      "icon": "./zwblogo.png"
     }
   }
 }
