@@ -58,7 +58,7 @@ const template = [
     { 
         label: 'Edit',
         submenu: [
-            { label: 'Select Measurement Preference', 
+            { label: 'Measurement Units', 
                 submenu: [
                     { label: "Imperial (pounds/inches)",
                         click: () => app.emit('toggleimperial')

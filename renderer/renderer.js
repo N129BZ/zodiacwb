@@ -9,7 +9,6 @@ const mmfactor = 25.4;
 
 const  saveBtn = document.getElementById("savebutton");
 const  container = document.getElementById("container");
-const  maxgross = document.getElementById("mgw"); 
 const  mycog = document.getElementById("myplane");
 
 const  lmWt = document.getElementById("lm"); 
@@ -64,38 +63,43 @@ const  dot = document.getElementById("dot");
 // -- user wants weight in kg and moment in millimeters
 // -- user wants weight in lbs and moment in inches
 //--------------------------------------------------------
-const w720 = document.getElementById("w720");   		
-const w1080 = document.getElementById("w1080"); 		
-const wMaxGross = document.getElementById("wMaxGross"); 
-const w1440 = document.getElementById("w1440"); 		
-const a270 = document.getElementById("a270"); 			
-const a455 = document.getElementById("a455"); 			
+const wtMin = document.getElementById("wtMin");   		
+const wtNgMin = document.getElementById("wtNgMin"); 		
+const wMaxGross = document.getElementById("wtMaxGross"); 
+const wtMaxFloats = document.getElementById("wtMaxFloats"); 
+const mgw = document.getElementById("mgw"); 		
+const armMin = document.getElementById("armMin"); 			
+const armMax = document.getElementById("armMax"); 			
 const wtaxis = document.getElementById("wtaxis");
 const cgaxis = document.getElementById("cgaxis");
 
 function setBoundaryLabels() {
 	if (appData.usemetric) {
-		w720.innerHTML = "&nbsp;326-";
-		w1080.innerHTML = "&nbsp;&nbsp;490-";
-		wMaxGross.innerHTML = "600  -----------------------";
-		w1440.innerHTML = "654  --- Max gross with floats -------------------------------------|";
-		a270.innerHTML = "270&nbsp;-";
-		a455.innerHTML = "455&nbsp;-"
+		wtMin.innerHTML = `&nbsp;${appData.mingrosskg}-`;
+		wtNgMin.innerHTML = `&nbsp;&nbsp;${appData.ngstartkg}-`;
+		wMaxGross.innerHTML = `${appData.maxgrosskg}  -----------------------`;
+		wtMaxFloats.innerHTML = `${appData.maxfloatskg}  --- Max gross with floats -------------------------------------|`;
+		armMin.innerHTML = `${appData.mincgmm}&nbsp;-`;
+		armMax.innerHTML = `${appData.maxcgmm}&nbsp;-`
+		mgw.value = appData.maxgrosskg;
 		// adjust left of a270 & a455 to compensate for extra character
-		a270.setAttribute("style", "left:-12px;");
-		a455.setAttribute("style", "left:357px;");
-		wtaxis.innerHTML = "Weight (in kg)";
-		cgaxis.innerHTML = "Acceptable CG Range (in mm)";
+		armMin.setAttribute("style", "left:-12px;");
+		armMax.setAttribute("style", "left:357px;");
+		wtaxis.innerHTML = "Weight (kilograms)";
+		wtaxis.setAttribute("style", "left:-62px;")
+		cgaxis.innerHTML = "Acceptable CG Range (millimeters)";
 	}
 	else {
-		w720.innerHTML = "720 -";
-		w1080.innerHTML = "1080 -";
-		wMaxGross.innerHTML = "1320 -----------------------";
-		w1440.innerHTML = "1440 --- Max gross with floats ------------------------------------|";
-		a270.innerHTML = "10&nbsp;-";
-		a455.innerHTML = "18&nbsp;-"
-		wtaxis.innerHTML = "Weight (in lbs)";
-		cgaxis.innerHTML = "Acceptable CG Range (in inches)";
+		wtMin.innerHTML = `${appData.mingrosslb} -`;
+		wtNgMin.innerHTML = `${appData.ngstartlb} -`;
+		wMaxGross.innerHTML = `${appData.maxgrosslb} -----------------------`;
+		wtMaxFloats.innerHTML = `${appData.maxfloatslb} --- Max gross with floats ------------------------------------|`;
+		armMin.innerHTML = `${appData.mincginch}&nbsp;-`;
+		armMax.innerHTML = `${appData.maxcginch}&nbsp;-`
+		mgw.value = appData.maxgrosslb;
+		wtaxis.innerHTML = "Weight (pounds)";
+		wtaxis.setAttribute("style", "left:-55px;")
+		cgaxis.innerHTML = "Acceptable CG Range (inches)";
 	}
 }
 
@@ -106,22 +110,18 @@ window.onload = async () => {
 
 	setBoundaryLabels();
 
-	maxgross.value = appData.maxgross;
 	rmWt.value = appData.rmweight;
 	rmArm.value = appData.rmarm;
-	rmArm.setAttribute("readonly", "readonly");
 	rmMoment.value = appData.rmmoment;
 	rmMoment.setAttribute("readonly", "readonly");
 
 	lmWt.value = appData.lmweight;
 	lmArm.value = appData.lmarm;
-	lmArm.setAttribute("readonly", "readonly");
 	lmMoment.value = appData.lmmoment;
 	lmMoment.setAttribute("readonly", "readonly");
 
 	noseWt.value = appData.nwweight;
 	noseArm.value = appData.nwarm;
-	noseArm.setAttribute("readonly", "readonly");
 	noseMoment.value = appData.nwmoment;
 	noseMoment.setAttribute("readonly", "readonly");
 
