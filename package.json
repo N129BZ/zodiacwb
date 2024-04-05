@@ -1,6 +1,6 @@
 {
   "name": "zodiacwb",
-  "version": "1.0.9",
+  "version": "1.2.1",
   "description": "Zenith Zodiac 601xl/650 Weight and Balance",
   "main": "main.js",
   "icon": "zwblogo.png",
