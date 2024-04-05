@@ -111,9 +111,9 @@ window.onload = async () => {
 };
 
 const calcFuel = function() {
-	let fgals = parseInt(fuelGals.value);
+	let fgals = handleNaN(fuelGals.value);
 	let fwt =  fgals * 6;
-	let fua = parseInt(fuelArm.value);
+	let fua = handleNaN(fuelArm.value);
 	let fum = fwt * fua; 
 	fuelWt.value = fwt;
 	fuelMoment.value = fum;
@@ -128,24 +128,24 @@ const calcWB = function(isOnLoad = false) {
 	
 	saveBtn.disabled = isOnLoad;
 
-	let rmw = parseInt(rmWt.value);
-	let rma = parseInt(rmArm.value);
+	let rmw = handleNaN(rmWt.value);
+	let rma = handleNaN(rmArm.value);
 	let rmm = rmw * rma;
 	rmMoment.value = rmm;
 	appData.rmweight = rmw;
 	appData.rmarm = rma;
 	appData.rmmoment = rmm;
 
-	let lmw = parseInt(lmWt.value)
-	let lma = parseInt(lmArm.value);
+	let lmw = handleNaN(lmWt.value)
+	let lma = handleNaN(lmArm.value);
 	let lmm =  lmw * lma;
 	lmMoment.value = lmm;
 	appData.lmweight = lmw;
 	appData.lmarm = lma;
 	appData.lmmoment = lmm;
 
-	let nww = parseInt(noseWt.value);
-	let nwa = parseInt(noseArm.value);
+	let nww = handleNaN(noseWt.value);
+	let nwa = handleNaN(noseArm.value);
 	let nwm = nww * nwa;
 	noseMoment.value = nwm;
 	appData.nwweight = nww;
@@ -162,32 +162,32 @@ const calcWB = function(isOnLoad = false) {
 	appData.emptycg = ecg;
 	appData.emptymoment = emom;
 	
-	let piw = parseInt(pilotWt.value); 
-	let pia = parseInt(pilotArm.value);
+	let piw = handleNaN(pilotWt.value); 
+	let pia = handleNaN(pilotArm.value);
 	let pim = piw * pia;
 	pilotMoment.value = pim;
 	appData.pilotweight = piw;
 	appData.pilotarm = pia;
 	appData.pilotmoment = pim;
 
-	let paw = parseInt(psgrWt.value);
-	let paa = parseInt(psgrArm.value);
+	let paw = handleNaN(psgrWt.value);
+	let paa = handleNaN(psgrArm.value);
 	let pam = paw * paa; 
 	psgrMoment.value = pam;
 	appData.psgrweight = paw;
 	appData.psgrarm = paa;
 	appData.psgrmoment = pam;
 
-	let rwlw = parseInt(rwLockWt.value);
-	let rwla = parseInt(rwLockArm.value);
+	let rwlw = handleNaN(rwLockWt.value);
+	let rwla = handleNaN(rwLockArm.value);
 	let rwlm = rwlw * rwla;
 	rwLockMoment.value = rwlm;
 	appData.rwlockweight = rwlw;
 	appData.rwlockarm = rwla;
 	appData.rwlockmoment = rwlm;
 
-	let lwlw = parseInt(lwLockWt.value); 
-	let lwla = parseInt(lwlockArm.value);
+	let lwlw = handleNaN(lwLockWt.value); 
+	let lwla = handleNaN(lwlockArm.value);
 	let lwlm = lwlw * lwla;
 	lwlockMoment.value = lwlm;
 	appData.lwlockweight = lwlw;
@@ -196,16 +196,18 @@ const calcWB = function(isOnLoad = false) {
 
 	let fnums = calcFuel(); // returns [weight, moment]
 	
-	let rbw = parseInt(rbagWt.value); 
-	let rba = parseInt(rbagArm.value);  
+	let rbw = handleNaN(rbagWt.value); 
+	let rba = handleNaN(rbagArm.value);  
 	let rbm = rbw * rba;
 	rbagMoment.value = rbm;
 	appData.rbagweight = rbw;
 	appData.rbagarm = rba;
 	appData.rbagmoment = rbm;
 
-	let twt = ewt + piw + paw + rwlw + lwlw + fnums[0] + rbw;
-	let tmom = emom + pim + pam + rwlm + lwlm + fnums[1] + rbm;
+	let atwt = [ewt, piw, paw, rwlw, lwlw, fnums[0], rbw];
+	let atmom = [emom, pim, pam, rwlm, lwlm , fnums[1], rbm];
+	let twt = addArray(atwt);
+	let tmom = addArray(atmom);
 	let tcg = Math.round(tmom / twt);
 	totalWt.value = twt;
 	totalCG.value = tcg;
@@ -221,7 +223,25 @@ const calcWB = function(isOnLoad = false) {
 	placeDot(tcg, twt);
 }
 
-const placeDot = function(acMoment, acWeight) {
+function handleNaN(theNumber) {
+	var tv = 0;
+	if (theNumber === "" || isNaN(theNumber)) {
+		// do nothing
+	} else {
+		tv = parseInt(theNumber)
+	}
+	return tv;
+}
+
+function addArray(theArray) {
+	var outval = 0;
+	theArray.forEach( val => {
+		outval = !isNaN(val) ? outval + val : outval;
+	});
+	return outval;
+}
+
+function placeDot(acMoment, acWeight) {
 	let color = "red";
 	let tcolor = "red";
 	let svg = document.getElementById("wbcontainer");
@@ -234,7 +254,7 @@ const placeDot = function(acMoment, acWeight) {
 		y = 1322 - acWeight;
 		point.x = x;
 		point.y = y;
-		
+
 		console.log(`Point(${point.x},${point.y} is in fill area: ${path.isPointInFill(point)}`);
 
 		if (path.isPointInFill(point)) {
@@ -243,11 +263,11 @@ const placeDot = function(acMoment, acWeight) {
 		}
 	}
 	catch (error) {
-		console.log(error.message)
+		console.log(error.message);
 	}
-	
-	let dstyle = `height:10px;width:10px;border-radius:50%;position:absolute;top:${y-5}px;left:${x-5}px;background-color:${color};`
-	let cstyle = `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${y+10}px;left:${x-25}px;`;
+
+	let dstyle = `height:10px;width:10px;border-radius:50%;position:absolute;top:${y - 5}px;left:${x - 5}px;background-color:${color};`;
+	let cstyle = `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${y + 10}px;left:${x - 25}px;`;
 	dot.setAttribute("style", dstyle);
 	mycog.setAttribute("style", cstyle);
 }
