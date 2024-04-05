@@ -64,43 +64,56 @@ window.onload = async () => {
 	maxgross.value = appData.maxgross;
 	rmWt.value = appData.rmweight;
 	rmArm.value = appData.rmarm;
+	rmArm.setAttribute("readonly", "readonly");
 	rmMoment.value = appData.rmmoment;
-	
+	rmMoment.setAttribute("readonly", "readonly");
+
 	lmWt.value = appData.lmweight;
 	lmArm.value = appData.lmarm;
+	lmArm.setAttribute("readonly", "readonly");
 	lmMoment.value = appData.lmmoment;
+	lmMoment.setAttribute("readonly", "readonly");
 
 	noseWt.value = appData.nwweight;
 	noseArm.value = appData.nwarm;
+	noseArm.setAttribute("readonly", "readonly");
 	noseMoment.value = appData.nwmoment;
+	noseMoment.setAttribute("readonly", "readonly");
 
 	emptyWt.value = appData.emptyweight;
 	emptyCG.value = appData.emptycg;
 	emptyMoment.value = appData.emptymoment;
-
+	emptyMoment.setAttribute("readonly", "readonly");
+	
 	pilotWt.value = appData.pilotweight;
 	pilotArm.value = appData.pilotarm;
+	pilotArm.setAttribute("readonly", "readonly");
 	pilotMoment.value = appData.pilotmoment;
 
 	psgrWt.value = appData.psgrweight;
 	psgrArm.value = appData.psgrarm;
+	psgrArm.setAttribute("readonly", "readonly");
 	psgrMoment.value = appData.psgrmoment;
 
 	rwLockWt.value = appData.rwlockweight;
 	rwLockArm.value = appData.rwlockarm;
+	rwLockArm.setAttribute("readonly", "readonly");
 	rwLockMoment.value = appData.rwlockmoment;
 
 	lwLockWt.value = appData.lwlockweight;
 	lwlockArm.value = appData.lwlockarm;
+	lwlockArm.setAttribute("readonly", "readonly");
 	lwlockMoment.value = appData.lwlockmoment;
 
 	fuelGals.value = appData.fuelgals;
 	fuelWt.value = appData.fuelweight;
 	fuelArm.value = appData.fuelarm;
+	fuelArm.setAttribute("readonly", "readonly");
 	fuelMoment.value = appData.fuelmoment;
 
 	rbagWt.value = appData.rbagweight;
 	rbagArm.value = appData.rbagarm;
+	rbagArm.setAttribute("readonly", "readonly");
 	rbagMoment.value = appData.rbagmoment;
 
 	totalWt.value = appData.emptyweight;
