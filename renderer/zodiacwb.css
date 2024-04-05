@@ -4,7 +4,7 @@ body {
 }
 .container {
 	height: 450px;
-	width: 370px;
+	width: 380px;
 	position: absolute;
 	left: 60px;
 	top:150px;
@@ -54,15 +54,15 @@ body {
 	rotate: -47.2deg;
 }
 .w720 {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Courier, monospace; /*Arial, Helvetica, sans-serif;*/
 	position: absolute;
 	font-size: x-small;
 	text-align: left;
-	top: 351px;
+	top: 354px;
 	left:-29px;
 }
 .w1080 {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Courier, monospace; /*Arial, Helvetica, sans-serif;*/
 	position: absolute;
 	font-size: x-small;
 	text-align: left;
@@ -70,7 +70,7 @@ body {
 	left:-35px;
 }
 .wMaxGross {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Courier, monospace; /*Arial, Helvetica, sans-serif;*/
 	position: absolute;
 	font-size: x-small;
 	text-align: left;
@@ -78,7 +78,7 @@ body {
 	left:-35px;
 }
 .w1440 {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Courier, monospace; /*Arial, Helvetica, sans-serif;*/
 	position: absolute;
 	font-size: x-small;
 	text-align: left;
@@ -90,16 +90,16 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
 	font-size: x-small;
-	top: 367px;
-	left:-12px;
+	top: 364px;
+	left:-8px;
 	rotate: -90deg;
 }
 .a455 {
 	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
 	font-size: x-small;
-	top: 367px;
-	left:357px;
+	top: 362px;
+	left:361px;
 	rotate: -90deg;
 }
 .myplane {

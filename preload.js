@@ -5,7 +5,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
    getappdata: () => ipcRenderer.invoke('appdata:get'),
    showdev: (devstate) => ipcRenderer.send('menu:showdev', devstate),
    receive: (channel, func) => {
-      let validChannels = ["toggletheme"]; //, "toggledev"];
+      let validChannels = ["toggletheme", "toggleimperial", "togglemetric"]; 
       if (validChannels.includes(channel)) {
           // Deliberately strip event as it includes `sender` 
           ipcRenderer.on(channel, (event, ...args) => func(...args));

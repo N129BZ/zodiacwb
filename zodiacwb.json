@@ -34,6 +34,7 @@
     "totalweight": 1186,
     "totalcg": 337,
     "totalmoment": 399660,
+    "usemetric": true,
     "theme": "dark",
     "debug": false
 }

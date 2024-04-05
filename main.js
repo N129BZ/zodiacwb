@@ -55,6 +55,21 @@ const template = [
             isMac ? { role: 'close' } : { role: 'quit' }
         ]
     },
+    { 
+        label: 'Edit',
+        submenu: [
+            { label: 'Select Measurement Preference', 
+                submenu: [
+                    { label: "Imperial (pounds/inches)",
+                        click: () => app.emit('toggleimperial')
+                    },
+                    { label: "Metric (kilograms/millimeters)",
+                        click: () => app.emit('togglemetric')
+                    }
+                ]
+            }
+        ]
+    },
     {
         label: 'View',
         submenu: [
@@ -63,20 +78,10 @@ const template = [
                 accelerator: process.platform === 'darwin' ? 'Alt+Cmd+T' : 'Alt+Ctrl+T',
                 click: () => app.emit('toggletheme')
             },
+            { role: "separator"},
+            { role: 'reload' }
         ]
-    }
-    // ...(isDebug
-    //     ? [{
-    //         label: "Debug",
-    //         submenu: [
-    //             { label: 'Toggle Developer Tools',
-    //                 accelerator: process.platform === 'darwin' ? 'Alt+Cmd+D' : 'Alt+Ctrl+D',
-    //                 click: () => app.emit('toggledev')
-    //             }
-    //           ]
-    //         }] 
-    //     : []  
-    // )
+    },
 ]
 
 var appData = loadAppData();
@@ -134,6 +139,17 @@ function createWindow () {
         toggleTheme();
         saveAppData();
         mainWindow.webContents.send('toggletheme');
+    });
+
+    app.on('toggleimperial', () => {
+        appData.usemetric = false;
+        saveAppData();
+        mainWindow.reload(); 
+    });
+    app.on('togglemetric', () => {
+        appData.usemetric = true;
+        saveAppData();
+        mainWindow.reload(); 
     });
 
     app.on('toggledev', () => {

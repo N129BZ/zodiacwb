@@ -4,6 +4,9 @@ var appData = {};
 var devstate = { "state": false };
 var clickcount = 0;
 
+const kgfactor = 0.453592;
+const mmfactor = 25.4;
+
 const  saveBtn = document.getElementById("savebutton");
 const  container = document.getElementById("container");
 const  maxgross = document.getElementById("mgw"); 
@@ -56,10 +59,52 @@ const  totalMoment = document.getElementById("totmom");
 const  cog = document.getElementById("cog"); 
 const  dot = document.getElementById("dot");
 
+//--------------------------------------------------------
+// weight & moment indication labels, these change when:
+// -- user wants weight in kg and moment in millimeters
+// -- user wants weight in lbs and moment in inches
+//--------------------------------------------------------
+const w720 = document.getElementById("w720");   		
+const w1080 = document.getElementById("w1080"); 		
+const wMaxGross = document.getElementById("wMaxGross"); 
+const w1440 = document.getElementById("w1440"); 		
+const a270 = document.getElementById("a270"); 			
+const a455 = document.getElementById("a455"); 			
+const wtaxis = document.getElementById("wtaxis");
+const cgaxis = document.getElementById("cgaxis");
+
+function setBoundaryLabels() {
+	if (appData.usemetric) {
+		w720.innerHTML = "&nbsp;326-";
+		w1080.innerHTML = "&nbsp;&nbsp;490-";
+		wMaxGross.innerHTML = "600  -----------------------";
+		w1440.innerHTML = "654  --- Max gross with floats -------------------------------------|";
+		a270.innerHTML = "270&nbsp;-";
+		a455.innerHTML = "455&nbsp;-"
+		// adjust left of a270 & a455 to compensate for extra character
+		a270.setAttribute("style", "left:-12px;");
+		a455.setAttribute("style", "left:357px;");
+		wtaxis.innerHTML = "Weight (in kg)";
+		cgaxis.innerHTML = "Acceptable CG Range (in mm)";
+	}
+	else {
+		w720.innerHTML = "720 -";
+		w1080.innerHTML = "1080 -";
+		wMaxGross.innerHTML = "1320 -----------------------";
+		w1440.innerHTML = "1440 --- Max gross with floats ------------------------------------|";
+		a270.innerHTML = "10&nbsp;-";
+		a455.innerHTML = "18&nbsp;-"
+		wtaxis.innerHTML = "Weight (in lbs)";
+		cgaxis.innerHTML = "Acceptable CG Range (in inches)";
+	}
+}
+
 window.onload = async () => {
 	const data = await window.electronAPI.getappdata();
 	console.log(data);
 	appData = JSON.parse(data);
+
+	setBoundaryLabels();
 
 	maxgross.value = appData.maxgross;
 	rmWt.value = appData.rmweight;
