@@ -43,7 +43,7 @@ const  lwLockWt = document.getElementById("lwl");
 const  lwlockArm = document.getElementById("lwla");
 const  lwlockMoment = document.getElementById("lwlm");
 
-const  fuelGals = document.getElementById("fig"); 
+const  fuelunits = document.getElementById("fuelunits"); 
 const  fuelWt = document.getElementById("fwt");
 const  fuelArm = document.getElementById("fua"); 
 const  fuelMoment = document.getElementById("fum"); 
@@ -72,16 +72,18 @@ const armMin = document.getElementById("armMin");
 const armMax = document.getElementById("armMax"); 			
 const wtaxis = document.getElementById("wtaxis");
 const cgaxis = document.getElementById("cgaxis");
+const funitlbl = document.getElementById("fuelunitlabel");
 
 function setBoundaryLabels() {
 	if (appData.usemetric) {
-		wtMin.innerHTML = `&nbsp;${appData.mingrosskg}-`;
-		wtNgMin.innerHTML = `&nbsp;&nbsp;${appData.ngstartkg}-`;
+		wtMin.innerHTML = `${appData.mingrosskg}`;
+		wtNgMin.innerHTML = `${appData.ngstartkg}`;
 		wMaxGross.innerHTML = `${appData.maxgrosskg}  -----------------------`;
-		wtMaxFloats.innerHTML = `${appData.maxfloatskg}  --- Max gross with floats -------------------------------------|`;
+		wtMaxFloats.innerHTML = `${appData.maxfloatskg}  --- Max gross with floats ----------------------|`;
 		armMin.innerHTML = `${appData.mincgmm}&nbsp;-`;
 		armMax.innerHTML = `${appData.maxcgmm}&nbsp;-`
 		mgw.value = appData.maxgrosskg;
+		funitlbl.innerHTML = "&nbsp;&nbsp;  Fuel in Liters:"
 		// adjust left of a270 & a455 to compensate for extra character
 		armMin.setAttribute("style", "left:-12px;");
 		armMax.setAttribute("style", "left:357px;");
@@ -90,13 +92,14 @@ function setBoundaryLabels() {
 		cgaxis.innerHTML = "Acceptable CG Range (millimeters)";
 	}
 	else {
-		wtMin.innerHTML = `${appData.mingrosslb} -`;
-		wtNgMin.innerHTML = `${appData.ngstartlb} -`;
-		wMaxGross.innerHTML = `${appData.maxgrosslb} -----------------------`;
-		wtMaxFloats.innerHTML = `${appData.maxfloatslb} --- Max gross with floats ------------------------------------|`;
+		wtMin.innerHTML = `${appData.mingrosslb}`;
+		wtNgMin.innerHTML = `${appData.ngstartlb}`;
+		wMaxGross.innerHTML = `${appData.maxgrosslb} ---------------`;
+		wtMaxFloats.innerHTML = `${appData.maxfloatslb} --- Max gross with floats ---------------------|`;
 		armMin.innerHTML = `${appData.mincginch}&nbsp;-`;
 		armMax.innerHTML = `${appData.maxcginch}&nbsp;-`
 		mgw.value = appData.maxgrosslb;
+		funitlbl.innerHTML = "Fuel in Gallons:"
 		wtaxis.innerHTML = "Weight (pounds)";
 		wtaxis.setAttribute("style", "left:-55px;")
 		cgaxis.innerHTML = "Acceptable CG Range (inches)";
@@ -150,7 +153,7 @@ window.onload = async () => {
 	lwlockArm.setAttribute("readonly", "readonly");
 	lwlockMoment.value = appData.lwlockmoment;
 
-	fuelGals.value = appData.fuelgals;
+	fuelunits.value = appData.fuelunits;
 	fuelWt.value = appData.fuelweight;
 	fuelArm.value = appData.fuelarm;
 	fuelArm.setAttribute("readonly", "readonly");
@@ -169,7 +172,7 @@ window.onload = async () => {
 };
 
 const calcFuel = function() {
-	let fgals = handleNaN(fuelGals.value);
+	let fgals = handleNaN(fuelunits.value);
 	let fwt =  fgals * 6;
 	let fua = handleNaN(fuelArm.value);
 	let fum = fwt * fua; 
@@ -267,6 +270,7 @@ const calcWB = function(isOnLoad = false) {
 	let twt = addArray(atwt);
 	let tmom = addArray(atmom);
 	let tcg = Math.round(tmom / twt);
+	
 	totalWt.value = twt;
 	totalCG.value = tcg;
 	totalMoment.value = tmom; 
@@ -281,6 +285,21 @@ const calcWB = function(isOnLoad = false) {
 	placeDot(tcg, twt);
 }
 
+function applyTextColors(acWeight) {
+	if ((appData.usemetric && acWeight > appData.maxgrosskg) ||
+		(!appData.usemetric && acWeight > appData.maxgrosslb)) {
+		// change color of textboxes to match condition
+		totalWt.setAttribute("style", `color:${appData.overfgcolor};background-color:${appData.overbgcolor};`);
+		totalCG.setAttribute("style", `color:${appData.overfgcolor};background-color:${appData.overbgcolor};`);
+		totalMoment.setAttribute("style", `color:${appData.overfgcolor};background-color:${appData.overbgcolor};`);
+		cog.setAttribute("style", `color:${appData.overfgcolor};background-color:${appData.overbgcolor};`);
+	} else {
+		totalWt.setAttribute("style", `color:${appData.underfgcolor};background-color:${appData.underbgcolor};`);
+		totalCG.setAttribute("style", `color:${appData.underfgcolor};background-color:${appData.underbgcolor};`);
+		totalMoment.setAttribute("style", `color:${appData.underfgcolor};background-color:${appData.underbgcolor};`);
+		cog.setAttribute("style", `color:${appData.underfgcolor};background-color:${appData.underbgcolor};`);
+	}
+}
 function handleNaN(theNumber) {
 	var tv = 0;
 	if (theNumber === "" || isNaN(theNumber)) {
@@ -328,6 +347,8 @@ function placeDot(acMoment, acWeight) {
 	let cstyle = `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${y + 10}px;left:${x - 25}px;`;
 	dot.setAttribute("style", dstyle);
 	mycog.setAttribute("style", cstyle);
+
+	applyTextColors(acWeight);
 }
 
 const saveAppData = function() {

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Zenith Zodiac (601xlb/650) Weight and Balance</title>
+    <link rel="stylesheet" type="text/css" href="zodiacwb.css" />
+  </head>
+  <body>
+    <div class="container" id="container">
+      <svg xmlns="http://www.w3.org/2000/svg" width="370" height="360" id="wbcontainer" onclick="countClicks()">
+        <path d="M.229 142.024 129.469.649l240.506.636-.003 359.073-369.89.144Z" style="fill:#ddeeeb" id="wbpath"/>
+      </svg>
+      <label class="nglimit" id="nglimit">Nose gear structural limit</label>
+      <label class="wtMin" id="wtMin"></label>
+      <label class="wtNgMin" id="wtNgMin"></label>
+      <label class="wtMaxGross" id="wtMaxGross"></label>
+      <label class="wtMaxFloats" id="wtMaxFloats"></label>
+      <label class="armMin" id="armMin"></label>
+      <label class="armMax" id="armMax"></label>
+      <div id="dot"></div>
+      <label class="myplane" id="myplane">(x|y)</label>
+      <label class="wtaxis" id="wtaxis">Weight (in lbs)</label>
+      <label class="cgaxis" id="cgaxis">Acceptable CG Range (in mm)</label>
+    </div>
+    <div class="questions" id="questions">  
+      <label class="weighthdr1" style="left:388">WEIGHT</label><label class="weighthdr2">ARM</label><label class="weighthdr3">MOMENT</label>
+      <br />
+      <label for="mgw" class="weightLabel">Max Gross:</label>
+      <input type="text" class="weight" id="mgw" value="0" readonly="true">
+      <br />
+      <label for="rm" class="weightLabel">Right Main:</label>
+      <input type="text" class="weight" id="rm" value="0" oninput="calcWB()"> x <input type="text" class="weight" id="rma" value="0" oninput="calcWB()"> = <input type="text" class="weight" id="rmm" value="0" readonly="true">
+      <br />
+      <label for="lm" class="weightLabel">Left Main:</label>
+      <input type="text" class="weight" id="lm" value="0" oninput="calcWB()"> x <input type="text" class="weight" id="lma" value="0" oninput="calcWB()"> = <input type="text" class="weight" id="lmm" value="0" readonly="true">
+      <br />
+      <label for="nw" class="weightLabel">Nose Wheel:</label>
+      <input type="text" class="weight" id="nw" value="0" oninput="calcWB()"> x <input type="text" class="weight" id="nwa" value="0" oninput="calcWB()"> = <input type="text" class="weight" id="nwm" value="0" readonly="true">
+      <br />
+      <label class="underline">----------------------------------------------------------------</label>
+      <br />
+      <label for="ew" class="weightLabel">Empty Weight:</label>
+      <input type="text" class="cogweight" id="ewt" value="0"> CG = <input type="text" class="cogcg" id="ecg" value="0" readonly="true"><input type="text" class="cogmoment" id="emom" value="0" readonly="true">
+      <br />
+      <label class="underline">----------------------------------------------------------------</label>
+      <br />
+      <label for="piw" class="weightLabel">Pilot:</label>
+      <input type="text" class="weight" id="piw" value="0" oninput="calcWB()"> x <input type="text" class="weight" id="pia" value="0" oninput="calcWB()"> = <input type="text" class="weight" id="pim" value="0" readonly="true">
+      <br />
+      <label for="paw" class="weightLabel">Passenger:</label>
+      <input type="text" class="weight" id="paw" value="0" oninput="calcWB()"> x <input type="text" class="weight" id="paa" value="0" oninput="calcWB()"> = <input type="text" class="weight" id="pam" value="0" readonly="true">
+      <br />
+      <label for="rwl" class="weightLabel">Right Wing Locker:</label>
+      <input type="text" class="weight" id="rwl" value="0" oninput="calcWB()"> x <input type="text" class="weight" id="rwla" value="0" oninput="calcWB()"> = <input type="text" class="weight" id="rwlm" value="0" readonly="true">
+      <br />
+      <label for="lwl" class="weightLabel">Left Wing Locker:</label>
+      <input type="text" class="weight" id="lwl" value="0" oninput="calcWB()"> x <input type="text" class="weight" id="lwla" value="0" oninput="calcWB()"> = <input type="text" class="weight" id="lwlm" value="0" readonly="true">
+      <br />
+      <div class="fuel">
+        <label for="fuelunits" class="fuelunitlabel" id="fuelunitlabel">Fuel in Gallons:</label><input type="text" class="fuelunits" id="fuelunits" value="0" oninput="calcWB()">: <input type="text" class="fuelwt" id="fwt" value="0" readonly="true"> x <input type="text" class="fuelarm" id="fua" value="0" oninput="calcWB()"> = <input type="text" class="fuelmoment" id="fum" value="0" readonly="true">
+      </div>
+      <br />
+      <label for="rb" class="weightLabel">Rear Baggage:</label>
+      <input type="text" class="weight" id="rb" value="0" oninput="calcWB()"> x <input type="text" class="weight" id="rba" value="0" oninput="calcWB()"> = <input type="text" class="weight" id="rbm" value="0" readonly="true">
+      <br />
+      <label class="underline">----------------------------------------------------------------</label>
+      <br />
+      <label for="totwt" class="weightLabel">Totals:</label>
+      <input type="text" class="cogweight" id="totwt" value="0"> CG = <input type="text" class="cogcg" id="totcg" value="0" readonly="true"><input type="text" class="cogmoment" id="totmom" value="0" readonly="true">
+      <br />
+      <br />
+      <label for="cog" class="weightLabel">CG Coordinates:</label>
+      <input type="text" class="coords" id="cog" value="(0|0)" readonly="true">
+    </div>
+    <div><button id="savebutton" disabled onclick="saveAppData()" >Save</button></div>
+    <script type="text/javascript" src="renderer.js"></script>
+  </body>
+</html>

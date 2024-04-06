@@ -35,7 +35,7 @@
     "lwlockweight": 0,
     "lwlockarm": 560,
     "lwlockmoment": 0,
-    "fuelgals": 24,
+    "fuelunits": 24,
     "fuelweight": 144,
     "fuelarm": 180,
     "fuelmoment": 25920,
@@ -47,5 +47,9 @@
     "totalmoment": 399660,
     "usemetric": true,
     "theme": "dark",
+    "underbgcolor": "#ccff33",
+    "underfgcolor": "#000000",
+    "overbgcolor": "#ff0000",
+    "overfgcolor": "#ffffff",
     "debug": false
 }
