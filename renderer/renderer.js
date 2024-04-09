@@ -1,60 +1,63 @@
 "use strict";
 
 var appData = {};
+var valData = {};
 var devstate = { "state": false };
 var clickcount = 0;
+var usemetric = false;
 
 const kgfactor = 0.453592;
 const mmfactor = 25.4;
 
-const  saveBtn = document.getElementById("savebutton");
+const  saveButton = document.getElementById("saveButton");
 const  container = document.getElementById("container");
-const  mycog = document.getElementById("myplane");
+const  mycog = document.getElementById("mycog");
 
-const  lmWt = document.getElementById("lm"); 
-const  lmArm = document.getElementById("lma");
-const  lmMoment = document.getElementById("lmm");
+const  leftMainWeight = document.getElementById("leftMainWeight"); 
+const  leftMainArm = document.getElementById("leftMainArm");
+const  leftMainMoment = document.getElementById("leftMainMoment");
 
-const  rmWt = document.getElementById("rm") 
-const  rmArm = document.getElementById("rma");
-const  rmMoment = document.getElementById("rmm");
+const  rightMainWeight = document.getElementById("rightMainWeight") 
+const  rightMainArm = document.getElementById("rightMainArm");
+const  rightMainMoment = document.getElementById("rightMainMoment");
 
-const  noseWt = document.getElementById("nw");
-const  noseArm = document.getElementById("nwa");
-const  noseMoment = document.getElementById("nwm"); 
+const  noseWheelWeight = document.getElementById("noseWheelWeight");
+const  noseWheelArm = document.getElementById("noseWheelArm");
+const  noseWheelMoment = document.getElementById("noseWheelMoment"); 
 
-const  emptyWt = document.getElementById("ewt"); 
-const  emptyCG = document.getElementById("ecg");
-const  emptyMoment = document.getElementById("emom"); 
+const  emptyWeight = document.getElementById("emptyWeight"); 
+const  emptyCog = document.getElementById("emptyArm");
+const  emptyMoment = document.getElementById("emptyMoment"); 
 
-const  pilotWt = document.getElementById("piw"); 
-const  pilotArm = document.getElementById("pia");
-const  pilotMoment = document.getElementById("pim");
+const  pilotWeight = document.getElementById("pilotWeight"); 
+const  pilotArm = document.getElementById("pilotArm");
+const  pilotMoment = document.getElementById("pilotMoment");
 
-const  psgrWt = document.getElementById("paw"); 
-const  psgrArm = document.getElementById("paa");
-const  psgrMoment = document.getElementById("pam");
+const  passengerWeight = document.getElementById("passengerWeight"); 
+const  passengerArm = document.getElementById("passengerArm");
+const  passengerMoment = document.getElementById("passengerMoment");
 
-const  rwLockWt = document.getElementById("rwl"); 
-const  rwLockArm = document.getElementById("rwla"); 
-const  rwLockMoment = document.getElementById("rwlm"); 
+const  rightWingLockerWeight = document.getElementById("rightWingLockerWeight"); 
+const  rightWingLockerArm = document.getElementById("rightWingLockerArm"); 
+const  rightWingLockerMoment = document.getElementById("rightWingLockerMoment"); 
 
-const  lwLockWt = document.getElementById("lwl");
-const  lwlockArm = document.getElementById("lwla");
-const  lwlockMoment = document.getElementById("lwlm");
+const  leftWingLockerWeight = document.getElementById("leftWingLockerWeight");
+const  leftWingLockerArm = document.getElementById("leftWingLockerArm");
+const  leftWingLockerMoment = document.getElementById("leftWingLockerMoment");
 
-const  fuelunits = document.getElementById("fuelunits"); 
-const  fuelWt = document.getElementById("fwt");
-const  fuelArm = document.getElementById("fua"); 
-const  fuelMoment = document.getElementById("fum"); 
+const  fuelUnits = document.getElementById("fuelUnits"); 
+const  fuelWeight = document.getElementById("fuelWeight");
+const  fuelArm = document.getElementById("fuelArm"); 
+const  fuelMoment = document.getElementById("fuelMoment"); 
 
-const  rbagWt = document.getElementById("rb"); 
-const  rbagArm = document.getElementById("rba"); 
-const  rbagMoment = document.getElementById("rbm"); 
+const  rearBaggageWeight = document.getElementById("rearBaggageWeight"); 
+const  rearBaggageArm = document.getElementById("rearBaggageArm"); 
+const  rearBaggageMoment = document.getElementById("rearBaggageMoment"); 
 
-const  totalWt = document.getElementById("totwt"); 
-const  totalCG = document.getElementById("totcg");
-const  totalMoment = document.getElementById("totmom"); 
+const  totalWeight = document.getElementById("totalWeight"); 
+const  totalCog = document.getElementById("totalArm");
+const  totalMoment = document.getElementById("totalMoment"); 
+
 const  cog = document.getElementById("cog"); 
 const  dot = document.getElementById("dot");
 
@@ -63,46 +66,54 @@ const  dot = document.getElementById("dot");
 // -- user wants weight in kg and moment in millimeters
 // -- user wants weight in lbs and moment in inches
 //--------------------------------------------------------
-const wtMin = document.getElementById("wtMin");   		
-const wtNgMin = document.getElementById("wtNgMin"); 		
-const wMaxGross = document.getElementById("wtMaxGross"); 
-const wtMaxFloats = document.getElementById("wtMaxFloats"); 
-const mgw = document.getElementById("mgw"); 		
-const armMin = document.getElementById("armMin"); 			
-const armMax = document.getElementById("armMax"); 			
-const wtaxis = document.getElementById("wtaxis");
-const cgaxis = document.getElementById("cgaxis");
-const funitlbl = document.getElementById("fuelunitlabel");
+const weightMin = document.getElementById("weightMin");   		
+const weightNosegearMin = document.getElementById("weightNosegearMin"); 		
+const weightMaxGross = document.getElementById("weightMaxGross"); 
+const maxGrossDashes = document.getElementById("maxGrossDashes")
+const weightMaxFloats = document.getElementById("weightMaxFloats"); 
+const maxFloatsDashes = document.getElementById("maxFloatsDashes")
+const maxGrossWeight = document.getElementById("maxGrossWeight"); 		
+const momentMin = document.getElementById("momentMin"); 			
+const momentMax = document.getElementById("momentMax"); 			
+const weightAxis = document.getElementById("weightAxis");
+const momentAxis = document.getElementById("momentAxis");
+const fuelUnitLabel = document.getElementById("fuelUnitLabel");
 
 function setBoundaryLabels() {
-	if (appData.usemetric) {
-		wtMin.innerHTML = `${appData.mingrosskg}`;
-		wtNgMin.innerHTML = `${appData.ngstartkg}`;
-		wMaxGross.innerHTML = `${appData.maxgrosskg}  -----------------------`;
-		wtMaxFloats.innerHTML = `${appData.maxfloatskg}  --- Max gross with floats ----------------------|`;
-		armMin.innerHTML = `${appData.mincgmm}&nbsp;-`;
-		armMax.innerHTML = `${appData.maxcgmm}&nbsp;-`
-		mgw.value = appData.maxgrosskg;
-		funitlbl.innerHTML = "&nbsp;&nbsp;  Fuel in Liters:"
-		// adjust left of a270 & a455 to compensate for extra character
-		armMin.setAttribute("style", "left:-12px;");
-		armMax.setAttribute("style", "left:357px;");
-		wtaxis.innerHTML = "Weight (kilograms)";
-		wtaxis.setAttribute("style", "left:-62px;")
-		cgaxis.innerHTML = "Acceptable CG Range (millimeters)";
+
+	weightMin.innerHTML = valData.mingross;
+	weightNosegearMin.innerHTML = valData.ngstart;
+	weightMaxGross.innerHTML = valData.maxgross;
+	weightMaxFloats.innerHTML = valData.maxfloats;
+	maxGrossWeight.value = valData.maxgross;
+
+	if (usemetric) {
+		// adjust attributes for metric units
+		weightMaxFloats.innerHTML = valData.maxfloats;  
+		maxGrossDashes.innerHTML = "- Max gross kg ------";
+		maxFloatsDashes.innerHTML = "- Max floats kg -----------------------------------------";
+		momentMin.className = "momentMinMetric";
+		momentMax.className = "momentMaxMetric";
+		weightAxis.className = "weightAxisMetric";
+		weightAxis.innerHTML = "Weight (kilograms)";
+		fuelUnitLabel.innerHTML = "Fuel in Liters:";
+		momentMin.innerHTML = `|&nbsp;&nbsp;${valData.mincg}`;
+		momentMax.innerHTML = `${valData.maxcg}&nbsp;&nbsp;|`
+		momentAxis.innerHTML = "Acceptable CG Range (millimeters)";
 	}
 	else {
-		wtMin.innerHTML = `${appData.mingrosslb}`;
-		wtNgMin.innerHTML = `${appData.ngstartlb}`;
-		wMaxGross.innerHTML = `${appData.maxgrosslb} ---------------`;
-		wtMaxFloats.innerHTML = `${appData.maxfloatslb} --- Max gross with floats ---------------------|`;
-		armMin.innerHTML = `${appData.mincginch}&nbsp;-`;
-		armMax.innerHTML = `${appData.maxcginch}&nbsp;-`
-		mgw.value = appData.maxgrosslb;
-		funitlbl.innerHTML = "Fuel in Gallons:"
-		wtaxis.innerHTML = "Weight (pounds)";
-		wtaxis.setAttribute("style", "left:-55px;")
-		cgaxis.innerHTML = "Acceptable CG Range (inches)";
+		// adjust attributes for imperial units
+		weightMaxFloats.innerHTML = valData.maxfloats;
+		maxGrossDashes.innerHTML = "- Max gross lb ------";
+		maxFloatsDashes.innerHTML = "- Max floats lb -----------------------------------------";
+		momentMin.className = "momentMinImperial";
+		momentMax.className = "momentMaxImperial";
+		weightAxis.className = "weightAxisImperial";
+		weightAxis.innerHTML = "Weight (pounds)";
+		fuelUnitLabel.innerHTML = "Fuel in Gallons:";
+		momentMin.innerHTML = `|&nbsp;&nbsp;${valData.mincg}`;
+		momentMax.innerHTML = `${valData.maxcg}&nbsp;&nbsp;|`
+		momentAxis.innerHTML = "Acceptable CG Range (inches)";
 	}
 }
 
@@ -110,196 +121,197 @@ window.onload = async () => {
 	const data = await window.electronAPI.getappdata();
 	console.log(data);
 	appData = JSON.parse(data);
+	usemetric = appData.settings.units === "metric";
+	if (appData.settings.units === "metric") {
+		valData = appData.metric;
+	}
+	else if (appData.settings.units === "imperial") {
+		valData = appData.imperial;
+	}
 
 	setBoundaryLabels();
 
-	rmWt.value = appData.rmweight;
-	rmArm.value = appData.rmarm;
-	rmMoment.value = appData.rmmoment;
-	rmMoment.setAttribute("readonly", "readonly");
+	rightMainWeight.value = valData.rmweight;
+	rightMainArm.value = valData.rmarm;
+	rightMainMoment.value = valData.rmmoment;
+	rightMainMoment.setAttribute("readonly", "readonly");
 
-	lmWt.value = appData.lmweight;
-	lmArm.value = appData.lmarm;
-	lmMoment.value = appData.lmmoment;
-	lmMoment.setAttribute("readonly", "readonly");
+	leftMainWeight.value = valData.lmweight;
+	leftMainArm.value = valData.lmarm;
+	leftMainMoment.value = valData.lmmoment;
+	leftMainMoment.setAttribute("readonly", "readonly");
 
-	noseWt.value = appData.nwweight;
-	noseArm.value = appData.nwarm;
-	noseMoment.value = appData.nwmoment;
-	noseMoment.setAttribute("readonly", "readonly");
+	noseWheelWeight.value = valData.nwweight;
+	noseWheelArm.value = valData.nwarm;
+	noseWheelMoment.value = valData.nwmoment;
+	noseWheelMoment.setAttribute("readonly", "readonly");
 
-	emptyWt.value = appData.emptyweight;
-	emptyCG.value = appData.emptycg;
-	emptyMoment.value = appData.emptymoment;
+	emptyWeight.value = valData.emptyweight;
+	emptyCog.value = valData.emptyarm;
+	emptyMoment.value = valData.emptymoment;
 	emptyMoment.setAttribute("readonly", "readonly");
 	
-	pilotWt.value = appData.pilotweight;
-	pilotArm.value = appData.pilotarm;
+	pilotWeight.value = valData.pilotweight;
+	pilotArm.value = valData.armpilot;
 	pilotArm.setAttribute("readonly", "readonly");
-	pilotMoment.value = appData.pilotmoment;
+	pilotMoment.value = valData.pilotmoment;
 
-	psgrWt.value = appData.psgrweight;
-	psgrArm.value = appData.psgrarm;
-	psgrArm.setAttribute("readonly", "readonly");
-	psgrMoment.value = appData.psgrmoment;
+	passengerWeight.value = valData.psgrweight;
+	passengerArm.value = valData.armpsgr;
+	passengerArm.setAttribute("readonly", "readonly");
+	passengerMoment.value = appData.psgrmoment;
 
-	rwLockWt.value = appData.rwlockweight;
-	rwLockArm.value = appData.rwlockarm;
-	rwLockArm.setAttribute("readonly", "readonly");
-	rwLockMoment.value = appData.rwlockmoment;
+	rightWingLockerWeight.value = valData.rwlockweight;
+	rightWingLockerArm.value = valData.armlwlock;
+	rightWingLockerArm.setAttribute("readonly", "readonly");
+	rightWingLockerMoment.value = valData.rwlockmoment;
 
-	lwLockWt.value = appData.lwlockweight;
-	lwlockArm.value = appData.lwlockarm;
-	lwlockArm.setAttribute("readonly", "readonly");
-	lwlockMoment.value = appData.lwlockmoment;
+	leftWingLockerWeight.value = valData.lwlockweight;
+	leftWingLockerArm.value = valData.armlwlock;
+	leftWingLockerArm.setAttribute("readonly", "readonly");
+	leftWingLockerMoment.value = valData.lwlockmoment;
 
-	fuelunits.value = appData.fuelunits;
-	fuelWt.value = appData.fuelweight;
-	fuelArm.value = appData.fuelarm;
+	fuelUnits.value = valData.fuelunits;
+	fuelArm.value = valData.armfuel;
 	fuelArm.setAttribute("readonly", "readonly");
-	fuelMoment.value = appData.fuelmoment;
+	fuelMoment.value = valData.fuelmoment;
 
-	rbagWt.value = appData.rbagweight;
-	rbagArm.value = appData.rbagarm;
-	rbagArm.setAttribute("readonly", "readonly");
-	rbagMoment.value = appData.rbagmoment;
+	rearBaggageWeight.value = valData.rbagweight;
+	rearBaggageArm.value = valData.armbag;
+	rearBaggageArm.setAttribute("readonly", "readonly");
+	rearBaggageMoment.value = valData.rbagmoment;
 
-	totalWt.value = appData.emptyweight;
-	totalCG.value = appData.emptycg;
-	totalMoment.value = appData.emptymoment;
+	totalWeight.value = valData.emptyweight;
+	totalCog.value = valData.emptyarm;
+	totalMoment.value = valData.emptymoment;
 
 	calcWB(true);
 };
 
 const calcFuel = function() {
-	let fgals = handleNaN(fuelunits.value);
-	let fwt =  fgals * 6;
-	let fua = handleNaN(fuelArm.value);
-	let fum = fwt * fua; 
-	fuelWt.value = fwt;
-	fuelMoment.value = fum;
-	appData.fuelgals = fgals;
-	appData.fuelweight = fwt;
-	appData.fuelarm = fua;
-	appData.fuelmoment = fum;
-	return [fwt, fum];
+	let fuelunits = handleNaN(fuelUnits.value);
+	let fuelwt =  usemetric ? fuelunits * 0.79 : fuelunits * 6;
+	let fuelarm = handleNaN(fuelArm.value);
+	let fuelmom = fuelwt * fuelarm; 
+	fuelMoment.value = Math.round(fuelmom);
+	valData.fuelunits = fuelunits;
+	valData.fuelweight = fuelwt;
+	valData.fuelarm = fuelarm;
+	valData.fuelmoment = Math.round(fuelmom);
+	return [fuelwt, fuelmom];
 }
 
 const calcWB = function(isOnLoad = false) {
 	
-	saveBtn.disabled = isOnLoad;
+	saveButton.disabled = isOnLoad;
 
-	let rmw = handleNaN(rmWt.value);
-	let rma = handleNaN(rmArm.value);
-	let rmm = rmw * rma;
-	rmMoment.value = rmm;
-	appData.rmweight = rmw;
-	appData.rmarm = rma;
-	appData.rmmoment = rmm;
+	let rtMainWt = handleNaN(rightMainWeight.value);
+	let rtMainArm = handleNaN(rightMainArm.value);
+	let rtMainMom = rtMainWt * rtMainArm;
+	rightMainMoment.value = rtMainMom;
+	valData.rmweight = rtMainWt;
+	valData.rmarm = rtMainArm;
+	valData.rmmoment = rtMainMom;
 
-	let lmw = handleNaN(lmWt.value)
-	let lma = handleNaN(lmArm.value);
-	let lmm =  lmw * lma;
-	lmMoment.value = lmm;
-	appData.lmweight = lmw;
-	appData.lmarm = lma;
-	appData.lmmoment = lmm;
+	let lftMainmWt = handleNaN(leftMainWeight.value)
+	let lftMainArm = handleNaN(leftMainArm.value);
+	let lftMainMom =  lftMainmWt * lftMainArm;
+	leftMainMoment.value = lftMainMom;
+	valData.lmweight = lftMainmWt;
+	valData.lmarm = lftMainArm;
+	valData.lmmoment = lftMainMom;
 
-	let nww = handleNaN(noseWt.value);
-	let nwa = handleNaN(noseArm.value);
-	let nwm = nww * nwa;
-	noseMoment.value = nwm;
-	appData.nwweight = nww;
-	appData.nwarm = nwa;
-	appData.nwmoment = nwm;
+	let noseWhlWt = handleNaN(noseWheelWeight.value);
+	let noseWhlArm = handleNaN(noseWheelArm.value);
+	let noseWhlMom = noseWhlWt * noseWhlArm;
+	noseWheelMoment.value = noseWhlMom;
+	valData.nwweight = noseWhlWt;
+	valData.nwarm = noseWhlArm;
+	valData.nwmoment = noseWhlMom;
 
-	let ewt = + lmw + rmw + nww;
-	let emom = lmm + rmm + nwm;
-	let ecg = Math.round(emom / ewt);
-	emptyWt.value = ewt;
-	emptyCG.value = ecg;
-	emptyMoment.value = emom; 
-	appData.emptyweight = ewt;
-	appData.emptycg = ecg;
-	appData.emptymoment = emom;
+	let emptyWt = + lftMainmWt + rtMainWt + noseWhlWt;
+	let emptyMom = lftMainMom + rtMainMom + noseWhlMom;
+	let emptyCg = Math.round(handleNaN(emptyMom / emptyWt));
+	emptyWeight.value = emptyWt;
+	emptyCog.value = `COG: ${emptyCg}`;
+	emptyMoment.value = emptyMom; 
+	valData.emptyweight = emptyWt;
+	valData.emptycog = emptyCg;
+	valData.emptymoment = emptyMom;
 	
-	let piw = handleNaN(pilotWt.value); 
-	let pia = handleNaN(pilotArm.value);
-	let pim = piw * pia;
-	pilotMoment.value = pim;
-	appData.pilotweight = piw;
-	appData.pilotarm = pia;
-	appData.pilotmoment = pim;
+	let pltWt = handleNaN(pilotWeight.value); 
+	let pltArm = handleNaN(pilotArm.value);
+	let pltMom = pltWt * pltArm;
+	pilotMoment.value = pltMom;
+	valData.pilotweight = pltWt;
+	valData.pilotarm = pltArm;
+	valData.pilotmoment = pltMom;
 
-	let paw = handleNaN(psgrWt.value);
-	let paa = handleNaN(psgrArm.value);
-	let pam = paw * paa; 
-	psgrMoment.value = pam;
-	appData.psgrweight = paw;
-	appData.psgrarm = paa;
-	appData.psgrmoment = pam;
+	let psgrWt = handleNaN(passengerWeight.value);
+	let psgrArm = handleNaN(passengerArm.value);
+	let psgrMom = psgrWt * psgrArm; 
+	passengerMoment.value = psgrMom;
+	valData.psgrweight = psgrWt;
+	valData.psgrarm = psgrArm;
+	valData.psgrmoment = psgrMom;
 
-	let rwlw = handleNaN(rwLockWt.value);
-	let rwla = handleNaN(rwLockArm.value);
-	let rwlm = rwlw * rwla;
-	rwLockMoment.value = rwlm;
-	appData.rwlockweight = rwlw;
-	appData.rwlockarm = rwla;
-	appData.rwlockmoment = rwlm;
+	let rtWngLkrWt = handleNaN(rightWingLockerWeight.value);
+	let rtWngLkrArm = handleNaN(rightWingLockerArm.value);
+	let rtWngLkrMom = rtWngLkrWt * rtWngLkrArm;
+	rightWingLockerMoment.value = rtWngLkrMom;
+	valData.rwlockweight = rtWngLkrWt;
+	valData.rwlockarm = rtWngLkrArm;
+	valData.rwlockmoment = rtWngLkrMom;
 
-	let lwlw = handleNaN(lwLockWt.value); 
-	let lwla = handleNaN(lwlockArm.value);
-	let lwlm = lwlw * lwla;
-	lwlockMoment.value = lwlm;
-	appData.lwlockweight = lwlw;
-	appData.lwlockarm = lwla;
-	appData.lwlockmoment = lwlm;
+	let lftWngLkrWt = handleNaN(leftWingLockerWeight.value); 
+	let lftWngLkrArm = handleNaN(leftWingLockerArm.value);
+	let lftWngLkrMom = lftWngLkrWt * lftWngLkrArm;
+	leftWingLockerMoment.value = lftWngLkrMom;
+	valData.lwlockweight = lftWngLkrWt;
+	valData.lwlockarm = lftWngLkrArm;
+	valData.lwlockmoment = lftWngLkrMom;
 
-	let fnums = calcFuel(); // returns [weight, moment]
+	let fuelnums = calcFuel(); // returns [weight, moment]
 	
-	let rbw = handleNaN(rbagWt.value); 
-	let rba = handleNaN(rbagArm.value);  
-	let rbm = rbw * rba;
-	rbagMoment.value = rbm;
-	appData.rbagweight = rbw;
-	appData.rbagarm = rba;
-	appData.rbagmoment = rbm;
+	let rearBgWt = handleNaN(rearBaggageWeight.value); 
+	let rearBgArm = handleNaN(rearBaggageArm.value);  
+	let rearBgMom = rearBgWt * rearBgArm;
+	rearBaggageMoment.value = rearBgMom;
+	valData.rbagweight = rearBgWt;
+	valData.rbagarm = rearBgArm;
+	valData.rbagmoment = rearBgMom;
 
-	let atwt = [ewt, piw, paw, rwlw, lwlw, fnums[0], rbw];
-	let atmom = [emom, pim, pam, rwlm, lwlm , fnums[1], rbm];
-	let twt = addArray(atwt);
-	let tmom = addArray(atmom);
-	let tcg = Math.round(tmom / twt);
+	let totalWtArray = [emptyWt, pltWt, psgrWt, rtWngLkrWt, lftWngLkrWt, fuelnums[0], rearBgWt];
+	let totalArmArray = [emptyMom, pltMom, psgrMom, rtWngLkrMom, lftWngLkrMom , fuelnums[1], rearBgMom];
+	let totalWt = addArray(totalWtArray);
+	let totalMom = addArray(totalArmArray);
+	let finalCog = Math.round(handleNaN(totalMom / totalWt));
 	
-	totalWt.value = twt;
-	totalCG.value = tcg;
-	totalMoment.value = tmom; 
-	appData.totalweight = twt;
-	appData.totalcg = tcg;
-	appData.totalmoment = tmom;
+	totalWeight.value = Math.round(totalWt);
+	totalCog.value = `COG: ${Math.round(finalCog)}`;
+	totalMoment.value = Math.round(totalMom); 
+	valData.totalweight = Math.round(totalWt);
+	valData.totalcog = Math.round(finalCog);
+	valData.totalmoment = Math.round(totalMom);
 	
-	let cogtxt = `(${tcg}, ${twt})`
+	let cogtxt = `(${Math.round(finalCog)}, ${Math.round(totalWt)})`
 	cog.value = cogtxt;
 	mycog.innerHTML = cogtxt;
 
-	placeDot(tcg, twt);
+	placeDot(finalCog, totalWt);
 }
 
+// change colors of textboxes to match condition
 function applyTextColors(acWeight) {
-	if ((appData.usemetric && acWeight > appData.maxgrosskg) ||
-		(!appData.usemetric && acWeight > appData.maxgrosslb)) {
-		// change color of textboxes to match condition
-		totalWt.setAttribute("style", `color:${appData.overfgcolor};background-color:${appData.overbgcolor};`);
-		totalCG.setAttribute("style", `color:${appData.overfgcolor};background-color:${appData.overbgcolor};`);
-		totalMoment.setAttribute("style", `color:${appData.overfgcolor};background-color:${appData.overbgcolor};`);
-		cog.setAttribute("style", `color:${appData.overfgcolor};background-color:${appData.overbgcolor};`);
-	} else {
-		totalWt.setAttribute("style", `color:${appData.underfgcolor};background-color:${appData.underbgcolor};`);
-		totalCG.setAttribute("style", `color:${appData.underfgcolor};background-color:${appData.underbgcolor};`);
-		totalMoment.setAttribute("style", `color:${appData.underfgcolor};background-color:${appData.underbgcolor};`);
-		cog.setAttribute("style", `color:${appData.underfgcolor};background-color:${appData.underbgcolor};`);
-	}
+	let colors = appData.settings;
+	if (acWeight > valData.maxgross) {
+		totalWeight.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
+		totalCog.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
+		totalMoment.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
+		cog.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
+	} 
 }
+
 function handleNaN(theNumber) {
 	var tv = 0;
 	if (theNumber === "" || isNaN(theNumber)) {
@@ -318,23 +330,27 @@ function addArray(theArray) {
 	return outval;
 }
 
-function placeDot(acMoment, acWeight) {
+function placeDot(moment, weight) {
 	let color = "red";
 	let tcolor = "red";
-	let svg = document.getElementById("wbcontainer");
-	let path = document.getElementById("wbpath");
+	let svg = document.getElementById("chart");
+	let cgarea = document.getElementById("path");
 	let x = 0;
 	let y = 0;
+	let xr = Math.round(moment);
+	let yr = Math.round(weight);
+	
 	try {
 		let point = svg.createSVGPoint();
-		x = Math.round(((185 * acMoment) / 455) * 1.685);
-		y = 1322 - acWeight;
+		x = Math.round(((185 * moment) / 455) * 1.685);
+		y = 1322 - weight;
 		point.x = x;
 		point.y = y;
 
 		console.log(`Point(${point.x},${point.y} is in fill area: ${path.isPointInFill(point)}`);
 
-		if (path.isPointInFill(point)) {
+		// don't use textbox color for the dot - it's either red or green
+		if (cgarea.isPointInFill(point)) {
 			color = "limegreen";
 			tcolor = "black";
 		}
@@ -348,19 +364,19 @@ function placeDot(acMoment, acWeight) {
 	dot.setAttribute("style", dstyle);
 	mycog.setAttribute("style", cstyle);
 
-	applyTextColors(acWeight);
+	applyTextColors(weight);
 }
 
 const saveAppData = function() {
 	window.electronAPI.saveappdata(appData);
-	saveBtn.disabled = true;
+	saveButton.disabled = true;
 }
 
 function countClicks() {
 	clickcount++;
 	console.log(`clickcount: ${clickcount}`);
 	if (clickcount === 10) {
-		devstate.state = !appData.debug;
+		devstate.state = !appData.settings.debug;
 		saveAppData();
 		showDev();
 	}

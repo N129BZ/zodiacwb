@@ -1,48 +1,54 @@
 body {
-	width:100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
+    top: -49px;
+    position: absolute;
+}
+.dot {
+	height:10px;
+	width:10px;
+	border-radius:50%;
+	position:absolute;
+	border:thin solid #000000;
+	border-width: thin
+}
+.cog {
+	top: "0px;";
+	left: "0px";
+	height: auto;
+	width: auto;
+	position: relative;
+}
+.chart {
+    top: -2px;
+    left: 0px;
+    position: absolute;
 }
 .container {
 	height: 450px;
-	width: 380px;
+	width: 370px;
 	position: absolute;
 	left: 60px;
 	top:150px;
 }
-.weightheader {
+.weightHeader {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: small;
 	text-decoration: underline;
 }
-/* .weighthdr2 {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: small;
-	text-decoration: underline;
-	position: relative;
-	left:256px;
-	top: -1px;
-}
-.weighthdr3 {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: small;
-	text-decoration: underline;
-	position: relative;
-	left: 297px;
-	top: -1px;
-} */
 .questions {
 	position: absolute;
-	left: 378px;
-	top: 180px;
+	left: 350px;
+	top: 125px;
 }
-.bgimage {
+.backgroundImage {
 	height: 450px;
 	width: 370px;
 	position: absolute;
 	top: 0px;
 	left: 0px;
 }
-.nglimit {
+.nosegearLimit {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size:x-small;
 	position: absolute;
@@ -50,56 +56,114 @@ body {
 	left: -3px;
 	rotate: -47.2deg;
 }
-.wtMin {
-	font-family: Courier, monospace; /*Arial, Helvetica, sans-serif;*/
-	position: absolute;
-	font-size: small;
-	text-align: left;
-	top: 354px;
-	left:-29px;
+.weightMin {
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    font-size: 10px;
+    text-align: left;
+    top: 354px;
+    left: -34px;
 }
-.wtNgMin {
-	font-family: Courier, monospace; /*Arial, Helvetica, sans-serif;*/
+.weightNosegearMin {
+	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
-	font-size: small;
+	font-size:10px;
 	text-align: left;
 	top: 136px;
-	left:-29px;
+	left:-35px;
 }
-.wtMaxGross {
-	font-family: Courier, monospace; /*Arial, Helvetica, sans-serif;*/
+.weightMaxFloats {
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    font-size: 10px;
+    text-align: left;
+    color: red;
+    top: -56px;
+    left: -35px;
+}
+.weightMaxGross {
+	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
-	font-size: small;
+	font-size: 10px;
 	text-align: left;
 	top: -6px;
 	left:-35px;
 }
-.wtMaxFloats {
-	font-family: Courier, monospace; /*Arial, Helvetica, sans-serif;*/
-	position: absolute;
-	font-size: small;
-	text-align: left;
-	color: red;
-	top: -124px;
-	left:-35px;
+.maxGrossDashes {
+    font-family: 'Courier New', Courier, monospace;
+    position: absolute;
+    font-size: 11px;
+    text-align: left;
+    top: -6px;
+    left: -8px;
 }
-.armMin {
+.maxFloatsDashes {
+    font-family: 'Courier New', Courier, monospace;
+    position: absolute;
+    font-size: 11px;
+    text-align: left;
+    top: -56px;
+    color: red;
+    left: -7px;
+}
+.momentMinImperial {
 	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
 	font-size: x-small;
+	text-align: right;
 	top: 364px;
-	left:-8px;
-	rotate: -90deg;
+	left:-2px;
 }
-.armMax {
+.momentMaxImperial {
 	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
 	font-size: x-small;
+	text-align: left;
 	top: 362px;
-	left:361px;
-	rotate: -90deg;
+	left:355px;
 }
-.myplane {
+.momentMinMetric {
+	font-family: Arial, Helvetica, sans-serif;
+	position: absolute;
+	font-size: x-small;
+	text-align: right;
+	top: 364px;
+	left:-2px;
+	/* rotate: -90deg; */
+}
+.momentMaxMetric {
+	font-family: Arial, Helvetica, sans-serif;
+	position: absolute;
+	font-size: x-small;
+	text-align: left;
+	top: 362px;
+	left:349px;
+	/* rotate: -90deg; */
+}
+.weightAxisMetric {
+    font-family: courier new, courier, monospace;
+    font-size: 11px;
+    rotate: -90deg;
+    position: absolute;
+    top: 235px;
+    left: -67px;
+}
+.weightAxisImperial {
+	font-family: 'Courier New', Courier;
+	font-size:11px;
+	rotate: -90deg;
+	position: absolute;
+	top: 225px;
+	left: -55px;
+}
+.momentAxis {
+    font-family: 'Courier New', Courier, monospace;
+	font-size: 11px;
+	position: absolute;
+	top: 364px;
+	left: 75px;
+}
+.mycog {
 	font-family: Arial, Helvetica, sans-serif;
 	position:absolute;
 	font-size: smaller;
@@ -107,17 +171,17 @@ body {
 	top: 100px;
 	visibility: hidden;
 }
-.cogweight {
+.weight {
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: right;
 	width:60px;
 }
-.cogcg {
+.arm {
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: right;
-	width:37px;
+	width:60px;
 }
-.cogmoment {
+.moment {
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: right;
 	width:60px;
@@ -127,42 +191,36 @@ body {
 	font-size:x-small;
 	width:20px;
 }
-.weight {
-	font-family: Arial, Helvetica, sans-serif;
-	text-align: right;
-	width: 60px;
-	height: 12px;
-}
 .fuel {
 	position: absolute;
 	top:auto;
 }
-.fuelunitlabel {
+.fuelUnitLabel {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: small;
 	text-align: right;
 }
-.fuelunits {
-	font-family: Arial, Helvetica, sans-serif;
-	text-align: right;
-	width: 20px;
-}
-.fuelwt {
-	font-family: Arial, Helvetica, sans-serif;
-	text-align: right;
-	width: 28px;
-}
-.fuelarm {
+.fuelUnits {
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: right;
 	width: 60px;
 }
-.fuelmoment {
+.fuelWeight {
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: right;
 	width: 60px;
 }
-.totmom {
+.fuelArm {
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: right;
+	width: 60px;
+}
+.fuelMoment {
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: right;
+	width: 60px;
+}
+.totalMoment {
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: right;
 	width: 60px;
@@ -180,31 +238,16 @@ body {
 	/* display: inline-block; */
 	text-align: right;
 }
-.finalcoglabel {
+.finalCogLabel {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: small;
 	text-align: right;
 }
-.smallcg {
+.smallCogLabel {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size:x-small;
 	text-align: left;
 	width:20px;
-}
-.wtaxis {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size:small;
-	rotate: -90deg;
-	position: absolute;
-	top: 225px;
-	left: -55px;
-}
-.cgaxis {
-    font-family: Arial, Helvetica, sans-serif;
-	font-size: small;
-	position: absolute;
-	top: 364px;
-	left: 75px;
 }
 .underline {
 	position: absolute;
@@ -223,8 +266,8 @@ button {
 	color: black;
 	height: 30px;
 	width: 100px;
-	top: 550px;
-	left: 680px;
+	top: 582px;
+	left: 629px;
 }
 button:disabled,
 button[disabled]{

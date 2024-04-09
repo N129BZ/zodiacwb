@@ -15,18 +15,19 @@ const isMac = process.platform === 'darwin'
 const jsonPath = path.join(app.getPath("userData"), "zodiacwb.json");
 
 app.commandLine.appendSwitch ("disable-http-cache");
+
 var appData = loadAppData();
-const isDebug = appData.debug;
+const isDebug = appData.settings.debug;
 
 function loadAppData() {
     let adf = "";
     // make sure the file is stored in userData folder
     if (!fs.existsSync(jsonPath)) {
-        adf = fs.readFileSync(path.join(__dirname, "zodiacwb.json"));
+        adf = fs.readFileSync(path.join(__dirname, "zodiacwb.json"), "utf8");
         fs.writeFileSync(jsonPath, adf);
     }
     else {
-        adf = fs.readFileSync(jsonPath);
+        adf = fs.readFileSync(jsonPath, "utf8");
     }
     return JSON.parse(adf);
 };
@@ -84,21 +85,7 @@ const template = [
     },
 ]
 
-var appData = loadAppData();
-nativeTheme.themeSource = appData.theme;
-
-function loadAppData() {
-    let adf = "";
-    // make sure the file is stored in userData folder
-    if (!fs.existsSync(jsonPath)) {
-        adf = fs.readFileSync(path.join(__dirname, "zodiacwb.json"));
-        fs.writeFileSync(jsonPath, adf);
-    }
-    else {
-        adf = fs.readFileSync(jsonPath);
-    }
-    return JSON.parse(adf);
-}
+nativeTheme.themeSource = appData.settings.theme;
 
 function saveAppData() {
     fs.writeFileSync(jsonPath, JSON.stringify(appData, null, 4));
@@ -113,7 +100,7 @@ function createWindow () {
     var dtoggled = false;
     var w = 900;
     var h = 670; 
-    if (appData.debug) {
+    if (isDebug) {
         w = 1400;
         h = 900;
     }
@@ -131,7 +118,7 @@ function createWindow () {
     
     mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
 
-    if (appData.debug) {
+    if (isDebug) {
         mainWindow.webContents.openDevTools();
     } 
 
@@ -142,23 +129,30 @@ function createWindow () {
     });
 
     app.on('toggleimperial', () => {
-        appData.usemetric = false;
+        appData.settings.units = "imperial";
         saveAppData();
         mainWindow.reload(); 
     });
     app.on('togglemetric', () => {
-        appData.usemetric = true;
+        appData.settings.units = "metric";
         saveAppData();
         mainWindow.reload(); 
+    });
+    app.on('filesave', () => {
+        mainWindow.webContents.send('filesave');
     });
 
     app.on('toggledev', () => {
         if (!dtoggled) {
+            appData.settings.debug = true;
+            isDebug = true;
             mainWindow.webContents.openDevTools();
             dtoggled = true;
             h = 900;
             w = 1400;
         } else {
+            appData.settings.debug = false;
+            isDebug = false;
             mainWindow.webContents.closeDevTools();
             dtoggled = false;
             h = 670;
@@ -170,11 +164,11 @@ function createWindow () {
 
 function toggleTheme() {
     if (nativeTheme.shouldUseDarkColors) {
-        appData.theme = "light";
+        appData.settings.theme = "light";
     } else {
-        appData.theme = "dark";
+        appData.settings.theme = "dark";
     }
-    nativeTheme.themeSource = appData.theme;
+    nativeTheme.themeSource = appData.settings.theme;
 }
 
 app.whenReady().then(() => {
@@ -200,7 +194,7 @@ ipcMain.on('appdata:save', (e, newappdata) => {
 });
 
 ipcMain.on('menu:showdev', (e, devstate) => {
-    appData.debug = devstate.state;
+    appData.settings.debug = devstate.state;
     saveAppData();
     app.relaunch();
     app.exit(0);
