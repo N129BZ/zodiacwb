@@ -87,7 +87,6 @@
         "overbgcolor": "#ff0000",
         "overfgcolor": "#ffffff",
         "units": "metric",
-        "mode": "chart",
         "theme": "dark",
         "debug": false
     }

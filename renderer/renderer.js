@@ -6,13 +6,18 @@ var devstate = { "state": false };
 var clickcount = 0;
 var usemetric = false;
 
-const  kgfactor = 0.453592;
-const  mmfactor = 25.4;
+const  mainview = document.getElementById("mainview");
+const  accanvas = document.getElementById("accanvas");
 const  canvas = document.getElementById("canvas");  
 const  saveButton = document.getElementById("saveButton");
+const  showAcButton = document.getElementById("showAcButton");
+
+showAcButton.disabled = false;
+
 const  container = document.getElementById("container");
 const  mycog = document.getElementById("mycog");
 const  dot = document.getElementById("dot");
+const  acdot = document.getElementById("acdot");
 const  leftMainWeight = document.getElementById("leftMainWeight"); 
 const  leftMainArm = document.getElementById("leftMainArm");
 const  leftMainMoment = document.getElementById("leftMainMoment");
@@ -194,9 +199,18 @@ img.onload = function() {
 }
 img.src = "chart.png";
 
+const apctx = accanvas.getContext("2d");
+var apimg = new Image();
+apimg.onload = function() {
+	apctx.drawImage(apimg, 0, 0);
+}
+apimg.src = "airplane.png";
+accanvas.style = "visibility:hidden;";
+
 const calcFuel = function() {
 	let fuelunits = handleNaN(fuelUnits.value);
 	let fuelwt =  usemetric ? fuelunits * 0.79 : fuelunits * 6;
+	fuelWeight.value = fuelwt;
 	let fuelarm = handleNaN(fuelArm.value);
 	let fuelmom = fuelwt * fuelarm; 
 	fuelMoment.value = Math.round(fuelmom);
@@ -304,18 +318,24 @@ const calcWB = function(isOnLoad = false) {
 	cog.value = cogtxt;
 	mycog.innerHTML = cogtxt;
 
-	placeDot(totalWt, finalCog);
+	placeDots(totalWt, finalCog);
 }
 
 // change colors of textboxes to match condition
-function applyTextColors(acWeight) {
+function applyTextColors(isoverwt) {
 	let colors = appData.settings;
-	if (acWeight > valData.maxgross) {
+	if (!isoverwt) {
+		totalWeight.setAttribute("style", `color:${colors.underfgcolor};background-color:${colors.underbgcolor};`);
+		totalCog.setAttribute("style", `color:${colors.underfgcolor};background-color:${colors.underbgcolor};`);
+		totalMoment.setAttribute("style", `color:${colors.underfgcolor};background-color:${colors.underbgcolor};`);
+		cog.setAttribute("style", `color:${colors.underfgcolor};background-color:${colors.underbgcolor};`);
+	} 
+	else {
 		totalWeight.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
 		totalCog.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
 		totalMoment.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
 		cog.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
-	} 
+	}
 }
 
 function handleNaN(theNumber) {
@@ -353,11 +373,12 @@ function loadCgMaps() {
 		mompx += 2;
 	}
 }
-function placeDot(weight, moment) {
+function placeDots(weight, moment) {
 	let color = "red";
 	let tcolor = "red";
 	let x = 0;
 	let y = 0;
+	let isoverwt = true;
 	let wt = Math.round(weight);
 	let mom = Math.round(moment);
 	
@@ -381,6 +402,7 @@ function placeDot(weight, moment) {
 				if (rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) {
 					color = "limegreen";
 					tcolor = "black";
+					isoverwt = false;
 				}
 				console.log("point is on the chart!");
 			}
@@ -388,6 +410,7 @@ function placeDot(weight, moment) {
 		catch {
 			console.log("point is NOT on the chart!");
 		}
+		applyTextColors(isoverwt);
 		
 	}
 	catch (error) {
@@ -402,7 +425,17 @@ function placeDot(weight, moment) {
 	dot.setAttribute("style", dstyle);
 	mycog.setAttribute("style", cstyle);
 
-	applyTextColors(weight);
+	placeAcDot(weight, moment, color, tcolor);
+}
+
+function placeAcDot(weight, moment, color, tcolor) {
+	let yFactor = .3033;
+	let xFactor = .2918;
+	let x = 510.2556;
+	let y = 182.462;
+	
+	let dstyle = `height:10px;width:10px;border-radius:50%;position:absolute;top:${+y - 5}px;left:${+x - 5}px;background-color:${color};`;
+	acdot.setAttribute("style", dstyle);
 }
 
 const saveAppData = function() {
@@ -423,3 +456,22 @@ function countClicks() {
 const showDev = function() {
 	window.electronAPI.showdev(devstate);
 }
+
+function showAcView() {
+	if (showAcButton.textContent === "Aircraft View") {
+		showAcButton.textContent = "Show Chart";
+		mainview.style = "visibility:hidden;"
+		accanvas.style = "visibility:visible;"
+		acdot.style = "visibility:visible";
+	} else {
+		showAcButton.textContent = "Aircraft View";
+		mainview.style = "visibility:visible;"
+		accanvas.style = "visibility:hidden;"
+	}
+}
+
+
+
+// accanvas.onmousedown = function(event){
+// 	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
+// }

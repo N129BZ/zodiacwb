@@ -17,6 +17,7 @@ const jsonPath = path.join(app.getPath("userData"), "zodiacwb.json");
 app.commandLine.appendSwitch ("disable-http-cache");
 
 var appData = loadAppData();
+
 const isDebug = appData.settings.debug;
 
 function loadAppData() {
@@ -56,6 +57,18 @@ const template = [
             isMac ? { role: 'close' } : { role: 'quit' }
         ]
     },
+    { 
+        label: 'Units of Measure',
+        submenu: [
+            { label: "Imperial (pounds/inches)",
+                click: () => app.emit('toggleimperial')
+            },
+            { label: "Metric (kilograms/millimeters)",
+                click: () => app.emit('togglemetric')
+            }
+        ]
+    
+    },
     {
         label: 'View',
         submenu: [
@@ -66,32 +79,6 @@ const template = [
             },
             { role: "separator"},
             { role: 'reload' }
-        ]
-    },
-    { 
-        label: 'Presenation Options',
-        submenu: [
-            { label: 'Measurement Units', 
-                submenu: [
-                    { label: "Imperial (pounds/inches)",
-                        click: () => app.emit('toggleimperial')
-                    },
-                    { label: "Metric (kilograms/millimeters)",
-                        click: () => app.emit('togglemetric')
-                    }
-                ]
-            },
-            { label: "Mode",
-                submenu: [
-                    { label: "Show on chart",
-                        click: () => app.emit('showchart')
-                    },
-                    { label: "Show on aircraft image",
-                        click: () => app.emit("showairplane")
-                    }
-                ]
-
-            }
         ]
     }
 ]
@@ -109,8 +96,8 @@ if (require('electron-squirrel-startup')) app.quit();
 
 function createWindow () {
     var dtoggled = false;
-    var w = 900;
-    var h = 670; 
+    var w = 830;
+    var h = 650; 
     if (isDebug) {
         w = 1400;
         h = 900;
@@ -128,7 +115,7 @@ function createWindow () {
     });
     
     mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
-
+    
     if (isDebug) {
         mainWindow.webContents.openDevTools();
     } 
@@ -149,16 +136,6 @@ function createWindow () {
         saveAppData();
         mainWindow.reload(); 
     });
-    app.on('showchart', () => {
-        appData.settings.mode = "chart";
-        saveAppData();
-        mainWindow.reload();
-    });
-    app.on('showairplane', () => {
-        appData.settings.mode = "airplane";
-        saveAppData();
-        mainWindow.reload();
-    })
     app.on('filesave', () => {
         mainWindow.webContents.send('filesave');
     });
