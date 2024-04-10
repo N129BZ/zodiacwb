@@ -6,5 +6,9 @@ See instructions in the wiki: https://github.com/N129BZ/zodiacwb/wiki
 
 
 
-https://github.com/N129BZ/zodiacwb/assets/47579080/6d87ec55-cc46-41d5-8743-ce535b103a66
+
+
+
+
+https://github.com/N129BZ/zodiacwb/assets/47579080/70228e52-7c08-4575-ada3-ed3d80455784
 
