@@ -382,8 +382,9 @@ function loadCgMaps() {
 	}
 }
 function placeDots(weight, moment) {
-	let color = "red";
-	let tcolor = "red";
+	let color = appData.settings.overbgcolor;
+	let tcolor = appData.settings.overbgcolor;
+	let bgcolor = appData.settings.overbgcolor;
 	let x = 0;
 	let y = 0;
 	let isoverwt = true;
@@ -408,8 +409,9 @@ function placeDots(weight, moment) {
 			if (((usemetric && weight <= 600 && weight >= 326) && (moment >= 270 && moment <= 455)) ||
 				((weight <= 1320 && wt >= 720) && moment >= 270 && moment <= 455)) {
 				if (rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) {
-					color = "limegreen";
-					tcolor = "black";
+					color = appData.settings.underbgcolor;
+					tcolor = appData.settings.underfgcolor;
+					bgcolor = color;
 					isoverwt = false;
 				}
 				console.log("point is on the chart!");
@@ -432,21 +434,21 @@ function placeDots(weight, moment) {
 	mycog.setAttribute("style", `font-size:x-small;color:${tcolor};position:absolute;top:${+y + 7}px;left:${+x - 25}px;`);
     let crosshair = document.getElementById("chartcrosshair");
 	
-	crosshair.setAttribute("style", "font-size:25px;position:relative;top:-6px;left:0px;")
+	crosshair.setAttribute("style", "font-size:25px;position:relative;top:-6px;left:0px;color:white;")
 	placeAcDot(weight, moment, color, tcolor);
 }
 
-function placeAcDot(weight, moment, color, tcolor) {
+function placeAcDot(weight, moment, bgcolor, fgcolor) {
 	let yFactor = .3033;
 	let xFactor = .2918;
 	let x = 510.2556;
 	let y = 182.462;
 	acDot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:absolute;top:${+y - 5}px;` +
-	                            `left:${+x - 5}px;background-color:${color};padding:4px;border: 2px ${color};`);
+	                            `left:${+x - 5}px;background-color:${bgcolor};padding:4px;border: 2px ${fgcolor};`);
 	let crosshair = document.getElementById("crosshair");
-	crosshair.setAttribute("style", "font-size:29px;position:relative;top:-13px;left:-5px;")
+	crosshair.setAttribute("style", "font-size:29px;position:relative;top:-13px;left:-5px;color:white;")
 
-	accog.setAttribute("style", `color:${color};`);
+	accog.setAttribute("style", `background-color:${bgcolor};color:${fgcolor};`);
 }
 
 const saveAppData = function() {
