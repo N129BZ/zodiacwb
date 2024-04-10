@@ -56,21 +56,6 @@ const template = [
             isMac ? { role: 'close' } : { role: 'quit' }
         ]
     },
-    { 
-        label: 'Edit',
-        submenu: [
-            { label: 'Measurement Units', 
-                submenu: [
-                    { label: "Imperial (pounds/inches)",
-                        click: () => app.emit('toggleimperial')
-                    },
-                    { label: "Metric (kilograms/millimeters)",
-                        click: () => app.emit('togglemetric')
-                    }
-                ]
-            }
-        ]
-    },
     {
         label: 'View',
         submenu: [
@@ -83,6 +68,32 @@ const template = [
             { role: 'reload' }
         ]
     },
+    { 
+        label: 'Presenation Options',
+        submenu: [
+            { label: 'Measurement Units', 
+                submenu: [
+                    { label: "Imperial (pounds/inches)",
+                        click: () => app.emit('toggleimperial')
+                    },
+                    { label: "Metric (kilograms/millimeters)",
+                        click: () => app.emit('togglemetric')
+                    }
+                ]
+            },
+            { label: "Mode",
+                submenu: [
+                    { label: "Show w&b on Chart",
+                        click: () => app.emit('showchart')
+                    },
+                    { label: "Show w&b on Aircraft Image",
+                        click: () => app.emit("showairplane")
+                    }
+                ]
+
+            }
+        ]
+    }
 ]
 
 nativeTheme.themeSource = appData.settings.theme;
@@ -138,6 +149,16 @@ function createWindow () {
         saveAppData();
         mainWindow.reload(); 
     });
+    app.on('showchart', () => {
+        appData.settings.mode = "chart";
+        saveAppData();
+        mainWindow.reload();
+    });
+    app.on('showairplane', () => {
+        appData.settings.mode = "airplane";
+        saveAppData();
+        mainWindow.reload();
+    })
     app.on('filesave', () => {
         mainWindow.webContents.send('filesave');
     });
