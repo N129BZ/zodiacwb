@@ -22,6 +22,8 @@ body {
 .chart {
     top: -2px;
     left: 0px;
+    height: 360px;
+    width: 370px;
     position: absolute;
 }
 .container {
@@ -78,7 +80,7 @@ body {
     font-size: 10px;
     text-align: left;
     color: red;
-    top: -56px;
+    top: -69px;
     left: -35px;
 }
 .weightMaxGross {
@@ -102,7 +104,7 @@ body {
     position: absolute;
     font-size: 11px;
     text-align: left;
-    top: -56px;
+    top: -69px;
     color: red;
     left: -7px;
 }
@@ -162,14 +164,6 @@ body {
 	position: absolute;
 	top: 364px;
 	left: 75px;
-}
-.mycog {
-	font-family: Arial, Helvetica, sans-serif;
-	position:absolute;
-	font-size: smaller;
-	left: 200px;
-	top: 100px;
-	visibility: hidden;
 }
 .weight {
 	font-family: Arial, Helvetica, sans-serif;

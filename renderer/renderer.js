@@ -6,13 +6,13 @@ var devstate = { "state": false };
 var clickcount = 0;
 var usemetric = false;
 
-const kgfactor = 0.453592;
-const mmfactor = 25.4;
-
+const  kgfactor = 0.453592;
+const  mmfactor = 25.4;
+const  canvas = document.getElementById("canvas");  
 const  saveButton = document.getElementById("saveButton");
 const  container = document.getElementById("container");
 const  mycog = document.getElementById("mycog");
-
+const  dot = document.getElementById("dot");
 const  leftMainWeight = document.getElementById("leftMainWeight"); 
 const  leftMainArm = document.getElementById("leftMainArm");
 const  leftMainMoment = document.getElementById("leftMainMoment");
@@ -57,9 +57,8 @@ const  rearBaggageMoment = document.getElementById("rearBaggageMoment");
 const  totalWeight = document.getElementById("totalWeight"); 
 const  totalCog = document.getElementById("totalArm");
 const  totalMoment = document.getElementById("totalMoment"); 
-
 const  cog = document.getElementById("cog"); 
-const  dot = document.getElementById("dot");
+
 
 //--------------------------------------------------------
 // weight & moment indication labels, these change when:
@@ -134,51 +133,51 @@ window.onload = async () => {
 	rightMainWeight.value = valData.rmweight;
 	rightMainArm.value = valData.rmarm;
 	rightMainMoment.value = valData.rmmoment;
-	rightMainMoment.setAttribute("readonly", "readonly");
+	//rightMainMoment.setAttribute("readonly", "readonly");
 
 	leftMainWeight.value = valData.lmweight;
 	leftMainArm.value = valData.lmarm;
 	leftMainMoment.value = valData.lmmoment;
-	leftMainMoment.setAttribute("readonly", "readonly");
+	//leftMainMoment.setAttribute("readonly", "readonly");
 
 	noseWheelWeight.value = valData.nwweight;
 	noseWheelArm.value = valData.nwarm;
 	noseWheelMoment.value = valData.nwmoment;
-	noseWheelMoment.setAttribute("readonly", "readonly");
+	//noseWheelMoment.setAttribute("readonly", "readonly");
 
 	emptyWeight.value = valData.emptyweight;
 	emptyCog.value = valData.emptyarm;
 	emptyMoment.value = valData.emptymoment;
-	emptyMoment.setAttribute("readonly", "readonly");
+	//emptyMoment.setAttribute("readonly", "readonly");
 	
 	pilotWeight.value = valData.pilotweight;
-	pilotArm.value = valData.armpilot;
-	pilotArm.setAttribute("readonly", "readonly");
+	pilotArm.value = valData.pilotarm;
+	//pilotArm.setAttribute("readonly", "readonly");
 	pilotMoment.value = valData.pilotmoment;
 
 	passengerWeight.value = valData.psgrweight;
-	passengerArm.value = valData.armpsgr;
-	passengerArm.setAttribute("readonly", "readonly");
+	passengerArm.value = valData.psgrarm;
+	//passengerArm.setAttribute("readonly", "readonly");
 	passengerMoment.value = appData.psgrmoment;
 
 	rightWingLockerWeight.value = valData.rwlockweight;
-	rightWingLockerArm.value = valData.armlwlock;
-	rightWingLockerArm.setAttribute("readonly", "readonly");
+	rightWingLockerArm.value = valData.lwlockarm;
+	//rightWingLockerArm.setAttribute("readonly", "readonly");
 	rightWingLockerMoment.value = valData.rwlockmoment;
 
 	leftWingLockerWeight.value = valData.lwlockweight;
-	leftWingLockerArm.value = valData.armlwlock;
-	leftWingLockerArm.setAttribute("readonly", "readonly");
+	leftWingLockerArm.value = valData.lwlockarm;
+	//leftWingLockerArm.setAttribute("readonly", "readonly");
 	leftWingLockerMoment.value = valData.lwlockmoment;
 
 	fuelUnits.value = valData.fuelunits;
-	fuelArm.value = valData.armfuel;
-	fuelArm.setAttribute("readonly", "readonly");
+	fuelArm.value = valData.fuelarm;
+	//fuelArm.setAttribute("readonly", "readonly");
 	fuelMoment.value = valData.fuelmoment;
 
 	rearBaggageWeight.value = valData.rbagweight;
-	rearBaggageArm.value = valData.armbag;
-	rearBaggageArm.setAttribute("readonly", "readonly");
+	rearBaggageArm.value = valData.rbagarm;
+	//rearBaggageArm.setAttribute("readonly", "readonly");
 	rearBaggageMoment.value = valData.rbagmoment;
 
 	totalWeight.value = valData.emptyweight;
@@ -187,6 +186,13 @@ window.onload = async () => {
 
 	calcWB(true);
 };
+
+const ctx = canvas.getContext("2d");
+var img = new Image(); 
+img.onload = function() {
+	ctx.drawImage(img, 0, 0); 
+}
+img.src = "chart.png";
 
 const calcFuel = function() {
 	let fuelunits = handleNaN(fuelUnits.value);
@@ -298,7 +304,7 @@ const calcWB = function(isOnLoad = false) {
 	cog.value = cogtxt;
 	mycog.innerHTML = cogtxt;
 
-	placeDot(finalCog, totalWt);
+	placeDot(totalWt, finalCog);
 }
 
 // change colors of textboxes to match condition
@@ -330,37 +336,69 @@ function addArray(theArray) {
 	return outval;
 }
 
-function placeDot(moment, weight) {
+const wtmap = new Map();
+const mmtmap = new Map();
+loadCgMaps();
+function loadCgMaps() {
+	let rect = canvas.getBoundingClientRect();
+	let pospx = -100;
+	let mompx = 48;
+
+	for (let w = 1500; w >= 720; w--) {
+		wtmap.set(w, pospx.toFixed(3));
+		pospx += .6;
+	}
+	for (let m = 270; m <= 455; m++) {
+		mmtmap.set(m, mompx.toFixed(3));
+		mompx += 2;
+	}
+}
+function placeDot(weight, moment) {
 	let color = "red";
 	let tcolor = "red";
-	let svg = document.getElementById("chart");
-	let cgarea = document.getElementById("path");
 	let x = 0;
 	let y = 0;
-	let xr = Math.round(moment);
-	let yr = Math.round(weight);
+	let wt = Math.round(weight);
+	let mom = Math.round(moment);
+	
+	x = mmtmap.get(mom); 
 	
 	try {
-		let point = svg.createSVGPoint();
-		x = Math.round(((185 * moment) / 455) * 1.685);
-		y = 1322 - weight;
-		point.x = x;
-		point.y = y;
-
-		console.log(`Point(${point.x},${point.y} is in fill area: ${path.isPointInFill(point)}`);
-
-		// don't use textbox color for the dot - it's either red or green
-		if (cgarea.isPointInFill(point)) {
-			color = "limegreen";
-			tcolor = "black";
+		if (usemetric) {
+			// apply metric conversion to weight
+			wt = Math.round(+weight * 2.205);
+			y = wtmap.get(wt); 
 		}
+		else {
+			wt = Math.round(weight);
+			y = wtmap.get(wt) - 5; 
+		}
+		mom = Math.round(moment);
+		try {
+			let rgba = canvas.getContext('2d', { willReadFrequently: true }).getImageData(x,y,1,1).data
+			if (((usemetric && weight <= 600 && weight >= 326) && (moment >= 270 && moment <= 455)) ||
+				((weight <= 1320 && wt >= 720) && moment >= 270 && moment <= 455)) {
+				if (rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) {
+					color = "limegreen";
+					tcolor = "black";
+				}
+				console.log("point is on the chart!");
+			}
+		}
+		catch {
+			console.log("point is NOT on the chart!");
+		}
+		
 	}
 	catch (error) {
 		console.log(error.message);
 	}
 
-	let dstyle = `height:10px;width:10px;border-radius:50%;position:absolute;top:${y - 5}px;left:${x - 5}px;background-color:${color};`;
-	let cstyle = `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${y + 10}px;left:${x - 25}px;`;
+	if (usemetric) {
+		y -= 6
+	}
+	let dstyle = `height:10px;width:10px;border-radius:50%;position:absolute;top:${+y - 5}px;left:${+x - 5}px;background-color:${color};`;
+	let cstyle = `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${+y + 7}px;left:${+x - 25}px;`;
 	dot.setAttribute("style", dstyle);
 	mycog.setAttribute("style", cstyle);
 
