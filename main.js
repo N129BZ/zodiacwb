@@ -83,10 +83,10 @@ const template = [
             },
             { label: "Mode",
                 submenu: [
-                    { label: "Show w&b on Chart",
+                    { label: "Show on chart",
                         click: () => app.emit('showchart')
                     },
-                    { label: "Show w&b on Aircraft Image",
+                    { label: "Show on aircraft image",
                         click: () => app.emit("showairplane")
                     }
                 ]
