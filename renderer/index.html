@@ -4,15 +4,17 @@
     <title>Zenith Zodiac (601xlb/650) Weight and Balance</title>
     <link rel="stylesheet" type="text/css" href="zodiacwb.css" />
   </head>
-  <body>  
+  <body> 
     <div class="acview" id="acview">
-      <div id="acdot"></div>  
       <canvas id="accanvas" width="830" height="492"></canvas>
+      <div id="acdot"><label id="crosshair">+</label></div> 
+      <label class="accoglabel" id="accoglabel">Computed COG:</label>
+      <label class="accog" id="accog"></label>  
     </div>
     <div id="mainview">  
       <div class="container" id="container">  
         <canvas id="canvas" width="370" height="360"></canvas> 
-        <div id="dot"></div>  
+        <div id="dot"><label id="chartcrosshair">+</label></div>  
         <label class="nosegearLimit" id="nosegearLimit">Nose gear structural limit</label>
         <label class="weightMin" id="weightMin"></label>
         <label class="weightNosegearMin" id="weightNosegearMin"></label>
@@ -20,7 +22,7 @@
         <label class="weightMaxFloats" id="weightMaxFloats"></label><label class="maxFloatsDashes" id="maxFloatsDashes"></label>
         <label class="momentMinImperial" id="momentMin"></label>
         <label class="momentMaxImperial" id="momentMax"></label>
-        <label class="mycog" id="mycog"></label>
+        <label class="cog" id="mycog"></label>
         <label class="weightAxis" id="weightAxis"></label>
         <label class="momentAxis" id="momentAxis"></label>
       </div>

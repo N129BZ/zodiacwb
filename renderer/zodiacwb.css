@@ -22,20 +22,34 @@ body {
 	border:thin solid #000000;
 	border-width: thin
 }
-.acdot {
-	height:10px;
-	width:10px;
-	border-radius:50%;
-	position:absolute;
-	border:thin solid #000000;
-	border-width: thin
-}
 .cog {
 	top: "0px;";
 	left: "0px";
 	height: auto;
 	width: auto;
 	position: relative;
+}
+.accog {
+    font-size: large;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    position: absolute;
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 10px;
+    top: 388px;
+    left: 196px;
+}
+.accoglabel {
+	font-size: large;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+	color: black;
+	position: absolute;
+	padding: 5px;;
+	top: 390px;
+	left: 44px;
 }
 .chart {
     top: -2px;

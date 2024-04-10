@@ -7,6 +7,7 @@ var clickcount = 0;
 var usemetric = false;
 
 const  mainview = document.getElementById("mainview");
+const  acview = document.getElementById("acview");
 const  accanvas = document.getElementById("accanvas");
 const  canvas = document.getElementById("canvas");  
 const  saveButton = document.getElementById("saveButton");
@@ -16,8 +17,9 @@ showAcButton.disabled = false;
 
 const  container = document.getElementById("container");
 const  mycog = document.getElementById("mycog");
-const  dot = document.getElementById("dot");
-const  acdot = document.getElementById("acdot");
+const  accog = document.getElementById("accog");
+const  chartDot = document.getElementById("dot");
+const  acDot = document.getElementById("acdot");
 const  leftMainWeight = document.getElementById("leftMainWeight"); 
 const  leftMainArm = document.getElementById("leftMainArm");
 const  leftMainMoment = document.getElementById("leftMainMoment");
@@ -192,20 +194,26 @@ window.onload = async () => {
 	calcWB(true);
 };
 
-const ctx = canvas.getContext("2d");
-var img = new Image(); 
-img.onload = function() {
-	ctx.drawImage(img, 0, 0); 
-}
-img.src = "chart.png";
+drawChart();
+drawAirplane();
 
-const apctx = accanvas.getContext("2d");
-var apimg = new Image();
-apimg.onload = function() {
-	apctx.drawImage(apimg, 0, 0);
+function drawChart() {
+	const ctx = canvas.getContext("2d");
+	var img = new Image(); 
+	img.onload = function() {
+		ctx.drawImage(img, 0, 0); 
+	}
+	img.src = "chart.png";
 }
-apimg.src = "airplane.png";
-accanvas.style = "visibility:hidden;";
+
+function drawAirplane() { 
+	const apctx = accanvas.getContext("2d");
+	var apimg = new Image();
+	apimg.onload = function() {
+		apctx.drawImage(apimg, 0, 0);
+	}
+	apimg.src = "airplane.png";
+}
 
 const calcFuel = function() {
 	let fuelunits = handleNaN(fuelUnits.value);
@@ -314,10 +322,10 @@ const calcWB = function(isOnLoad = false) {
 	valData.totalcog = Math.round(finalCog);
 	valData.totalmoment = Math.round(totalMom);
 	
-	let cogtxt = `(${Math.round(finalCog)}, ${Math.round(totalWt)})`
+	let cogtxt = `(${Math.round(finalCog)}, ${Math.round(totalWt)})`;
 	cog.value = cogtxt;
 	mycog.innerHTML = cogtxt;
-
+	accog.innerHTML = cogtxt.replace("(", "").replace(")", "");
 	placeDots(totalWt, finalCog);
 }
 
@@ -420,11 +428,11 @@ function placeDots(weight, moment) {
 	if (usemetric) {
 		y -= 6
 	}
-	let dstyle = `height:10px;width:10px;border-radius:50%;position:absolute;top:${+y - 5}px;left:${+x - 5}px;background-color:${color};`;
-	let cstyle = `font-size:x-small;color:${tcolor};visibility:visible;position:absolute;top:${+y + 7}px;left:${+x - 25}px;`;
-	dot.setAttribute("style", dstyle);
-	mycog.setAttribute("style", cstyle);
-
+	chartDot.setAttribute("style", `height:14px;width:14px;border-radius:50%;position:absolute;top:${+y - 9}px;left:${+x - 5}px;background-color:${color};`);
+	mycog.setAttribute("style", `font-size:x-small;color:${tcolor};position:absolute;top:${+y + 7}px;left:${+x - 25}px;`);
+    let crosshair = document.getElementById("chartcrosshair");
+	
+	crosshair.setAttribute("style", "font-size:25px;position:relative;top:-6px;left:0px;")
 	placeAcDot(weight, moment, color, tcolor);
 }
 
@@ -433,9 +441,12 @@ function placeAcDot(weight, moment, color, tcolor) {
 	let xFactor = .2918;
 	let x = 510.2556;
 	let y = 182.462;
-	
-	let dstyle = `height:10px;width:10px;border-radius:50%;position:absolute;top:${+y - 5}px;left:${+x - 5}px;background-color:${color};`;
-	acdot.setAttribute("style", dstyle);
+	acDot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:absolute;top:${+y - 5}px;` +
+	                            `left:${+x - 5}px;background-color:${color};padding:4px;border: 2px ${color};`);
+	let crosshair = document.getElementById("crosshair");
+	crosshair.setAttribute("style", "font-size:29px;position:relative;top:-13px;left:-5px;")
+
+	accog.setAttribute("style", `color:${color};`);
 }
 
 const saveAppData = function() {
@@ -461,12 +472,11 @@ function showAcView() {
 	if (showAcButton.textContent === "Aircraft View") {
 		showAcButton.textContent = "Show Chart";
 		mainview.style = "visibility:hidden;"
-		accanvas.style = "visibility:visible;"
-		acdot.style = "visibility:visible";
+		acview.style = "visibility:visible;"
 	} else {
 		showAcButton.textContent = "Aircraft View";
 		mainview.style = "visibility:visible;"
-		accanvas.style = "visibility:hidden;"
+		acview.style = "visibility:hidden;"
 	}
 }
 
