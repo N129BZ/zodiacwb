@@ -51,6 +51,13 @@ body {
 	top: 390px;
 	left: 44px;
 }
+.cgrectangle {
+    position: absolute;
+    top: 146px;
+    left: 496px;
+    width: 56px;
+    height: 164px;
+}
 .chart {
     top: -2px;
     left: 0px;

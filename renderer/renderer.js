@@ -195,7 +195,6 @@ window.onload = async () => {
 };
 
 drawChart();
-drawAirplane();
 
 function drawChart() {
 	const ctx = canvas.getContext("2d");
@@ -206,13 +205,18 @@ function drawChart() {
 	img.src = "chart.png";
 }
 
-function drawAirplane() { 
+function drawAirplane(isdarktheme) { 
 	const apctx = accanvas.getContext("2d");
 	var apimg = new Image();
 	apimg.onload = function() {
 		apctx.drawImage(apimg, 0, 0);
 	}
-	apimg.src = "airplane.png";
+	if (isdarktheme) {
+		apimg.src = "airplane.png";
+	}
+	else {
+		apimg.src = "airplane_dark.png"
+	}
 }
 
 const calcFuel = function() {
@@ -385,6 +389,7 @@ function placeDots(weight, moment) {
 	let color = appData.settings.overbgcolor;
 	let tcolor = appData.settings.overbgcolor;
 	let bgcolor = appData.settings.overbgcolor;
+	let fgcolor = appData.settings.overfgcolor;
 	let x = 0;
 	let y = 0;
 	let isoverwt = true;
@@ -411,7 +416,8 @@ function placeDots(weight, moment) {
 				if (rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) {
 					color = appData.settings.underbgcolor;
 					tcolor = appData.settings.underfgcolor;
-					bgcolor = color;
+					bgcolor = appData.settings.underbgcolor;;
+					fgcolor = appData.settings.underfgcolor;
 					isoverwt = false;
 				}
 				console.log("point is on the chart!");
@@ -432,19 +438,22 @@ function placeDots(weight, moment) {
 	}
 	chartDot.setAttribute("style", `height:14px;width:14px;border-radius:50%;position:absolute;top:${+y - 9}px;left:${+x - 5}px;background-color:${color};`);
 	mycog.setAttribute("style", `font-size:x-small;color:${tcolor};position:absolute;top:${+y + 7}px;left:${+x - 25}px;`);
-    let crosshair = document.getElementById("chartcrosshair");
-	
+    
+	let crosshair = document.getElementById("chartcrosshair");
 	crosshair.setAttribute("style", "font-size:25px;position:relative;top:-6px;left:0px;color:white;")
-	placeAcDot(weight, moment, color, tcolor);
+	
+	placeAcDot(weight, moment, bgcolor, fgcolor);
 }
 
 function placeAcDot(weight, moment, bgcolor, fgcolor) {
-	let yFactor = .3033;
-	let xFactor = .2918;
-	let x = 510.2556;
-	let y = 182.462;
+	let yFactor = .2533;
+	let xFactor = .0291;
+	
+	let x = 496 + (moment * xFactor);
+	let y = 324 - ((weight - 600) * yFactor);
 	acDot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:absolute;top:${+y - 5}px;` +
-	                            `left:${+x - 5}px;background-color:${bgcolor};padding:4px;border: 2px ${fgcolor};`);
+	                            `left:${+x - 5}px;background-color:${bgcolor};` + 
+								`padding:4px;border:2px; ${fgcolor};`);
 	let crosshair = document.getElementById("crosshair");
 	crosshair.setAttribute("style", "font-size:29px;position:relative;top:-13px;left:-5px;color:white;")
 
@@ -466,6 +475,8 @@ function countClicks() {
 	}
 }
 
+drawAirplane(false);
+
 const showDev = function() {
 	window.electronAPI.showdev(devstate);
 }
@@ -482,8 +493,17 @@ function showAcView() {
 	}
 }
 
+window.matchMedia('(prefers-color-scheme: dark)')
+      .addEventListener('change',({ matches }) => {
+  if (matches) {
+	drawAirplane(false);
+    console.log("change to dark mode!")
+  } else {
+	drawAirplane(true);
+    console.log("change to light mode!")
+  }
+});
 
-
-// accanvas.onmousedown = function(event){
-// 	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
-// }
+accanvas.onmousedown = function(event){
+	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
+}
