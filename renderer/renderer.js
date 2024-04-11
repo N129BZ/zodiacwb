@@ -5,6 +5,7 @@ var valData = {};
 var devstate = { "state": false };
 var clickcount = 0;
 var usemetric = false;
+var isdarktheme = false; 
 
 const  mainview = document.getElementById("mainview");
 const  acview = document.getElementById("acview");
@@ -128,6 +129,8 @@ window.onload = async () => {
 	console.log(data);
 	appData = JSON.parse(data);
 	usemetric = appData.settings.units === "metric";
+	isdarktheme = appData.settings.theme === "dark";
+
 	if (appData.settings.units === "metric") {
 		valData = appData.metric;
 	}
@@ -195,6 +198,7 @@ window.onload = async () => {
 };
 
 drawChart();
+drawAirplane();
 
 function drawChart() {
 	const ctx = canvas.getContext("2d");
@@ -205,17 +209,20 @@ function drawChart() {
 	img.src = "chart.png";
 }
 
-function drawAirplane(isdarktheme) { 
+function drawAirplane() {
+	const lbl = document.getElementById("accoglabel");	 
 	const apctx = accanvas.getContext("2d");
 	var apimg = new Image();
 	apimg.onload = function() {
 		apctx.drawImage(apimg, 0, 0);
 	}
 	if (isdarktheme) {
-		apimg.src = "airplane.png";
+		apimg.src = "airplane_dark.png";
+		lbl.setAttribute("style", "color:white;")
 	}
 	else {
-		apimg.src = "airplane_dark.png"
+		apimg.src = "airplane.png"
+		lbl.setAttribute("style", "color:black;")
 	}
 }
 
@@ -475,8 +482,6 @@ function countClicks() {
 	}
 }
 
-drawAirplane(false);
-
 const showDev = function() {
 	window.electronAPI.showdev(devstate);
 }
@@ -493,17 +498,19 @@ function showAcView() {
 	}
 }
 
-window.matchMedia('(prefers-color-scheme: dark)')
+window.matchMedia('(prefers-color-scheme: light)')
       .addEventListener('change',({ matches }) => {
-  if (matches) {
-	drawAirplane(false);
-    console.log("change to dark mode!")
-  } else {
-	drawAirplane(true);
-    console.log("change to light mode!")
-  }
+    if (matches) {
+		isdarktheme = false;
+		appData.settings.theme = "light";	
+	} else {
+	    isdarktheme = true;
+		appData.settings.theme = "dark";
+	}
+	drawAirplane();
+	saveAppData();
 });
 
-accanvas.onmousedown = function(event){
-	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
-}
+// accanvas.onmousedown = function(event){
+// 	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
+// }
