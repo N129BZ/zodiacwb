@@ -158,36 +158,36 @@ window.onload = async () => {
 	emptyWeight.value = valData.emptyweight;
 	emptyCog.value = valData.emptyarm;
 	emptyMoment.value = valData.emptymoment;
-	//emptyMoment.setAttribute("readonly", "readonly");
+	emptyMoment.setAttribute("readonly", "readonly");
 	
 	pilotWeight.value = valData.pilotweight;
 	pilotArm.value = valData.pilotarm;
-	//pilotArm.setAttribute("readonly", "readonly");
+	pilotArm.setAttribute("readonly", "readonly");
 	pilotMoment.value = valData.pilotmoment;
 
 	passengerWeight.value = valData.psgrweight;
 	passengerArm.value = valData.psgrarm;
-	//passengerArm.setAttribute("readonly", "readonly");
+	passengerArm.setAttribute("readonly", "readonly");
 	passengerMoment.value = appData.psgrmoment;
 
 	rightWingLockerWeight.value = valData.rwlockweight;
 	rightWingLockerArm.value = valData.lwlockarm;
-	//rightWingLockerArm.setAttribute("readonly", "readonly");
+	rightWingLockerArm.setAttribute("readonly", "readonly");
 	rightWingLockerMoment.value = valData.rwlockmoment;
 
 	leftWingLockerWeight.value = valData.lwlockweight;
 	leftWingLockerArm.value = valData.lwlockarm;
-	//leftWingLockerArm.setAttribute("readonly", "readonly");
+	leftWingLockerArm.setAttribute("readonly", "readonly");
 	leftWingLockerMoment.value = valData.lwlockmoment;
 
 	fuelUnits.value = valData.fuelunits;
 	fuelArm.value = valData.fuelarm;
-	//fuelArm.setAttribute("readonly", "readonly");
+	fuelArm.setAttribute("readonly", "readonly");
 	fuelMoment.value = valData.fuelmoment;
 
 	rearBaggageWeight.value = valData.rbagweight;
 	rearBaggageArm.value = valData.rbagarm;
-	//rearBaggageArm.setAttribute("readonly", "readonly");
+	rearBaggageArm.setAttribute("readonly", "readonly");
 	rearBaggageMoment.value = valData.rbagmoment;
 
 	totalWeight.value = valData.emptyweight;
