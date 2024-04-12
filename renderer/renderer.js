@@ -6,16 +6,19 @@ var devstate = { "state": false };
 var clickcount = 0;
 var usemetric = false;
 var isdarktheme = false; 
+var ismainview = true;
+
+const  weightMap = new Map();
+const  momentMap = new Map();
 
 const  mainview = document.getElementById("mainview");
 const  acview = document.getElementById("acview");
 const  accanvas = document.getElementById("accanvas");
-const  canvas = document.getElementById("canvas");  
+const  chartcanvas = document.getElementById("chartcanvas");  
 const  saveButton = document.getElementById("saveButton");
 const  showAcButton = document.getElementById("showAcButton");
-
-showAcButton.disabled = false;
-
+const  printButton = document.getElementById("printButton");
+const  exitButton = document.getElementById("exitButton");
 const  container = document.getElementById("container");
 const  mycog = document.getElementById("mycog");
 const  accog = document.getElementById("accog");
@@ -34,7 +37,7 @@ const  noseWheelArm = document.getElementById("noseWheelArm");
 const  noseWheelMoment = document.getElementById("noseWheelMoment"); 
 
 const  emptyWeight = document.getElementById("emptyWeight"); 
-const  emptyCog = document.getElementById("emptyArm");
+const  emptyArm = document.getElementById("emptyArm");
 const  emptyMoment = document.getElementById("emptyMoment"); 
 
 const  pilotWeight = document.getElementById("pilotWeight"); 
@@ -142,58 +145,34 @@ window.onload = async () => {
 
 	rightMainWeight.value = valData.rmweight;
 	rightMainArm.value = valData.rmarm;
-	rightMainMoment.value = valData.rmmoment;
-	//rightMainMoment.setAttribute("readonly", "readonly");
-
+	
 	leftMainWeight.value = valData.lmweight;
 	leftMainArm.value = valData.lmarm;
-	leftMainMoment.value = valData.lmmoment;
-	//leftMainMoment.setAttribute("readonly", "readonly");
-
+	
 	noseWheelWeight.value = valData.nwweight;
 	noseWheelArm.value = valData.nwarm;
-	noseWheelMoment.value = valData.nwmoment;
-	//noseWheelMoment.setAttribute("readonly", "readonly");
-
-	emptyWeight.value = valData.emptyweight;
-	emptyCog.value = valData.emptyarm;
-	emptyMoment.value = valData.emptymoment;
-	emptyMoment.setAttribute("readonly", "readonly");
+	
+	emptyArm.value = valData.emptyarm;
 	
 	pilotWeight.value = valData.pilotweight;
 	pilotArm.value = valData.pilotarm;
-	pilotArm.setAttribute("readonly", "readonly");
-	pilotMoment.value = valData.pilotmoment;
-
+	
 	passengerWeight.value = valData.psgrweight;
 	passengerArm.value = valData.psgrarm;
-	passengerArm.setAttribute("readonly", "readonly");
-	passengerMoment.value = appData.psgrmoment;
-
+	
 	rightWingLockerWeight.value = valData.rwlockweight;
 	rightWingLockerArm.value = valData.lwlockarm;
-	rightWingLockerArm.setAttribute("readonly", "readonly");
-	rightWingLockerMoment.value = valData.rwlockmoment;
-
+	
 	leftWingLockerWeight.value = valData.lwlockweight;
 	leftWingLockerArm.value = valData.lwlockarm;
-	leftWingLockerArm.setAttribute("readonly", "readonly");
-	leftWingLockerMoment.value = valData.lwlockmoment;
-
+	
 	fuelUnits.value = valData.fuelunits;
 	fuelArm.value = valData.fuelarm;
-	fuelArm.setAttribute("readonly", "readonly");
-	fuelMoment.value = valData.fuelmoment;
-
+	
 	rearBaggageWeight.value = valData.rbagweight;
 	rearBaggageArm.value = valData.rbagarm;
-	rearBaggageArm.setAttribute("readonly", "readonly");
-	rearBaggageMoment.value = valData.rbagmoment;
 
-	totalWeight.value = valData.emptyweight;
-	totalCog.value = valData.emptyarm;
-	totalMoment.value = valData.emptymoment;
-
+	loadCgMaps();
 	calcWB(true);
 };
 
@@ -201,7 +180,7 @@ drawChart();
 drawAirplane();
 
 function drawChart() {
-	const ctx = canvas.getContext("2d");
+	const ctx = chartcanvas.getContext("2d");
 	var img = new Image(); 
 	img.onload = function() {
 		ctx.drawImage(img, 0, 0); 
@@ -235,8 +214,6 @@ const calcFuel = function() {
 	fuelMoment.value = Math.round(fuelmom);
 	valData.fuelunits = fuelunits;
 	valData.fuelweight = fuelwt;
-	valData.fuelarm = fuelarm;
-	valData.fuelmoment = Math.round(fuelmom);
 	return [fuelwt, fuelmom];
 }
 
@@ -250,66 +227,52 @@ const calcWB = function(isOnLoad = false) {
 	rightMainMoment.value = rtMainMom;
 	valData.rmweight = rtMainWt;
 	valData.rmarm = rtMainArm;
-	valData.rmmoment = rtMainMom;
-
+	
 	let lftMainmWt = handleNaN(leftMainWeight.value)
 	let lftMainArm = handleNaN(leftMainArm.value);
 	let lftMainMom =  lftMainmWt * lftMainArm;
 	leftMainMoment.value = lftMainMom;
 	valData.lmweight = lftMainmWt;
 	valData.lmarm = lftMainArm;
-	valData.lmmoment = lftMainMom;
-
+	
 	let noseWhlWt = handleNaN(noseWheelWeight.value);
 	let noseWhlArm = handleNaN(noseWheelArm.value);
 	let noseWhlMom = noseWhlWt * noseWhlArm;
 	noseWheelMoment.value = noseWhlMom;
 	valData.nwweight = noseWhlWt;
 	valData.nwarm = noseWhlArm;
-	valData.nwmoment = noseWhlMom;
-
+	
 	let emptyWt = + lftMainmWt + rtMainWt + noseWhlWt;
 	let emptyMom = lftMainMom + rtMainMom + noseWhlMom;
 	let emptyCg = Math.round(handleNaN(emptyMom / emptyWt));
 	emptyWeight.value = emptyWt;
-	emptyCog.value = `COG: ${emptyCg}`;
+	emptyArm.value = `COG: ${emptyCg}`;
 	emptyMoment.value = emptyMom; 
-	valData.emptyweight = emptyWt;
-	valData.emptycog = emptyCg;
-	valData.emptymoment = emptyMom;
 	
 	let pltWt = handleNaN(pilotWeight.value); 
 	let pltArm = handleNaN(pilotArm.value);
 	let pltMom = pltWt * pltArm;
 	pilotMoment.value = pltMom;
 	valData.pilotweight = pltWt;
-	valData.pilotarm = pltArm;
-	valData.pilotmoment = pltMom;
-
+	
 	let psgrWt = handleNaN(passengerWeight.value);
 	let psgrArm = handleNaN(passengerArm.value);
 	let psgrMom = psgrWt * psgrArm; 
 	passengerMoment.value = psgrMom;
 	valData.psgrweight = psgrWt;
-	valData.psgrarm = psgrArm;
-	valData.psgrmoment = psgrMom;
-
+	
 	let rtWngLkrWt = handleNaN(rightWingLockerWeight.value);
 	let rtWngLkrArm = handleNaN(rightWingLockerArm.value);
 	let rtWngLkrMom = rtWngLkrWt * rtWngLkrArm;
 	rightWingLockerMoment.value = rtWngLkrMom;
 	valData.rwlockweight = rtWngLkrWt;
-	valData.rwlockarm = rtWngLkrArm;
-	valData.rwlockmoment = rtWngLkrMom;
-
+	
 	let lftWngLkrWt = handleNaN(leftWingLockerWeight.value); 
 	let lftWngLkrArm = handleNaN(leftWingLockerArm.value);
 	let lftWngLkrMom = lftWngLkrWt * lftWngLkrArm;
 	leftWingLockerMoment.value = lftWngLkrMom;
 	valData.lwlockweight = lftWngLkrWt;
-	valData.lwlockarm = lftWngLkrArm;
-	valData.lwlockmoment = lftWngLkrMom;
-
+	
 	let fuelnums = calcFuel(); // returns [weight, moment]
 	
 	let rearBgWt = handleNaN(rearBaggageWeight.value); 
@@ -317,9 +280,7 @@ const calcWB = function(isOnLoad = false) {
 	let rearBgMom = rearBgWt * rearBgArm;
 	rearBaggageMoment.value = rearBgMom;
 	valData.rbagweight = rearBgWt;
-	valData.rbagarm = rearBgArm;
-	valData.rbagmoment = rearBgMom;
-
+	
 	let totalWtArray = [emptyWt, pltWt, psgrWt, rtWngLkrWt, lftWngLkrWt, fuelnums[0], rearBgWt];
 	let totalArmArray = [emptyMom, pltMom, psgrMom, rtWngLkrMom, lftWngLkrMom , fuelnums[1], rearBgMom];
 	let totalWt = addArray(totalWtArray);
@@ -329,9 +290,6 @@ const calcWB = function(isOnLoad = false) {
 	totalWeight.value = Math.round(totalWt);
 	totalCog.value = `COG: ${Math.round(finalCog)}`;
 	totalMoment.value = Math.round(totalMom); 
-	valData.totalweight = Math.round(totalWt);
-	valData.totalcog = Math.round(finalCog);
-	valData.totalmoment = Math.round(totalMom);
 	
 	let cogtxt = `(${Math.round(finalCog)}, ${Math.round(totalWt)})`;
 	cog.value = cogtxt;
@@ -375,23 +333,21 @@ function addArray(theArray) {
 	return outval;
 }
 
-const wtmap = new Map();
-const mmtmap = new Map();
-loadCgMaps();
 function loadCgMaps() {
-	let rect = canvas.getBoundingClientRect();
+	let rect = chartcanvas.getBoundingClientRect();
 	let pospx = -100;
 	let mompx = 48;
 
 	for (let w = 1500; w >= 720; w--) {
-		wtmap.set(w, pospx.toFixed(3));
+		weightMap.set(w, pospx.toFixed(3));
 		pospx += .6;
 	}
 	for (let m = 270; m <= 455; m++) {
-		mmtmap.set(m, mompx.toFixed(3));
+		momentMap.set(m, mompx.toFixed(3));
 		mompx += 2;
 	}
 }
+
 function placeDots(weight, moment) {
 	let color = appData.settings.overbgcolor;
 	let tcolor = appData.settings.overbgcolor;
@@ -400,29 +356,25 @@ function placeDots(weight, moment) {
 	let x = 0;
 	let y = 0;
 	let isoverwt = true;
-	let wt = Math.round(weight);
 	let mom = Math.round(moment);
 	
-	x = mmtmap.get(mom); 
+	x = momentMap.get(mom); 
 	
 	try {
 		if (usemetric) {
-			// apply metric conversion to weight
-			wt = Math.round(+weight * 2.205);
-			y = wtmap.get(wt); 
+			// apply metric conversion to weight 
+			weight = Math.round(+weight * 2.205) - 2;
+			y = weightMap.get(weight); 
 		}
 		else {
-			wt = Math.round(weight);
-			y = wtmap.get(wt) - 5; 
+			y = weightMap.get(weight) - 5; 
 		}
-		mom = Math.round(moment);
 		try {
-			let rgba = canvas.getContext('2d', { willReadFrequently: true }).getImageData(x,y,1,1).data
-			if (((usemetric && weight <= 600 && weight >= 326) && (moment >= 270 && moment <= 455)) ||
-				((weight <= 1320 && wt >= 720) && moment >= 270 && moment <= 455)) {
+			let rgba = chartcanvas.getContext('2d', { willReadFrequently: true }).getImageData(x,y,1,1).data
+			if ((weight <= 1320 && weight >= 720) && (moment >= 270 && moment <= 455)) {
 				if (rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) {
 					color = appData.settings.underbgcolor;
-					tcolor = appData.settings.underfgcolor;
+					tcolor = appData.settings.underbgcolor;
 					bgcolor = appData.settings.underbgcolor;;
 					fgcolor = appData.settings.underfgcolor;
 					isoverwt = false;
@@ -456,8 +408,8 @@ function placeAcDot(weight, moment, bgcolor, fgcolor) {
 	let yFactor = .2533;
 	let xFactor = .0291;
 	
-	let x = 496 + (moment * xFactor);
-	let y = 324 - ((weight - 600) * yFactor);
+	let x = 496 + (+moment * xFactor);
+	let y = 324 - ((+weight - 600) * yFactor);
 	acDot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:absolute;top:${+y - 5}px;` +
 	                            `left:${+x - 5}px;background-color:${bgcolor};` + 
 								`padding:4px;border:2px; ${fgcolor};`);
@@ -470,6 +422,10 @@ function placeAcDot(weight, moment, bgcolor, fgcolor) {
 const saveAppData = function() {
 	window.electronAPI.saveappdata(appData);
 	saveButton.disabled = true;
+}
+
+const printPage = function() {
+	window.electronAPI.printpage();
 }
 
 function countClicks() {
@@ -488,14 +444,28 @@ const showDev = function() {
 
 function showAcView() {
 	if (showAcButton.textContent === "Aircraft View") {
+		ismainview = false;
 		showAcButton.textContent = "Show Chart";
 		mainview.style = "visibility:hidden;"
 		acview.style = "visibility:visible;"
+		drawAirplane();
 	} else {
+		ismainview = true;
 		showAcButton.textContent = "Aircraft View";
-		mainview.style = "visibility:visible;"
 		acview.style = "visibility:hidden;"
+		mainview.style = "visibility:visible;"
 	}
+}
+
+function exitApp() {
+	window.electronAPI.exitapp();
+}
+
+function setButtonVisibility(isvisible) {
+	let vstring = isvisible === true ? "visibility:visible" : "visibility:hidden";
+	saveButton.setAttribute("style", vstring);
+	showAcButton.setAttribute("style", vstring);
+	exitButton.setAttribute("style", vstring);
 }
 
 window.matchMedia('(prefers-color-scheme: light)')
@@ -503,14 +473,20 @@ window.matchMedia('(prefers-color-scheme: light)')
     if (matches) {
 		isdarktheme = false;
 		appData.settings.theme = "light";	
-	} else {
-	    isdarktheme = true;
+	}
+	drawAirplane();
+	saveAppData();		
+});
+
+window.matchMedia('(prefers-color-scheme: dark)') 
+		.addEventListener('change', ({ matches }) => {
+	if(matches) {
+		isdarktheme = true;
 		appData.settings.theme = "dark";
 	}
 	drawAirplane();
-	saveAppData();
+	saveAppData();		
 });
-
-// accanvas.onmousedown = function(event){
+// document.onmousedown = function(event){
 // 	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
 // }

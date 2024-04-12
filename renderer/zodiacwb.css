@@ -4,6 +4,7 @@ body {
     top: -49px;
 	overflow-x: hidden;
     position: absolute;
+	background-color: white;
 }
 .mainview {
 	visibility: visible;
@@ -12,6 +13,7 @@ body {
     position: absolute;
     top: 41px;
     left: -7px;
+	background-color: white;
     visibility: hidden;
 }
 .dot {
@@ -119,7 +121,7 @@ body {
     font-size: 10px;
     text-align: left;
     color: red;
-    top: -69px;
+    top: -76px;
     left: -35px;
 }
 .weightMaxGross {
@@ -143,7 +145,7 @@ body {
     position: absolute;
     font-size: 11px;
     text-align: left;
-    top: -69px;
+    top: -76px;
     color: red;
     left: -7px;
 }
@@ -161,7 +163,7 @@ body {
 	font-size: x-small;
 	text-align: left;
 	top: 362px;
-	left:355px;
+	left:345px;
 }
 .momentMinMetric {
 	font-family: Arial, Helvetica, sans-serif;
@@ -178,7 +180,7 @@ body {
 	font-size: x-small;
 	text-align: left;
 	top: 362px;
-	left:349px;
+	left:345px;
 	/* rotate: -90deg; */
 }
 .weightAxisMetric {
@@ -286,37 +288,77 @@ body {
 	position: absolute;
 	left: 96px;
 }
-.savebutton {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: normal;
-	text-align: center;
-	vertical-align: middle;
-	border: 1px solid darkgray;
-	border-radius: 4px;
-	border-color: gray;
-	position:absolute;
-	background-color: lightgray;
-	color: black;
-	height: 30px;
-	width: 100px;
-	top: 582px;
-	left: 629px;
+
+.buttonContainer {
+	position: absolute;
+	height: 35px;
+	width:529px;
+	left: -14px;
+	top: 588px;
 }
-.showacbutton {
+.printButton {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: normal;
-	text-align: center;
-	vertical-align: middle;
-	border: 1px solid darkgray;
-	border-radius: 4px;
-	border-color: gray;
-	position:absolute;
-	background-color: lightgray;
-	color: black;
-	height: 30px;
-	width: 100px;
-	top: 582px;
-	left: 500px;
+    font-size: normal;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid darkgray;
+    border-radius: 4px;
+    border-color: gray;
+    position: relative;
+    background-color: lightgray;
+    color: black;
+    height: 30px;
+    width: 100px;
+    top: 0px;
+    left: 99px;
+}
+.saveButton {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: normal;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid darkgray;
+    border-radius: 4px;
+    border-color: gray;
+    position: relative;
+    background-color: lightgray;
+    color: black;
+    height: 30px;
+    width: 100px;
+    top: 0px;
+    left: 103px;
+}
+.showAcButton {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: normal;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid darkgray;
+    border-radius: 4px;
+    border-color: gray;
+    position: relative;
+    background-color: lightgray;
+    color: black;
+    height: 30px;
+    width: 100px;
+    top: 0px;
+    left: 95px;
+}
+.exitButton {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: normal;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid darkgray;
+    border-radius: 4px;
+    border-color: gray;
+    position: relative;
+    background-color: lightgray;
+    color: black;
+    height: 30px;
+    width: 100px;
+    top: 0px;
+    left: 394px;
 }
 button:disabled,
 button[disabled]{
@@ -325,8 +367,22 @@ button[disabled]{
   color: #666666;
 }
 @media (prefers-color-scheme: dark) {
-	body { background: #333; color: white; }
+	body { background: black; color: white; }
+	#acview { background-color: black; }
 } 
 @media (prefers-color-scheme: light) {
-	body { background: #ddd; color: black; }
+	body { background: white; color: black; }
+	#acview { background-color: white; }
 }
+@media print {
+	#buttonContainer {
+		display: none;
+	}
+	/* #saveButton {
+	    display: none;
+	}
+	#showAcButton {
+		display: none;
+	} */
+}
+

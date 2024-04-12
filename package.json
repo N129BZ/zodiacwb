@@ -1,6 +1,6 @@
 {
   "name": "zodiacwb",
-  "version": "1.2.1",
+  "version": "1.2.8",
   "description": "Zenith Zodiac 601xl/650 Weight and Balance",
   "main": "main.js",
   "icon": "zwblogo.png",
@@ -29,7 +29,9 @@
     "path": "^0.12.7"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "print": "^1.2.0",
+    "url": "^0.11.3"
   },
   "config": {
     "forge": {

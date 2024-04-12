@@ -1,23 +1,27 @@
 
-const { subtle } = require('crypto');
+
 const { 
     app, 
     BrowserWindow, 
-    Menu, 
+    Menu,
     ipcMain, 
+    screen,
     nativeTheme, 
-    globalShortcut } = require('electron');
+    globalShortcut, 
+    webContents} = require('electron');
 
+const url = require("url");
+const print = require("print");
 const fs = require("fs");
 const path = require("path");
-
-const isMac = process.platform === 'darwin'
 const jsonPath = path.join(app.getPath("userData"), "zodiacwb.json");
+const printImagePath = path.join(__dirname, "renderer", "printimage.png");
 
 app.commandLine.appendSwitch ("disable-http-cache");
 
-var appData = loadAppData();
+var mainWindow;
 
+var appData = loadAppData();
 const isDebug = appData.settings.debug;
 
 function loadAppData() {
@@ -34,7 +38,7 @@ function loadAppData() {
 };
 
 const template = [
-    ...(isMac
+    ...(process.platform === "darwin"
         ? [{
             label: app.name,
             submenu: [
@@ -54,7 +58,10 @@ const template = [
     { 
         label: 'File',
         submenu: [
-            isMac ? { role: 'close' } : { role: 'quit' }
+            process.platform === "darwin" ? { role: 'close' } : { role: 'quit' },
+            { label: 'Print',
+                click: () => app.emit('printpage')
+            }
         ]
     },
     { 
@@ -96,14 +103,14 @@ if (require('electron-squirrel-startup')) app.quit();
 
 function createWindow () {
     var dtoggled = false;
-    var w = 830;
+    var w = 850;
     var h = 650; 
     if (isDebug) {
         w = 1400;
         h = 900;
     }
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: w,
         height: h,
         frame: true,
@@ -114,18 +121,16 @@ function createWindow () {
         }
     });
     
-    mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "renderer", "index.html"));
     
     if (isDebug) {
         mainWindow.webContents.openDevTools();
     } 
-
     app.on('toggletheme', () => {
         toggleTheme();
         saveAppData();
         mainWindow.webContents.send('toggletheme');
     });
-
     app.on('toggleimperial', () => {
         appData.settings.units = "imperial";
         saveAppData();
@@ -137,9 +142,29 @@ function createWindow () {
         mainWindow.reload(); 
     });
     app.on('filesave', () => {
-        mainWindow.webContents.send('filesave');
+        mainWindow.webContents.capturePage()
     });
-
+    app.on('printpage', () => {
+        getScreenShot();
+        /* mainWindow.webContents.capturePage({
+            x: 20,
+            y: 20,
+            width: 798,
+            height: 529
+        })
+        .then((img) => {
+            if (fs.existsSync(printImagePath)) fs.rmSync(printImagePath);
+            fs.writeFileSync(printImagePath, img.toPNG(), "base64", function (err) {
+                if (err) console.log(err);
+            });
+        })
+        .then(() => {
+            printPage();
+        })
+        .catch(error => {
+            console.log(error);
+        }) */
+    });
     app.on('toggledev', () => {
         if (!dtoggled) {
             appData.settings.debug = true;
@@ -161,11 +186,14 @@ function createWindow () {
 }
 
 function toggleTheme() {
-    if (nativeTheme.shouldUseDarkColors) {
+    // toggling the opposite of the current theme
+    let isDark = nativeTheme.shouldUseDarkColors
+    if (isDark) {
         appData.settings.theme = "light";
     } else {
         appData.settings.theme = "dark";
     }
+    saveAppData();
     nativeTheme.themeSource = appData.settings.theme;
 }
 
@@ -191,9 +219,95 @@ ipcMain.on('appdata:save', (e, newappdata) => {
     saveAppData();
 });
 
+ipcMain.on('function:print', () => {
+    getScreenShot();
+});
+
+ipcMain.on('function:exit', () => {
+    mainWindow.close();
+    mainWindow = null;
+});
+
 ipcMain.on('menu:showdev', (e, devstate) => {
     appData.settings.debug = devstate.state;
     saveAppData();
     app.relaunch();
     app.exit(0);
 });
+
+function getScreenShot() {
+    mainWindow.webContents.capturePage({
+        x: 20,
+        y: 20,
+        width: 805,
+        height: 520
+    })
+    .then((img) => {
+        if (fs.existsSync(printImagePath)) fs.rmSync(printImagePath);
+        fs.writeFileSync(printImagePath, img.toPNG(), "base64", function (err) {
+            if (err) console.log(err);
+        });
+    })
+    .then(() => {
+        printScreenShot();
+    })
+    .catch(error => {
+        console.log(error);
+    })
+}
+
+function printScreenShot() {
+    const sfactor = screen.getPrimaryDisplay().scaleFactor;
+    const w = 788 / sfactor;
+    const h = 529 / sfactor;
+    let win = new BrowserWindow({ width: w, 
+                                  height: h,
+                                  modal: true, 
+                                  frame: false,
+                                  theme: 'light'
+                                });
+    win.loadURL(path.join(__dirname, "renderer", "printpage.html")); 
+    win.once('ready-to-show', () => {
+        win.removeMenu();
+        win.show();
+    });
+    win.webContents.on('did-finish-load', () => {
+    win.webContents.getPrintersAsync().then((data) => {
+            let devicename;
+            data.forEach((printer) => {
+                if (printer.isDefault) {
+                    devicename = printer.name;
+                }
+            })
+
+            const printoptions = {
+                deviceName: devicename,
+                silent: false,
+                margins: {marginType: 'none'},
+                printBackground: false,
+                color: true,
+                scaleFactor: 120,
+                dpi: {horizontal: w, vertical: h},
+                landscape: false,
+                printBackground: false,
+                pagesPerSheet: 1,
+                collate: false,
+                copies: 1,
+            };
+
+            try {
+                win.webContents.print(printoptions, () => {
+                    console.log("W & B printed!");
+                    win.close();
+                    win = null;
+                });
+            }
+            catch(error) {
+                console.log(error);
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    })
+}

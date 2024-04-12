@@ -6,7 +6,7 @@
   </head>
   <body> 
     <div class="acview" id="acview">
-      <canvas id="accanvas" width="830" height="492"></canvas>
+      <canvas id="accanvas" width="830" height="582"></canvas>
       <div class="cgrectangle" id="cgrectangle"></div>
       <div id="acdot"><label id="crosshair">+</label></div>
       <label class="accoglabel" id="accoglabel">Computed COG:</label>
@@ -14,7 +14,7 @@
     </div>
     <div id="mainview">  
       <div class="container" id="container">  
-        <canvas id="canvas" width="370" height="360"></canvas> 
+        <canvas id="chartcanvas" width="370" height="360"></canvas> 
         <div id="dot"><label id="chartcrosshair">+</label></div>  
         <label class="nosegearLimit" id="nosegearLimit">Nose gear structural limit</label>
         <label class="weightMin" id="weightMin"></label>
@@ -38,34 +38,34 @@
           <tbody>
             <tr>
               <td class="weightLabel">Max Gross:</td>
-              <td><input type="text" class="weight" id="maxGrossWeight" value="0" ></td>
+              <td><input type="text" class="weight" id="maxGrossWeight" value="0" readonly ></td>
               <td></td>
             </tr>
             <tr>
               <td class="weightLabel">Right Main:</td>
-              <td><input type="text" class="weight" id="rightMainWeight" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="rightMainArm" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="moment" id="rightMainMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="rightMainWeight" value="0" tabindex="1" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="rightMainArm" value="0" tabindex="2" oninput="calcWB()"></td>
+              <td><input type="text" class="moment" id="rightMainMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Left Main:</td>
-              <td><input type="text" class="weight" id="leftMainWeight" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="leftMainArm" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="moment" id="leftMainMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="leftMainWeight" value="0" tabindex="3" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="leftMainArm" value="0" tabindex="4" oninput="calcWB()"></td>
+              <td><input type="text" class="moment" id="leftMainMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Nose Wheel:</td>
-              <td><input type="text" class="weight" id="noseWheelWeight" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="noseWheelArm" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="moment" id="noseWheelMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="noseWheelWeight" value="0" tabindex="5" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="noseWheelArm" value="0" tabindex="6" oninput="calcWB()"></td>
+              <td><input type="text" class="moment" id="noseWheelMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <td></td>
               <td colspan="3">----------------------------------------------</td>
             <tr>
               <td class="weightLabel">Empty Weight:</td>
-              <td><input type="text" class="weight" id="emptyWeight" value="0"></td>
-              <td><input type="text" class="arm" id="emptyArm" value="0" ></td>
-              <td><input type="text" class="moment" id="emptyMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="emptyWeight" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="arm" id="emptyArm" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="moment" id="emptyMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td></td>
@@ -73,41 +73,41 @@
             </tr>
             <tr>
               <td class="weightLabel">Pilot:</td>
-              <td><input type="text" class="weight" id="pilotWeight" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="pilotArm" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="moment" id="pilotMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="pilotWeight" value="0" tabindex="7" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="pilotArm" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="moment" id="pilotMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Passenger:</td>
-              <td><input type="text" class="weight" id="passengerWeight" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="passengerArm" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="moment" id="passengerMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="passengerWeight" value="0" tabindex="8" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="passengerArm" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="moment" id="passengerMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Right Wing Locker:</td>
-              <td><input type="text" class="weight" id="rightWingLockerWeight" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="rightWingLockerArm" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="moment" id="rightWingLockerMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="rightWingLockerWeight" value="0" tabindex="9" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="rightWingLockerArm" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="moment" id="rightWingLockerMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Left Wing Locker:</td>
-              <td><input type="text" class="weight" id="leftWingLockerWeight" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="leftWingLockerArm" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="moment" id="leftWingLockerMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="leftWingLockerWeight" value="0" tabindex="10" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="leftWingLockerArm" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="moment" id="leftWingLockerMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="fuelUnitLabel" id="fuelUnitLabel"></td>
-              <td><input type="text" class="fuelUnits" id="fuelUnits" value="0" oninput="calcWB()">
-                  <input type="text" class="fuelWeight" id="fuelWeight" value="0" readonly="readonly">
+              <td><input type="text" class="fuelUnits" id="fuelUnits" value="0" tabindex="11" oninput="calcWB()">
+                  <input type="text" class="fuelWeight" id="fuelWeight" value="0" tabindex="-1" readonly="readonly">
               </td>
-              <td><input type="text" class="fuelArm" id="fuelArm" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="fuelMoment" id="fuelMoment" value="0" ></td>
+              <td><input type="text" class="fuelArm" id="fuelArm" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="fuelMoment" id="fuelMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Rear Baggage:</td>
-              <td><input type="text" class="weight" id="rearBaggageWeight" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="rearBaggageArm" value="0" oninput="calcWB()"></td>
-              <td><input type="text" class="moment" id="rearBaggageMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="rearBaggageWeight" value="0" tabindex="12" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="rearBaggageArm" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="moment" id="rearBaggageMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td></td>
@@ -115,9 +115,9 @@
             </tr>
             <tr>
               <td class="weightLabel">Totals:</td>
-              <td><input type="text" class="weight" id="totalWeight" value="0"></td>
-              <td><input type="text" class="arm" id="totalArm" value="0" ></td>
-              <td><input type="text" class="moment" id="totalMoment" value="0" ></td>
+              <td><input type="text" class="weight" id="totalWeight" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="arm" id="totalArm" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="moment" id="totalMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td></td>
@@ -127,17 +127,19 @@
               <tr>
                 <td></td>
                 <td class="finalCogLabel">Final COG</td>
-                <td colspan="2"><input type="text" class="coords" id="cog" value="(0|0)" ></label></td>
+                <td colspan="2"><input type="text" class="coords" id="cog" value="(0|0)" tabindex="-1" readonly></label></td>
               </tr>
             </tfoot>
           </tbody>
         </table>
       </div> 
     </div>  
-    <div>
-      <button class="showacbutton" id="showAcButton" disabled onclick="showAcView()" >Aircraft View</button>
-      <button class="savebutton" id="saveButton" disabled onclick="saveAppData()" >Save</button>
-    </div>
+    <div class="buttonContainer" id="buttonContainer">
+      <button class="showAcButton" id="showAcButton" tabindex="13" onclick="showAcView()" >Aircraft View</button>
+      <button class="printButton" id="printButton" tabindex="13" onclick="printPage()" >Print Screen</button>
+      <button class="saveButton" id="saveButton" disabled tabindex="14" onclick="saveAppData()" >Save</button>
+      <button class="exitButton" id="exitButton" tabindex="14" onclick="exitApp()" >Exit</button>
+    </div>  
     <script type="text/javascript" src="renderer.js"></script>
   </body>
 </html>
