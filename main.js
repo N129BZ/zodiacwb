@@ -30,12 +30,9 @@ function loadAppData() {
     let adf = "";
     // make sure the file is stored in userData folder
     if (!fs.existsSync(jsonPath)) {
-        adf = fs.readFileSync(path.join(__dirname, "zodiacwb.json"), "utf8");
-        fs.writeFileSync(jsonPath, adf);
+        fs.copyFileSync(path.join(__dirname, "zodiacwb.json"), jsonPath);
     }
-    else {
-        adf = fs.readFileSync(jsonPath, "utf8");
-    }
+    adf = fs.readFileSync(jsonPath, "utf8");
     return JSON.parse(adf);
 };
 

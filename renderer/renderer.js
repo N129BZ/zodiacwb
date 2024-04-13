@@ -371,7 +371,8 @@ function placeDots(weight, moment) {
 		try {
 			let rgba = chartcanvas.getContext('2d', { willReadFrequently: true }).getImageData(x,y,1,1).data
 			if ((weight <= 1320 && weight >= 720) && (moment >= 270 && moment <= 455)) {
-				if (rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) {
+				if ((rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) || 
+				    (rgba[0] === 0 && rgba[1] === 0 && rgba[2] === 0)) { // on the black border line counts!!
 					color = appData.settings.underbgcolor;
 					tcolor = appData.settings.underbgcolor;
 					bgcolor = appData.settings.underbgcolor;;
@@ -426,7 +427,7 @@ const saveAppData = function() {
 
 const printScreen = function() {
 	buttonBox.setAttribute("style", "visibility:hidden");
-	setTimeout(() => window.print(), 200);
+	setTimeout(() => window.electronAPI.printscreen(), 200);
 	setTimeout(() => buttonBox.setAttribute("style", "visibility:visible"), 200);
 }
 
