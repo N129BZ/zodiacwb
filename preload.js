@@ -5,7 +5,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
    saveappdata: (newappdata) => ipcRenderer.send('appdata:save', newappdata),
    getappdata: () => ipcRenderer.invoke('appdata:get'),
    showdev: (devstate) => ipcRenderer.send('menu:showdev', devstate),
-   printpage: () => ipcRenderer.send('function:print'),
+   printscreen: () => ipcRenderer.send('function:print'),
    exitapp: () => ipcRenderer.send('function:exit'),
    receive: (channel, func) => {
       let validChannels = ["toggletheme", "toggleimperial", "togglemetric", "printpage"]; 

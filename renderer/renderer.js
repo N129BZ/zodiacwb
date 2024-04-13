@@ -18,6 +18,7 @@ const  chartcanvas = document.getElementById("chartcanvas");
 const  saveButton = document.getElementById("saveButton");
 const  showAcButton = document.getElementById("showAcButton");
 const  printButton = document.getElementById("printButton");
+const  buttonBox = document.getElementById("buttonContainer");
 const  exitButton = document.getElementById("exitButton");
 const  container = document.getElementById("container");
 const  mycog = document.getElementById("mycog");
@@ -246,7 +247,7 @@ const calcWB = function(isOnLoad = false) {
 	let emptyMom = lftMainMom + rtMainMom + noseWhlMom;
 	let emptyCg = Math.round(handleNaN(emptyMom / emptyWt));
 	emptyWeight.value = emptyWt;
-	emptyArm.value = `COG: ${emptyCg}`;
+	emptyArm.value = `CG: ${emptyCg}`;
 	emptyMoment.value = emptyMom; 
 	
 	let pltWt = handleNaN(pilotWeight.value); 
@@ -288,11 +289,10 @@ const calcWB = function(isOnLoad = false) {
 	let finalCog = Math.round(handleNaN(totalMom / totalWt));
 	
 	totalWeight.value = Math.round(totalWt);
-	totalCog.value = `COG: ${Math.round(finalCog)}`;
+	totalCog.value = `CG: ${Math.round(finalCog)}`;
 	totalMoment.value = Math.round(totalMom); 
 	
 	let cogtxt = `(${Math.round(finalCog)}, ${Math.round(totalWt)})`;
-	cog.value = cogtxt;
 	mycog.innerHTML = cogtxt;
 	accog.innerHTML = cogtxt.replace("(", "").replace(")", "");
 	placeDots(totalWt, finalCog);
@@ -406,12 +406,13 @@ function placeDots(weight, moment) {
 
 function placeAcDot(weight, moment, bgcolor, fgcolor) {
 	let yFactor = .2533;
-	let xFactor = .0291;
-	
-	let x = 496 + (+moment * xFactor);
-	let y = 324 - ((+weight - 600) * yFactor);
-	acDot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:absolute;top:${+y - 5}px;` +
-	                            `left:${+x - 5}px;background-color:${bgcolor};` + 
+	let xFactor = .3027;
+	let rect = document.getElementById("cgrectangle").getBoundingClientRect();
+	let xx = 455 - moment; //moment * xFactor; // * xFactor; // - rect.width ;
+	let x = (xx * xFactor) - 8;
+	let y = (rect.height - ((weight - 600) * yFactor)) + 10; 
+	acDot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:relative;top:${y}px;` +
+	                            `left:${x}px;background-color:${bgcolor};` + 
 								`padding:4px;border:2px; ${fgcolor};`);
 	let crosshair = document.getElementById("crosshair");
 	crosshair.setAttribute("style", "font-size:29px;position:relative;top:-13px;left:-5px;color:white;")
@@ -424,8 +425,10 @@ const saveAppData = function() {
 	saveButton.disabled = true;
 }
 
-const printPage = function() {
-	window.electronAPI.printpage();
+const printScreen = function() {
+	buttonBox.setAttribute("style", "visibility:hidden");
+	setTimeout(() => window.electronAPI.printscreen());
+	setTimeout(() => buttonBox.setAttribute("style", "visibility:visible"), 200);
 }
 
 function countClicks() {

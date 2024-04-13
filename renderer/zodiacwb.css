@@ -3,6 +3,7 @@ body {
     height: 100%;
     top: -49px;
 	overflow-x: hidden;
+	overflow-y: hidden;
     position: absolute;
 	background-color: white;
 }
@@ -11,10 +12,10 @@ body {
 }
 .acview {
     position: absolute;
-    top: 41px;
-    left: -7px;
-	background-color: white;
-    visibility: hidden;
+    top: 521px;
+    left: 70px;
+    background-color: white;
+    visibility: visible;
 }
 .dot {
 	height:10px;
@@ -35,13 +36,16 @@ body {
     font-size: large;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
+	text-align: center;
     color: black;
     position: absolute;
     padding: 5px;
     border: 1px solid black;
     border-radius: 10px;
-    top: 388px;
-    left: 196px;
+    top: 389px;
+    width: 88px;
+    height: 19px;
+    left: 180px;
 }
 .accoglabel {
 	font-size: large;
@@ -55,8 +59,8 @@ body {
 }
 .cgrectangle {
     position: absolute;
-    top: 146px;
-    left: 496px;
+    top: 117px;
+    left: 428px;
     width: 56px;
     height: 164px;
 }
@@ -72,7 +76,7 @@ body {
 	width: 370px;
 	position: absolute;
 	left: 60px;
-	top:150px;
+	top:136px;
 }
 .weightHeader {
 	font-family: Arial, Helvetica, sans-serif;
@@ -255,9 +259,10 @@ body {
 	text-align: right;
 	width: 60px;
 }
-.totalMoment {
+.cgTotals {
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: right;
+	font-weight: bold;
 	width: 60px;
 }
 .coords {
@@ -292,9 +297,9 @@ body {
 .buttonContainer {
 	position: absolute;
 	height: 35px;
-	width:529px;
-	left: -14px;
-	top: 588px;
+	width:360px;
+	left: 258px;
+	top: 65px;
 }
 .printButton {
 	font-family: Arial, Helvetica, sans-serif;
@@ -310,7 +315,7 @@ body {
     height: 30px;
     width: 100px;
     top: 0px;
-    left: 99px;
+    left: 235px;
 }
 .saveButton {
     font-family: Arial, Helvetica, sans-serif;
@@ -326,23 +331,7 @@ body {
     height: 30px;
     width: 100px;
     top: 0px;
-    left: 103px;
-}
-.showAcButton {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: normal;
-    text-align: center;
-    vertical-align: middle;
-    border: 1px solid darkgray;
-    border-radius: 4px;
-    border-color: gray;
-    position: relative;
-    background-color: lightgray;
-    color: black;
-    height: 30px;
-    width: 100px;
-    top: 0px;
-    left: 95px;
+    left: 237px;
 }
 .exitButton {
     font-family: Arial, Helvetica, sans-serif;
@@ -358,7 +347,7 @@ body {
     height: 30px;
     width: 100px;
     top: 0px;
-    left: 394px;
+    left: 240px;
 }
 button:disabled,
 button[disabled]{

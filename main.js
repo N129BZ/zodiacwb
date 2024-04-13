@@ -14,8 +14,10 @@ const url = require("url");
 const print = require("print");
 const fs = require("fs");
 const path = require("path");
-const jsonPath = path.join(app.getPath("userData"), "zodiacwb.json");
-const printImagePath = path.join(__dirname, "renderer", "printimage.png");
+const userPath = app.getPath("userData");
+const jsonPath = path.join(userPath, "zodiacwb.json");
+const printImagePath = path.join(userPath, "printimage.png");
+const printImageURL = url.pathToFileURL(printImagePath);
 
 app.commandLine.appendSwitch ("disable-http-cache");
 
@@ -102,12 +104,15 @@ Menu.setApplicationMenu(menu);
 if (require('electron-squirrel-startup')) app.quit();
 
 function createWindow () {
+    const pd = screen.getPrimaryDisplay();
+    var wh = {};
+    wh = pd.workAreaSize;
     var dtoggled = false;
-    var w = 850;
-    var h = 650; 
+
+    var w = 830;
+    var h = wh.height - 40; 
     if (isDebug) {
-        w = 1400;
-        h = 900;
+        w = wh.width;
     }
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -146,24 +151,6 @@ function createWindow () {
     });
     app.on('printpage', () => {
         getScreenShot();
-        /* mainWindow.webContents.capturePage({
-            x: 20,
-            y: 20,
-            width: 798,
-            height: 529
-        })
-        .then((img) => {
-            if (fs.existsSync(printImagePath)) fs.rmSync(printImagePath);
-            fs.writeFileSync(printImagePath, img.toPNG(), "base64", function (err) {
-                if (err) console.log(err);
-            });
-        })
-        .then(() => {
-            printPage();
-        })
-        .catch(error => {
-            console.log(error);
-        }) */
     });
     app.on('toggledev', () => {
         if (!dtoggled) {
@@ -220,7 +207,24 @@ ipcMain.on('appdata:save', (e, newappdata) => {
 });
 
 ipcMain.on('function:print', () => {
-    getScreenShot();
+    mainWindow.webContents.capturePage({
+        x: 0,
+        y: 0,
+        width: 820,
+        height: 930
+    })
+    .then((img) => {
+        if (fs.existsSync(printImagePath)) fs.rmSync(printImagePath);
+        fs.writeFileSync(printImagePath, img.toPNG(), "base64", function (err) {
+            if (err) console.log(err);
+        });
+    })
+    .catch(error => {
+        console.log(error);
+    })
+
+    createScreenshotHtmlPage();
+    printScreenShot();
 });
 
 ipcMain.on('function:exit', () => {
@@ -235,76 +239,60 @@ ipcMain.on('menu:showdev', (e, devstate) => {
     app.exit(0);
 });
 
-function getScreenShot() {
-    mainWindow.webContents.capturePage({
-        x: 20,
-        y: 20,
-        width: 805,
-        height: 520
-    })
-    .then((img) => {
-        if (fs.existsSync(printImagePath)) fs.rmSync(printImagePath);
-        fs.writeFileSync(printImagePath, img.toPNG(), "base64", function (err) {
-            if (err) console.log(err);
-        });
-    })
-    .then(() => {
-        printScreenShot();
-    })
-    .catch(error => {
-        console.log(error);
-    })
+function createScreenshotHtmlPage() {
+    let filepath = path.join(__dirname, "renderer", "printpage.html");
+    let file = fs.readFileSync(filepath, { encoding: 'utf-8', flag: 'r'});
+    let html = file.replace("fileURL", printImageURL);
+    fs.writeFileSync(path.join(userPath, "printpage.html"), html);
 }
 
 function printScreenShot() {
     const sfactor = screen.getPrimaryDisplay().scaleFactor;
-    const w = 788 / sfactor;
-    const h = 529 / sfactor;
+    const w = 850 / sfactor;
+    const h = 930 / sfactor;
     let win = new BrowserWindow({ width: w, 
                                   height: h,
                                   modal: true, 
                                   frame: false,
-                                  theme: 'light'
+                                  theme: 'light',
+                                  show: false
                                 });
-    win.loadURL(path.join(__dirname, "renderer", "printpage.html")); 
-    win.once('ready-to-show', () => {
+    win.loadFile(path.join(userPath, "printpage.html")); 
+    win.webContents.on('did-finish-load', function() {
         win.removeMenu();
         win.show();
-    });
-    win.webContents.on('did-finish-load', () => {
-    win.webContents.getPrintersAsync().then((data) => {
+
+        win.webContents.getPrintersAsync()
+        .then((data) => {
             let devicename;
             data.forEach((printer) => {
                 if (printer.isDefault) {
                     devicename = printer.name;
                 }
-            })
-
+            });
             const printoptions = {
                 deviceName: devicename,
-                silent: false,
-                margins: {marginType: 'none'},
+                silent: true,
                 printBackground: false,
                 color: true,
-                scaleFactor: 120,
+                margins: 'none',
+                //scaleFactor: 170,
+                pageRanges: [0, 0],
                 dpi: {horizontal: w, vertical: h},
                 landscape: false,
                 printBackground: false,
                 pagesPerSheet: 1,
+                
                 collate: false,
                 copies: 1,
-            };
-
-            try {
-                win.webContents.print(printoptions, () => {
-                    console.log("W & B printed!");
-                    win.close();
-                    win = null;
-                });
+                pageSize: "Letter"
             }
-            catch(error) {
-                console.log(error);
-            }
+        
+            win.webContents.print(printoptions, () => {
+                console.log("W & B printed!");
+                win.close();
+                win = null;
+            });
         })
         .catch(error => {
             console.log(error);
