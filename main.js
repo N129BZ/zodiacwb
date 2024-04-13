@@ -16,7 +16,7 @@ const fs = require("fs");
 const path = require("path");
 const userPath = app.getPath("userData");
 const jsonPath = path.join(userPath, "zodiacwb.json");
-const printImagePath = path.join(userPath, "printimage.png");
+const printImagePath = path.join(userPath, "printimage.jpg");
 const printImageURL = url.pathToFileURL(printImagePath);
 
 app.commandLine.appendSwitch ("disable-http-cache");
@@ -218,7 +218,7 @@ ipcMain.on('function:print', () => {
     })
     .then((img) => {
         if (fs.existsSync(printImagePath)) fs.rmSync(printImagePath);
-        fs.writeFileSync(printImagePath, img.toPNG(), "base64", function (err) {
+        fs.writeFileSync(printImagePath, img.toJPEG(100), "base64", function (err) {
             if (err) console.log(err);
         });
     })
@@ -250,9 +250,9 @@ function createScreenshotHtmlPage() {
 }
 
 function printScreenShot() {
-    const sfactor = screen.getPrimaryDisplay().scaleFactor;
-    const w = 850 / sfactor;
-    const h = 930 / sfactor;
+    const w = 850;
+    const h = 930;
+    
     let win = new BrowserWindow({ width: w, 
                                   height: h,
                                   modal: false, 
@@ -260,7 +260,7 @@ function printScreenShot() {
                                   theme: appData.settings.theme,
                                   show: false
                                 });
-    win.loadFile(path.join(userPath, "printpage.html")); 
+    win.loadFile(path.join(userPath, "printimage.jpg")); 
     win.webContents.on('did-finish-load', function() {
         win.removeMenu();
         win.show();
@@ -276,11 +276,26 @@ function printScreenShot() {
             });
             const printoptions = {
                 deviceName: devicename,
+                silent: false,
+                printBackground: false,
+                color: true,
+                margins: 'none',
+                pageRanges: [0, 0],
+                landscape: false,
+                dpi: { horizontal:101.750, vertical:101.750 },
+                printBackground: false,
+                pagesPerSheet: 1,
+                collate: false,
+                copies: 1,
+                pageSize: "Letter"
+            }
+            
+            /* const linuxprintoptions = {
+                deviceName: devicename,
                 silent: true,
                 printBackground: false,
                 color: true,
                 margins: 'none',
-                //scaleFactor: 170,
                 pageRanges: [0, 0],
                 dpi: {horizontal: w, vertical: h},
                 landscape: false,
@@ -289,13 +304,19 @@ function printScreenShot() {
                 collate: false,
                 copies: 1,
                 pageSize: "Letter"
-            }
-        
-            win.webContents.print(printoptions, () => {
-                console.log("W & B printed!");
-                win.close();
-                win = null;
-            });
+            } */
+
+            win.webContents.print(
+                printoptions, (success, failureReason) => {
+                   if (success) {
+                      console.log("W & B printed!");
+                   } else {
+                      console.log(failureReason);
+                   }
+                   win.close();
+                   win = null;  
+                }
+            );
         })
         .catch(error => {
             console.log(error);
