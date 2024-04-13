@@ -172,13 +172,12 @@ window.onload = async () => {
 	
 	rearBaggageWeight.value = valData.rbagweight;
 	rearBaggageArm.value = valData.rbagarm;
-
+	
+	drawChart();
+	drawAirplane();
 	loadCgMaps();
 	calcWB(true);
 };
-
-drawChart();
-drawAirplane();
 
 function drawChart() {
 	const ctx = chartcanvas.getContext("2d");
@@ -427,7 +426,7 @@ const saveAppData = function() {
 
 const printScreen = function() {
 	buttonBox.setAttribute("style", "visibility:hidden");
-	setTimeout(() => window.electronAPI.printscreen());
+	setTimeout(() => window.print(), 200);
 	setTimeout(() => buttonBox.setAttribute("style", "visibility:visible"), 200);
 }
 
@@ -443,21 +442,6 @@ function countClicks() {
 
 const showDev = function() {
 	window.electronAPI.showdev(devstate);
-}
-
-function showAcView() {
-	if (showAcButton.textContent === "Aircraft View") {
-		ismainview = false;
-		showAcButton.textContent = "Show Chart";
-		mainview.style = "visibility:hidden;"
-		acview.style = "visibility:visible;"
-		drawAirplane();
-	} else {
-		ismainview = true;
-		showAcButton.textContent = "Aircraft View";
-		acview.style = "visibility:hidden;"
-		mainview.style = "visibility:visible;"
-	}
 }
 
 function exitApp() {
@@ -477,6 +461,7 @@ window.matchMedia('(prefers-color-scheme: light)')
 		isdarktheme = false;
 		appData.settings.theme = "light";	
 	}
+	drawChart();
 	drawAirplane();
 	saveAppData();		
 });
@@ -487,6 +472,7 @@ window.matchMedia('(prefers-color-scheme: dark)')
 		isdarktheme = true;
 		appData.settings.theme = "dark";
 	}
+	drawChart();
 	drawAirplane();
 	saveAppData();		
 });

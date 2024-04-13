@@ -120,6 +120,7 @@ function createWindow () {
         height: h,
         frame: true,
         icon: path.join(__dirname, "zwblogo.png"),
+        theme: appData.settings.theme,
         webPreferences: {
             sandbox: false,
             preload: path.join(__dirname, "preload.js")
@@ -207,11 +208,16 @@ ipcMain.on('appdata:save', (e, newappdata) => {
 });
 
 ipcMain.on('function:print', () => {
+    const pd = screen.getPrimaryDisplay();
+    var wh = {};
+    wh = pd.workAreaSize;
+    var w = 830;
+    var h = wh.height - 40; 
     mainWindow.webContents.capturePage({
         x: 0,
         y: 0,
-        width: 820,
-        height: 930
+        width: w,
+        height: h
     })
     .then((img) => {
         if (fs.existsSync(printImagePath)) fs.rmSync(printImagePath);
@@ -252,9 +258,9 @@ function printScreenShot() {
     const h = 930 / sfactor;
     let win = new BrowserWindow({ width: w, 
                                   height: h,
-                                  modal: true, 
+                                  modal: false, 
                                   frame: false,
-                                  theme: 'light',
+                                  theme: appData.settings.theme,
                                   show: false
                                 });
     win.loadFile(path.join(userPath, "printpage.html")); 
@@ -268,6 +274,7 @@ function printScreenShot() {
             data.forEach((printer) => {
                 if (printer.isDefault) {
                     devicename = printer.name;
+                    return;
                 }
             });
             const printoptions = {
@@ -282,7 +289,6 @@ function printScreenShot() {
                 landscape: false,
                 printBackground: false,
                 pagesPerSheet: 1,
-                
                 collate: false,
                 copies: 1,
                 pageSize: "Letter"
