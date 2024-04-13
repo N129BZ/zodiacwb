@@ -1,7 +1,8 @@
 # Zenith Zodiac Weight and Balance
 Application for calculating a visible w&amp;b chart for Zenith 601xl and 650 aircraft
 
-This is a work in progress - Imperial/Metric functionality via menu: Edit -> Measurement Units -> Imperial (lb/in) or Metric (kg/mm)
+This is a work in progress - Imperial/Metric functionality via menu: Edit -> Measurement Units -> Imperial (lbs) or Metric (kg)
+- Note that the official Zenith 602/650 Weight and Balance arms are give in millimeters, since the design was metric to begin with!
 
 See instructions in the wiki: https://github.com/N129BZ/zodiacwb/wiki
 
