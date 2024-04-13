@@ -69,10 +69,10 @@ const template = [
     { 
         label: 'Unit of Measure',
         submenu: [
-            { label: "Imperial (pounds/inches)",
+            { label: "Imperial Weight (pounds)",
                 click: () => app.emit('toggleimperial')
             },
-            { label: "Metric (kilograms/millimeters)",
+            { label: "Metric Weight (kilograms)",
                 click: () => app.emit('togglemetric')
             }
         ]
