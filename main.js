@@ -18,6 +18,9 @@ const userPath = app.getPath("userData");
 const jsonPath = path.join(userPath, "zodiacwb.json");
 const printImagePath = path.join(userPath, "printimage.jpg");
 const printImageURL = url.pathToFileURL(printImagePath);
+const isSWin32 = process.platform === "win32" ? true : false;
+const isMac = process.platform === "darwin" ? true : false;
+const isLinux = process.platform === "linux" ? true : false;
 
 app.commandLine.appendSwitch ("disable-http-cache");
 
@@ -37,7 +40,7 @@ function loadAppData() {
 };
 
 const template = [
-    ...(process.platform === "darwin"
+    ...(isMac
         ? [{
             label: app.name,
             submenu: [
@@ -57,7 +60,7 @@ const template = [
     { 
         label: 'File',
         submenu: [
-            process.platform === "darwin" ? { role: 'close' } : { role: 'quit' },
+            isMac ? { role: 'close' } : { role: 'quit' },
             { label: 'Print',
                 click: () => app.emit('printpage')
             }
@@ -80,7 +83,7 @@ const template = [
         submenu: [
             { role: 'togglefullscreen' },
             { label: 'Toggle Dark Mode',
-                accelerator: process.platform === 'darwin' ? 'Alt+Cmd+T' : 'Alt+Ctrl+T',
+                accelerator: isMac ? 'Alt+Cmd+T' : 'Alt+Ctrl+T',
                 click: () => app.emit('toggletheme')
             },
             { role: "separator"},
@@ -274,9 +277,11 @@ function printScreenShot() {
                     return;
                 }
             });
+
             const printoptions = {
                 deviceName: devicename,
-                silent: false,
+                // linux freezes on opening the printer dialog, but works if silent = true 
+                silent: isLinux ? true : false,
                 printBackground: false,
                 color: true,
                 margins: 'none',
@@ -290,22 +295,6 @@ function printScreenShot() {
                 pageSize: "Letter"
             }
             
-            /* const linuxprintoptions = {
-                deviceName: devicename,
-                silent: true,
-                printBackground: false,
-                color: true,
-                margins: 'none',
-                pageRanges: [0, 0],
-                dpi: {horizontal: w, vertical: h},
-                landscape: false,
-                printBackground: false,
-                pagesPerSheet: 1,
-                collate: false,
-                copies: 1,
-                pageSize: "Letter"
-            } */
-
             win.webContents.print(
                 printoptions, (success, failureReason) => {
                    if (success) {
