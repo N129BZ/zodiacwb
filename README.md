@@ -6,7 +6,7 @@ This is a work in progress - Imperial/Metric functionality via menu: Edit -> Mea
 
 See instructions in the wiki: https://github.com/N129BZ/zodiacwb/wiki
 
-
+### Note: These screenshots are in Metric (kg) mode. Imperial mode uses lbs.
 ## Light Theme
 ![printimage-light](https://github.com/N129BZ/zodiacwb/assets/47579080/8559777d-c288-4617-b8d5-16ecb1b64f33)
 
