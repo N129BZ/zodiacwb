@@ -123,7 +123,54 @@
       </div>
       <label class="accoglabel" id="accoglabel">Computed CG:</label>
       <label class="accog" id="accog"></label>  
-    </div>  
+    </div> 
+    <div class="convertview" id="convertview">
+      <label id="convertlabel" style="font-family:Arial,Helvetica,sans-serif;text-align:center;font-size:large;font-weight:bold;"></label>
+      <table>
+        <thead>
+          <td></td>
+          <td style = "font-family: Arial, Helvetica, sans-serif;font-size:large;font-weight:bold;text-align:center;">Inches</td>
+          <td style = "font-family: Arial, Helvetica, sans-serif;font-size:large;font-weight:bold;text-align:center;">Millimeters</td>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="weightLabel">Right Main:</td>
+            <td><input type="text" class="arm" id="leftval-1" value="0" tabindex="1" oninput="calcMM(this)"></td>
+            <td><input type="text" class="arm" id="rightval-1" value="0" tabindex="-1" readonly></td>
+          </tr>
+          <tr>
+            <td class="weightLabel">Left Main:</td>
+            <td><input type="text" class="arm" id="leftval-2" value="0" tabindex="2" oninput="calcMM(this)"></td>
+            <td><input type="text" class="arm" id="rightval-2" value="0" tabindex="-1" readonly></td>
+          </tr>
+          <tr>
+            <td class="weightLabel">Nose Wheel:</td>
+            <td><input type="text" class="arm" id="leftval-3" value="0" tabindex="3" oninput="calcMM(this)"></td>
+            <td><input type="text" class="arm" id="rightval-3" value="0" tabindex="-1" readonly></td>
+          </tr>
+          <tr>
+            <td class="weightLabel">Pilot & Psgr:</td>
+            <td><input type="text" class="arm" id="leftval-4" value="0" tabindex="4" oninput="calcMM(this)"></td>
+            <td><input type="text" class="arm" id="rightval-4" value="0" tabindex="-1" readonly></td>
+          </tr>
+          <tr>
+            <td class="weightLabel">Wing Lockers:</td>
+            <td><input type="text" class="arm" id="leftval-5" value="0" tabindex="5" oninput="calcMM(this)"></td>
+            <td><input type="text" class="arm" id="rightval-5" value="0" tabindex="-1" readonly></td>
+          </tr>
+          <tr>
+            <td class="weightLabel">Fuel Tanks:</td>
+            <td><input type="text" class="arm" id="leftval-6" value="0" tabindex="6" oninput="calcMM(this)">
+            <td><input type="text" class="arm" id="rightval-6" value="0" tabindex="-1" readonly="readonly">
+          </tr>
+          <tr>
+            <td class="weightLabel">Rear Baggage:</td>
+            <td><input type="text" class="arm" id="leftval-7" value="0" tabindex="7" oninput="calcMM(this)"></td>
+            <td><input type="text" class="arm" id="rightval-7" value="0" tabindex="-1" readonly></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
     <div class="buttonContainer" id="buttonContainer">
       <button class="printButton" id="printButton" tabindex="13" onclick="printScreen()" >Print Screen</button>
       <button class="saveButton" id="saveButton" disabled tabindex="14" onclick="saveAppData()" >Save</button>

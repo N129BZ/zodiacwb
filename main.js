@@ -74,6 +74,16 @@ const template = [
             },
             { label: "Metric Weight (kilograms)",
                 click: () => app.emit('togglemetric')
+            },
+            { label: "Conversion Modes",
+                submenu: [
+                    { label: "Convert inch arms to mm", 
+                        click: () => mainWindow.webContents.send("convert", "inches")
+                    },
+                    { label: "Convert pound weights to kg",
+                        click: () => mainWindow.webContents.send("convert", "pounds")
+                    }
+                ]
             }
         ]
     
@@ -170,6 +180,12 @@ function createWindow () {
             w = 900;
         }
         mainWindow.setSize(w, h, true);
+    });
+    app.on('convertinches', () => {
+        mainWindow.webContents.send("convert", {"convert": "INCHES!!!"});
+    });
+    app.on('convertpounds', () => {
+        mainWindow.webContents.send("convert", {"convert": "POUNDS!!!"})
     });
 }
 

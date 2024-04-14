@@ -1,5 +1,6 @@
 "use strict";
 
+
 var appData = {};
 var valData = {};
 var devstate = { "state": false };
@@ -13,6 +14,7 @@ const  momentMap = new Map();
 
 const  mainview = document.getElementById("mainview");
 const  acview = document.getElementById("acview");
+const  convertview = document.getElementById("convertview");
 const  accanvas = document.getElementById("accanvas");
 const  chartcanvas = document.getElementById("chartcanvas");  
 const  saveButton = document.getElementById("saveButton");
@@ -467,6 +469,7 @@ window.matchMedia('(prefers-color-scheme: light)')
 	saveAppData();		
 });
 
+
 window.matchMedia('(prefers-color-scheme: dark)') 
 		.addEventListener('change', ({ matches }) => {
 	if(matches) {
@@ -477,6 +480,28 @@ window.matchMedia('(prefers-color-scheme: dark)')
 	drawAirplane();
 	saveAppData();		
 });
+
+function calcMM(element) {
+	console.log(element.id, element.value);
+	let ids = `${element.id}`.split("-");
+	let rte = document.getElementById(`rightval-${ids[1]}`);
+	rte.value = Math.round(element.value * 25.4);
+}
+
+window.electronAPI.onConvertUnits((unit) => {
+	let cl = document.getElementById("convertlabel");
+	if (unit === "inches") {
+		cl.innerText ="Enter inches to convert to millimeters";
+		acview.setAttribute("style", "visibility:hidden");
+		mainview.setAttribute("style", "visibility:hidden");
+		container.setAttribute("style", "visibility:hidden");
+		convertview.setAttribute("style", "visibility:visible");
+	} else {
+		cl.innerText ="Enter pounds to convert to kilograms";
+	}
+
+});
+
 // document.onmousedown = function(event){
 // 	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
 // }
