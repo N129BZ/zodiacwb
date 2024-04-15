@@ -506,7 +506,7 @@ window.electronAPI.onConvertUnits(() => {
 			  "Enter your inch arm values in the arm entry fields.\r\r" +
 			  "The application will automatically translate those inch arm\r" +
 			  "values to millimeters on-the-fly. When you exit Convert Mode\r" +
-			  "all converted values will be saved."
+			  "you will be asked for confirmation to save your entries."
 			);
 		return;
 	}
