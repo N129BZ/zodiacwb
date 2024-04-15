@@ -8,6 +8,7 @@ var clickcount = 0;
 var usemetric = false;
 var isdarktheme = false; 
 var ismainview = true;
+var inConvertMode = false;
 
 const  weightMap = new Map();
 const  momentMap = new Map();
@@ -178,7 +179,7 @@ window.onload = async () => {
 	drawChart();
 	drawAirplane();
 	loadCgMaps();
-	calcWB(true);
+	calcWB(null, true);
 };
 
 function drawChart() {
@@ -219,26 +220,59 @@ const calcFuel = function() {
 	return [fuelwt, fuelmom];
 }
 
-const calcWB = function(isOnLoad = false) {
+function UnitToConvert(unit) {}
+UnitToConvert.unit = {
+    pounds: "pounds",
+    inches: "inches",
+	nothing: "null"
+}
+
+function convertValue(someNumber, unit) {
+	let realnum = handleNaN(someNumber);
+	if (!inConvertMode) {
+		return realnum;
+	}
+	if (unit === UnitToConvert.pounds) {
+		return Math.round(+(realnum * 0.453592));
+	} else if (unit === UnitToConvert.inches) {
+		return round(realnum * 25.4)
+	}
+}
+
+
+const calcWB = function(field, isOnLoad = false) {	
 	
 	saveButton.disabled = isOnLoad;
+	
+	if (inConvertMode) {
+		let cvtunit = UnitToConvert.nothing;
+		let fv = field.value;
+		if (field.className === "arm") {
+			cvtunit = UnitToConvert.inches;
+		} 
+		else if (field.className === "weight") {
+			cvtunit = UnitToConvert.pounds;
+		} 
+		field.value = convertValue(fv, cvtunit)
+		return;
+	}
 
-	let rtMainWt = handleNaN(rightMainWeight.value);
-	let rtMainArm = handleNaN(rightMainArm.value);
+	let rtMainWt = +rightMainWeight.value;
+	let rtMainArm = +rightMainArm.value;
 	let rtMainMom = rtMainWt * rtMainArm;
 	rightMainMoment.value = rtMainMom;
 	valData.rmweight = rtMainWt;
 	valData.rmarm = rtMainArm;
 	
-	let lftMainmWt = handleNaN(leftMainWeight.value)
-	let lftMainArm = handleNaN(leftMainArm.value);
+	let lftMainmWt = +leftMainWeight.value; 
+	let lftMainArm = +leftMainArm.value;
 	let lftMainMom =  lftMainmWt * lftMainArm;
 	leftMainMoment.value = lftMainMom;
 	valData.lmweight = lftMainmWt;
 	valData.lmarm = lftMainArm;
 	
-	let noseWhlWt = handleNaN(noseWheelWeight.value);
-	let noseWhlArm = handleNaN(noseWheelArm.value);
+	let noseWhlWt = +noseWheelWeight.value;
+	let noseWhlArm = +noseWheelArm.value;
 	let noseWhlMom = noseWhlWt * noseWhlArm;
 	noseWheelMoment.value = noseWhlMom;
 	valData.nwweight = noseWhlWt;
@@ -246,39 +280,39 @@ const calcWB = function(isOnLoad = false) {
 	
 	let emptyWt = + lftMainmWt + rtMainWt + noseWhlWt;
 	let emptyMom = lftMainMom + rtMainMom + noseWhlMom;
-	let emptyCg = Math.round(handleNaN(emptyMom / emptyWt));
+	let emptyCg = Math.round(emptyMom / emptyWt);
 	emptyWeight.value = emptyWt;
 	emptyArm.value = `CG: ${emptyCg}`;
 	emptyMoment.value = emptyMom; 
 	
-	let pltWt = handleNaN(pilotWeight.value); 
-	let pltArm = handleNaN(pilotArm.value);
+	let pltWt = +pilotWeight.value; 
+	let pltArm = +pilotArm.value;
 	let pltMom = pltWt * pltArm;
 	pilotMoment.value = pltMom;
 	valData.pilotweight = pltWt;
 	
-	let psgrWt = handleNaN(passengerWeight.value);
-	let psgrArm = handleNaN(passengerArm.value);
+	let psgrWt = +passengerWeight.value;
+	let psgrArm = +passengerArm.value;
 	let psgrMom = psgrWt * psgrArm; 
 	passengerMoment.value = psgrMom;
 	valData.psgrweight = psgrWt;
 	
-	let rtWngLkrWt = handleNaN(rightWingLockerWeight.value);
-	let rtWngLkrArm = handleNaN(rightWingLockerArm.value);
+	let rtWngLkrWt = +rightWingLockerWeight.value;
+	let rtWngLkrArm = +rightWingLockerArm.value;
 	let rtWngLkrMom = rtWngLkrWt * rtWngLkrArm;
 	rightWingLockerMoment.value = rtWngLkrMom;
 	valData.rwlockweight = rtWngLkrWt;
 	
-	let lftWngLkrWt = handleNaN(leftWingLockerWeight.value); 
-	let lftWngLkrArm = handleNaN(leftWingLockerArm.value);
+	let lftWngLkrWt = +leftWingLockerWeight.value; 
+	let lftWngLkrArm = +leftWingLockerArm.value;
 	let lftWngLkrMom = lftWngLkrWt * lftWngLkrArm;
 	leftWingLockerMoment.value = lftWngLkrMom;
 	valData.lwlockweight = lftWngLkrWt;
 	
 	let fuelnums = calcFuel(); // returns [weight, moment]
 	
-	let rearBgWt = handleNaN(rearBaggageWeight.value); 
-	let rearBgArm = handleNaN(rearBaggageArm.value);  
+	let rearBgWt = +rearBaggageWeight.value; 
+	let rearBgArm = +rearBaggageArm.value;  
 	let rearBgMom = rearBgWt * rearBgArm;
 	rearBaggageMoment.value = rearBgMom;
 	valData.rbagweight = rearBgWt;
@@ -287,7 +321,7 @@ const calcWB = function(isOnLoad = false) {
 	let totalArmArray = [emptyMom, pltMom, psgrMom, rtWngLkrMom, lftWngLkrMom , fuelnums[1], rearBgMom];
 	let totalWt = addArray(totalWtArray);
 	let totalMom = addArray(totalArmArray);
-	let finalCog = Math.round(handleNaN(totalMom / totalWt));
+	let finalCog = Math.round(totalMom / totalWt);
 	
 	totalWeight.value = Math.round(totalWt);
 	totalCog.value = `CG: ${Math.round(finalCog)}`;
@@ -306,13 +340,13 @@ function applyTextColors(isoverwt) {
 		totalWeight.setAttribute("style", `color:${colors.underfgcolor};background-color:${colors.underbgcolor};`);
 		totalCog.setAttribute("style", `color:${colors.underfgcolor};background-color:${colors.underbgcolor};`);
 		totalMoment.setAttribute("style", `color:${colors.underfgcolor};background-color:${colors.underbgcolor};`);
-		cog.setAttribute("style", `color:${colors.underfgcolor};background-color:${colors.underbgcolor};`);
+		mycog.setAttribute("style", `color:${colors.underfgcolor};background-color:${colors.underbgcolor};`);
 	} 
 	else {
 		totalWeight.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
 		totalCog.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
 		totalMoment.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
-		cog.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
+		mycog.setAttribute("style", `color:${colors.overfgcolor};background-color:${colors.overbgcolor};`);
 	}
 }
 
@@ -321,7 +355,7 @@ function handleNaN(theNumber) {
 	if (theNumber === "" || isNaN(theNumber)) {
 		// do nothing
 	} else {
-		tv = parseInt(theNumber)
+		tv = +theNumber
 	}
 	return tv;
 }
@@ -391,7 +425,7 @@ function placeDots(weight, moment) {
 		
 	}
 	catch (error) {
-		console.log(error.message);
+		console.log(error);
 	}
 
 	if (usemetric) {
@@ -481,27 +515,26 @@ window.matchMedia('(prefers-color-scheme: dark)')
 	saveAppData();		
 });
 
-function calcMM(element) {
-	console.log(element.id, element.value);
-	let ids = `${element.id}`.split("-");
-	let rte = document.getElementById(`rightval-${ids[1]}`);
-	rte.value = Math.round(element.value * 25.4);
-}
-
-window.electronAPI.onConvertUnits((unit) => {
-	let cl = document.getElementById("convertlabel");
-	if (unit === "inches") {
-		cl.innerText ="Enter inches to convert to millimeters";
-		acview.setAttribute("style", "visibility:hidden");
-		mainview.setAttribute("style", "visibility:hidden");
-		container.setAttribute("style", "visibility:hidden");
-		convertview.setAttribute("style", "visibility:visible");
-	} else {
-		cl.innerText ="Enter pounds to convert to kilograms";
+window.electronAPI.onConvertUnits(() => {
+	if (!usemetric) {
+		alert("Convert Mode automatically converts pounds and inches\r" +
+		      "into kilos and millimeters.\r\r" +
+		      "You must be in Kilos-Millimeters View to enter Convert Mode.\r" +
+			  "Enter your pound weight & inch arm values in the entry area.\r\r" +
+			  "The application will automatically translate those values to\r" + 
+			  "metric on-the-fly."
+			);
+		return;
 	}
-
+	inConvertMode = true;
+	let blinker = document.getElementById("blinkercontainer");
+	blinker.setAttribute("style", "visibility:visible;");
 });
+
+function stopConverting() {
+	window.electronAPI.exitconvert();
+}
 
 // document.onmousedown = function(event){
 // 	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
-// }
+//}

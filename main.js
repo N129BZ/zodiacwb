@@ -67,26 +67,18 @@ const template = [
         ]
     },
     { 
-        label: 'Unit of Measure',
+        label: 'Units of Measure',
         submenu: [
-            { label: "Imperial Weight (pounds)",
+            { label: "Pounds and Inches",
                 click: () => app.emit('toggleimperial')
             },
-            { label: "Metric Weight (kilograms)",
+            { label: "Kilos and Milligrams)",
                 click: () => app.emit('togglemetric')
             },
-            { label: "Conversion Modes",
-                submenu: [
-                    { label: "Convert inch arms to mm", 
-                        click: () => mainWindow.webContents.send("convert", "inches")
-                    },
-                    { label: "Convert pound weights to kg",
-                        click: () => mainWindow.webContents.send("convert", "pounds")
-                    }
-                ]
+            { label: "Convert Inches-Pounds to Metric", 
+                click: () => mainWindow.webContents.send("convert", "convertvalues")
             }
         ]
-    
     },
     {
         label: 'View',
@@ -181,11 +173,9 @@ function createWindow () {
         }
         mainWindow.setSize(w, h, true);
     });
-    app.on('convertinches', () => {
-        mainWindow.webContents.send("convert", {"convert": "INCHES!!!"});
-    });
-    app.on('convertpounds', () => {
-        mainWindow.webContents.send("convert", {"convert": "POUNDS!!!"})
+    app.on('convert', () => {
+        inConvertMode = !inConvertMode;
+        mainWindow.webContents.send("convert");
     });
 }
 
@@ -223,6 +213,10 @@ ipcMain.on('appdata:save', (e, newappdata) => {
     saveAppData();
 });
 
+ipcMain.on('function:exitconvert', () => {
+    mainWindow.reload(); 
+});
+ 
 ipcMain.on('function:print', () => {
     const pd = screen.getPrimaryDisplay();
     var wh = {};
