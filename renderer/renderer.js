@@ -220,41 +220,25 @@ const calcFuel = function() {
 	return [fuelwt, fuelmom];
 }
 
-function UnitToConvert(unit) {}
-UnitToConvert.unit = {
-    pounds: "pounds",
-    inches: "inches",
-	nothing: "null"
-}
-
 function convertValue(someNumber, unit) {
 	let realnum = handleNaN(someNumber);
 	if (!inConvertMode) {
 		return realnum;
-	}
-	if (unit === UnitToConvert.pounds) {
-		return Math.round(+(realnum * 0.453592));
-	} else if (unit === UnitToConvert.inches) {
-		return round(realnum * 25.4)
+	} else {
+		return Math.round(realnum * 25.4)
 	}
 }
 
 
-const calcWB = function(field, isOnLoad = false) {	
+const calcWB = function(field = null, isOnLoad = false) {	
 	
 	saveButton.disabled = isOnLoad;
 	
-	if (inConvertMode) {
-		let cvtunit = UnitToConvert.nothing;
-		let fv = field.value;
+	if (!isOnLoad && inConvertMode) {
 		if (field.className === "arm") {
-			cvtunit = UnitToConvert.inches;
-		} 
-		else if (field.className === "weight") {
-			cvtunit = UnitToConvert.pounds;
-		} 
-		field.value = convertValue(fv, cvtunit)
-		return;
+			field.value = convertValue(+field.value)
+			return;
+		}
 	}
 
 	let rtMainWt = +rightMainWeight.value;
@@ -516,25 +500,37 @@ window.matchMedia('(prefers-color-scheme: dark)')
 });
 
 window.electronAPI.onConvertUnits(() => {
-	if (!usemetric) {
-		alert("Convert Mode automatically converts pounds and inches\r" +
-		      "into kilos and millimeters.\r\r" +
-		      "You must be in Kilos-Millimeters View to enter Convert Mode.\r" +
-			  "Enter your pound weight & inch arm values in the entry area.\r\r" +
-			  "The application will automatically translate those values to\r" + 
-			  "metric on-the-fly."
+	if (usemetric) {
+		alert("Convert Mode automatically converts inches to millimeters.\r\r" +
+		      "You must be in Weight in Pounds view to enter Convert Mode.\r" +
+			  "Enter your inch arm values in the arm entry fields.\r\r" +
+			  "The application will automatically translate those inch arm\r" +
+			  "values to millimeters on-the-fly. When you exit Convert Mode\r" +
+			  "all converted values will be saved."
 			);
 		return;
 	}
 	inConvertMode = true;
 	let blinker = document.getElementById("blinkercontainer");
 	blinker.setAttribute("style", "visibility:visible;");
+	unsetArmsReadOnly();
 });
 
 function stopConverting() {
+	if (confirm("Do you want to save the converted arm data?")) {
+		inConvertMode = false;
+		calcWB();
+		saveAppData();
+	}
 	window.electronAPI.exitconvert();
 }
 
+function unsetArmsReadOnly() {
+	var arms = document.getElementsByClassName("arm");
+	for (var i = 0; i < arms.length; i++) {
+		arms[i].readOnly = false;
+	}
+}
 // document.onmousedown = function(event){
 // 	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
 //}

@@ -69,13 +69,13 @@ const template = [
     { 
         label: 'Units of Measure',
         submenu: [
-            { label: "Pounds and Inches",
+            { label: "Weight in Pounds",
                 click: () => app.emit('toggleimperial')
             },
-            { label: "Kilos and Milligrams)",
+            { label: "Weight in Kilograms",
                 click: () => app.emit('togglemetric')
             },
-            { label: "Convert Inches-Pounds to Metric", 
+            { label: "Convert Mode - Inches to Millimeters", 
                 click: () => mainWindow.webContents.send("convert", "convertvalues")
             }
         ]
@@ -216,7 +216,7 @@ ipcMain.on('appdata:save', (e, newappdata) => {
 ipcMain.on('function:exitconvert', () => {
     mainWindow.reload(); 
 });
- 
+
 ipcMain.on('function:print', () => {
     const pd = screen.getPrimaryDisplay();
     var wh = {};
