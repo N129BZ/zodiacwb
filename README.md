@@ -1,29 +1,36 @@
 # Zenith Zodiac Weight and Balance
-Application for calculating a visible w&amp;b chart for Zenith 601xl and 650 aircraft
+Application for calculating visible Weight and Balance information for Zenith 601xl and 650 aircraft
 
-This is a work in progress - Pounds or Kilograms functionality via menu: Edit -> Measurement Units -> Weight in Pounds or Weight in Kilograms
-Print Screen button prints out a copy for your records - the FAA won't bust you for not knowing your numbers!
-- Note that the official Zenith 602/650 Weight and Balance arms are given in millimeters, since the aircraft design was metric to begin with!
-- If you have an AMD Zodiac and the POH lists the empty weight arms in **inches**:
+### Pounds or Kilograms functionality via menu: Edit -> Measurement Units -> Weight in Pounds or Weight in Kilograms  
+
+### Print Screen button prints out a copy for your records - the FAA won't bust you for not knowing your numbers!
+- **Note that the official Zenith 602/650 Weight and Balance arms are given in millimeters**, since the aircraft design was metric to begin with!
+- **USA aircraft use pounds for weights, so they would use the Weight in Pounds view, Metric countries would use the Weight in Kilograms view.** 
+- **If your arm values are in inches,** (for example, the AMD Zodiac POH lists the empty weight arms in **inches**):
   -  Enter **Convert Mode** via menu: Measurement Units -> Convert Mode - Inches to Millimeters.
   -  Enter the inch arm values into the arm inputs. Entries will be immediately converted to millimeters.  
   -  Exit Convert Mode by clicking anywhere on the red instruction box.
   -  You will get a confirmation dialog asking if you want to save the entries.
   -  The application will re-load and all moments will be re-calculated.
-  -  **You'll never have to do that again!**  
+  -  **You'll never need to do that again!**  
 
 See instructions in the wiki: https://github.com/N129BZ/zodiacwb/wiki
 
-### Imperial mode weights are in pounds, metric weights in kilograms.
+### Two Units of Measurement modes - Weight in Pounds or Weight in Kilograms. (The "Light Theme" picture below shows the Weight in Kilograms view.)
 
-![printimage](https://github.com/N129BZ/zodiacwb/assets/47579080/4e8631c4-e033-41d6-a5d5-fdcf999457df)
+## Convert Mode
+![printimage](https://github.com/N129BZ/zodiacwb/assets/47579080/d721dcfb-457b-43f9-b605-92e84762d230)
 
-## Light Theme
-![printimage-light](https://github.com/N129BZ/zodiacwb/assets/47579080/8559777d-c288-4617-b8d5-16ecb1b64f33)
+## Light Theme - shown in "Weight in Kilograms" mode
+![printimage](https://github.com/N129BZ/zodiacwb/assets/47579080/85e3841a-213b-463c-bc43-87578984fcde)
+
+## Dark Theme - shown in "Weight in Pounds" mode
+![printimage](https://github.com/N129BZ/zodiacwb/assets/47579080/e0219145-39a6-441a-8745-0b62ad503c3f)
+
+## Overweight - numbers and indicators are RED!!
+![printimage](https://github.com/N129BZ/zodiacwb/assets/47579080/19a953ac-222f-4ac4-b90a-8e2d70938b2d)
 
 
-## Dark Theme
-![printimage-dark](https://github.com/N129BZ/zodiacwb/assets/47579080/a2365840-8b25-4e4d-87e6-a3e21446c2cc)
 
 
 
