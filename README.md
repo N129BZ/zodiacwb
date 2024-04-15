@@ -1,5 +1,5 @@
 # Zenith Zodiac Weight and Balance
-Application for calculating visible Weight and Balance information for Zenith 601xl and 650 aircraft
+### Application for calculating visible Weight and Balance information for Zenith 601xl and 650 aircraft
 
 ### Pounds or Kilograms functionality via menu: Edit -> Measurement Units -> Weight in Pounds or Weight in Kilograms  
 
