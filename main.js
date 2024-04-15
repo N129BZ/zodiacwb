@@ -154,7 +154,7 @@ function createWindow () {
         mainWindow.webContents.capturePage()
     });
     app.on('printpage', () => {
-        getScreenShot();
+        handlePrinting();
     });
     app.on('toggledev', () => {
         if (!dtoggled) {
@@ -219,7 +219,11 @@ ipcMain.on('function:exitconvert', () => {
 });
 
 ipcMain.on('function:print', (e, printpdf) => {
-    if (printpdf) {
+    handlePrinting(printpdf);
+});
+
+function handlePrinting() {
+    if (appData.settings.printaspdf) {
         printToPdf();
     } else {
         const pd = screen.getPrimaryDisplay();
@@ -250,7 +254,7 @@ ipcMain.on('function:print', (e, printpdf) => {
             mainWindow.reload();
         })   
     }
-});
+}
 
 ipcMain.on('function:exit', () => {
     mainWindow.close();
@@ -338,7 +342,7 @@ function printToPdf() {
     let options = {
         title: "Save Screenshot As PDF",
         filters: [{ name: "PDF Files", extensions: ["pdf"]}, { name: 'All Files', extensions: ['*'] }],
-        properties: ["openFile"]
+        properties: isLinux ? ["openFile", "openDirectory"] : ["openFile"]
     }
     let pdfPath = dialog.showSaveDialogSync(mainWindow, options)
     if (pdfPath != undefined) {

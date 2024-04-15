@@ -320,6 +320,7 @@ const calcWB = function(field = null) {
 	mycog.innerHTML = cogtxt;
 	accog.innerHTML = cogtxt.replace("(", "").replace(")", "");
 	placeDots(totalWt, finalCog);
+	isLoading = false;
 }
 
 // change colors of textboxes to match condition
@@ -540,6 +541,7 @@ function togglePrintPDF(chkbox) {
 	if (!isLoading) {
 		printpdf = chkbox.checked;
 		appData.settings.printaspdf = printpdf;
+		saveAppData();
 	}
 }
 // document.onmousedown = function(event){
