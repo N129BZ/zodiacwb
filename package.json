@@ -61,11 +61,17 @@
     "linux": {
       "target": [
         "AppImage",
-        "deb"
+        "apk",
+        "deb",
+        "snap"
       ]
     },
     "win": {
       "target": "NSIS",
+      "arch": [
+        "x64",
+        "ia32"
+      ],
       "icon": "./zwblogo.png"
     }
   }
