@@ -237,8 +237,8 @@ const calcWB = function(field = null, isOnLoad = false) {
 	if (!isOnLoad && inConvertMode) {
 		if (field.className === "arm") {
 			field.value = convertValue(+field.value)
-			return;
 		}
+		return;
 	}
 
 	let rtMainWt = +rightMainWeight.value;
@@ -447,8 +447,8 @@ const saveAppData = function() {
 
 const printScreen = function() {
 	buttonBox.setAttribute("style", "visibility:hidden");
-	setTimeout(() => window.electronAPI.printscreen(), 200);
-	setTimeout(() => buttonBox.setAttribute("style", "visibility:visible"), 200);
+	setTimeout(() => window.electronAPI.printscreen(), 300);
+	setTimeout(() => buttonBox.setAttribute("style", "visibility:visible"), 300);
 }
 
 function countClicks() {
