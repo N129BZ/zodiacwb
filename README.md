@@ -4,7 +4,8 @@
 ### Pounds or Kilograms functionality via menu: Edit -> Measurement Units -> Weight in Pounds or Weight in Kilograms  
 
 ### Print Screen button prints out a copy for your records - the FAA won't bust you for not knowing your numbers!
-- **Note that the official Zenith 602/650 Weight and Balance arms are given in millimeters**, since the aircraft design was metric to begin with!
+- **Note that the official Zenith 602/650 Weight and Balance arms are given in millimeters**, since the aircraft design was metric to begin with.
+- **ALSO NOTE that the arm values for the aircraft loads are the official millimeter arms as designated by the designer, Chris Heintz**
 - **USA aircraft use pounds for weights, so they would use the Weight in Pounds view, Metric countries would use the Weight in Kilograms view.** 
 - **If your arm values are in inches,** (for example, the AMD Zodiac POH lists the empty weight arms in **inches**):
   -  Enter **Convert Mode** via menu: Measurement Units -> Convert Mode - Inches to Millimeters.
