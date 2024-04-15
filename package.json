@@ -43,7 +43,8 @@
           "platforms": [
             "darwin",
             "linux",
-            "win32"
+            "win32",
+            "armv7l"
           ],
           "config": {
             "bucket": "my-bucket",
@@ -60,20 +61,16 @@
     },
     "linux": {
       "target": [
-        "AppImage",
-        "apk",
-        "deb",
-        "snap",
-        "rpm"
-      ],
-      "icon": "./zwblogo.png"
+        { "target": "AppImage" },
+        { "target": "deb" },
+        { "target": "snap" },
+        { "target": "rpm" },
+        { "target": "apk",
+          "arch": "armv7l" }
+      ]
     },
     "win": {
       "target": "NSIS",
-      "arch": [
-        "x64",
-        "ia32"
-      ],
       "icon": "./zwblogo.png"
     }
   }
