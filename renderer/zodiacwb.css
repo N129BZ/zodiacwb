@@ -7,6 +7,8 @@ body {
 	overflow-y: hidden;
     position: absolute;
 	background-color: white;
+	-webkit-print-color-adjust: exact;
+	print-color-adjust: exact;
 }
 .mainview {
 	visibility: visible;
@@ -349,13 +351,32 @@ body {
 	position: absolute;
 	left: 96px;
 }
-
 .buttonContainer {
-	position: absolute;
-	height: 35px;
-	width:360px;
-	left: 258px;
-	top: 65px;
+    position: absolute;
+    height: 70px;
+    width: 360px;
+    left: 492px;
+    top: 48px;
+}
+.checkboxrow {
+    height: 20px;
+    width: fit-content;
+    top: 3px;
+    left: -4px;
+    position: absolute;
+}
+.printpdflabel {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    width: 100px;
+    position: absolute;
+    top: 2px;
+    left: 19px;
+}
+.printpdf{
+    position: absolute;
+    top: -2px;
+    left: 80px;
 }
 .printButton {
 	font-family: Arial, Helvetica, sans-serif;
@@ -370,8 +391,6 @@ body {
     color: black;
     height: 30px;
     width: 100px;
-    top: 0px;
-    left: 235px;
 }
 .saveButton {
     font-family: Arial, Helvetica, sans-serif;
@@ -386,8 +405,7 @@ body {
     color: black;
     height: 30px;
     width: 100px;
-    top: 0px;
-    left: 237px;
+	left:-11px;
 }
 .exitButton {
     font-family: Arial, Helvetica, sans-serif;
@@ -402,8 +420,7 @@ body {
     color: black;
     height: 30px;
     width: 100px;
-    top: 0px;
-    left: 240px;
+	left:-23px;
 }
 button:disabled,
 button[disabled]{
@@ -419,15 +436,3 @@ button[disabled]{
 	body { background: white; color: black; }
 	#acview { background-color: white; }
 }
-@media print {
-	#buttonContainer {
-		display: none;
-	}
-	/* #saveButton {
-	    display: none;
-	}
-	#showAcButton {
-		display: none;
-	} */
-}
-

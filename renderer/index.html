@@ -128,11 +128,19 @@
       <label class="accoglabel" id="accoglabel">Computed CG:</label>
       <label class="accog" id="accog"></label>  
     </div> 
-    <div class="buttonContainer" id="buttonContainer">
-      <button class="printButton" id="printButton" tabindex="13" onclick="printScreen()" >Print Screen</button>
-      <button class="saveButton" id="saveButton" disabled tabindex="14" onclick="saveAppData()" >Save</button>
-      <button class="exitButton" id="exitButton" tabindex="14" onclick="exitApp()" >Exit</button>
-    </div>  
+    <table class="buttonContainer" id="buttonContainer">
+      <tr>
+        <td rowspan="3" class="checkboxrow">
+          <label class="printpdflabel">Print as PDF</label>
+          <input type="checkbox" class="printpdf" id="printpdf" onclick="togglePrintPDF(this)">
+        </td>
+      </tr>
+      <tr>  
+        <td><button class="printButton" id="printButton" tabindex="13" onclick="printScreen()" >Print Screen</button></td>
+        <td><button class="saveButton" id="saveButton" disabled tabindex="14" onclick="saveAppData()" >Save</button></td>
+        <td><button class="exitButton" id="exitButton" tabindex="14" onclick="exitApp()" >Exit</button></td>
+      </tr>
+    </table>  
     <script type="text/javascript" src="renderer.js"></script>
   </body>
 </html>

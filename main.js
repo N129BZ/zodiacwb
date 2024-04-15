@@ -6,6 +6,7 @@ const {
     Menu,
     ipcMain, 
     screen,
+    dialog,
     nativeTheme, 
     globalShortcut, 
     webContents} = require('electron');
@@ -217,30 +218,38 @@ ipcMain.on('function:exitconvert', () => {
     mainWindow.reload(); 
 });
 
-ipcMain.on('function:print', () => {
-    const pd = screen.getPrimaryDisplay();
-    var wh = {};
-    wh = pd.workAreaSize;
-    var w = 830;
-    var h = wh.height - 40; 
-    mainWindow.webContents.capturePage({
-        x: 0,
-        y: 0,
-        width: w,
-        height: h
-    })
-    .then((img) => {
-        if (fs.existsSync(printImagePath)) fs.rmSync(printImagePath);
-        fs.writeFileSync(printImagePath, img.toJPEG(100), "base64", function (err) {
-            if (err) console.log(err);
-        });
-    })
-    .catch(error => {
-        console.log(error);
-    })
-
-    createScreenshotHtmlPage();
-    printScreenShot();
+ipcMain.on('function:print', (e, printpdf) => {
+    if (printpdf) {
+        printToPdf();
+    } else {
+        const pd = screen.getPrimaryDisplay();
+        var wh = {};
+        wh = pd.workAreaSize;
+        var w = 830;
+        var h = wh.height - 40; 
+        mainWindow.webContents.capturePage({
+            x: 0,
+            y: 0,
+            width: w,
+            height: h
+        })
+        .then((img) => {
+            if (fs.existsSync(printImagePath)) fs.rmSync(printImagePath);
+            fs.writeFileSync(printImagePath, img.toJPEG(100), "base64", function (err) {
+                if (err) console.log(err);
+            });
+        })
+        .then(() => {
+            createScreenshotHtmlPage();
+            printScreenShot();
+        })
+        .catch(error => {
+            console.log(error);
+        }) 
+        .finally(() => {
+            mainWindow.reload();
+        })   
+    }
 });
 
 ipcMain.on('function:exit', () => {
@@ -284,6 +293,7 @@ function printScreenShot() {
             data.forEach((printer) => {
                 if (printer.isDefault) {
                     devicename = printer.name;
+                    silentprint = isLinux ? true : false;
                     return;
                 }
             });
@@ -307,13 +317,13 @@ function printScreenShot() {
             
             win.webContents.print(
                 printoptions, (success, failureReason) => {
-                   if (success) {
-                      console.log("W & B printed!");
-                   } else {
-                      console.log(failureReason);
-                   }
-                   win.close();
-                   win = null;  
+                if (success) {
+                    console.log("W & B printed!");
+                } else {
+                    console.log(failureReason);
+                }
+                win.close();
+                win = null;  
                 }
             );
         })
@@ -321,4 +331,28 @@ function printScreenShot() {
             console.log(error);
         })
     })
+   
+}
+
+function printToPdf() {
+    let options = {
+        title: "Save Screenshot As PDF",
+        filters: [{ name: "PDF Files", extensions: ["pdf"]}, { name: 'All Files', extensions: ['*'] }],
+        properties: ["openFile"]
+    }
+    let pdfPath = dialog.showSaveDialogSync(mainWindow, options)
+    if (pdfPath != undefined) {
+        mainWindow.webContents.printToPDF({}).then(data => {
+            fs.writeFile(pdfPath, data, (error) => {
+                if (error) throw error
+                console.log(`Wrote PDF successfully to ${pdfPath}`)
+            })
+        })
+        .catch(error => {
+            console.log(`Failed to write PDF to ${pdfPath}: `, error)
+        })
+        .finally(() => {
+            mainWindow.reload();
+        })
+    }
 }

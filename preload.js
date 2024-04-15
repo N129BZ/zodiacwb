@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
    saveappdata: (newappdata) => ipcRenderer.send('appdata:save', newappdata),
    getappdata: () => ipcRenderer.invoke('appdata:get'),
    showdev: (devstate) => ipcRenderer.send('menu:showdev', devstate),
-   printscreen: () => ipcRenderer.send('function:print'),
+   printscreen: (printpdf) => ipcRenderer.send('function:print', printpdf),
    exitconvert: () => ipcRenderer.send('function:exitconvert'),
    exitapp: () => ipcRenderer.send('function:exit'),
    receive: (channel, func) => {

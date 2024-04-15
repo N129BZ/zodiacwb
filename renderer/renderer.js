@@ -9,10 +9,13 @@ var usemetric = false;
 var isdarktheme = false; 
 var ismainview = true;
 var inConvertMode = false;
+var printpdf = false;
+var isLoading = false;
 
 const  weightMap = new Map();
 const  momentMap = new Map();
 
+const  checkpdf = document.getElementById("printpdf");
 const  mainview = document.getElementById("mainview");
 const  acview = document.getElementById("acview");
 const  convertview = document.getElementById("convertview");
@@ -133,6 +136,7 @@ function setBoundaryLabels() {
 
 window.onload = async () => {
 	const data = await window.electronAPI.getappdata();
+	isLoading = true;
 	console.log(data);
 	appData = JSON.parse(data);
 	usemetric = appData.settings.units === "metric";
@@ -145,6 +149,9 @@ window.onload = async () => {
 		valData = appData.imperial;
 	}
 
+	printpdf = appData.settings.printaspdf;
+	checkpdf.checked = printpdf;
+
 	setBoundaryLabels();
 
 	rightMainWeight.value = valData.rmweight;
@@ -155,8 +162,6 @@ window.onload = async () => {
 	
 	noseWheelWeight.value = valData.nwweight;
 	noseWheelArm.value = valData.nwarm;
-	
-	emptyArm.value = valData.emptyarm;
 	
 	pilotWeight.value = valData.pilotweight;
 	pilotArm.value = valData.pilotarm;
@@ -230,11 +235,11 @@ function convertValue(someNumber, unit) {
 }
 
 
-const calcWB = function(field = null, isOnLoad = false) {	
+const calcWB = function(field = null) {	
 	
-	saveButton.disabled = isOnLoad;
+	saveButton.disabled = isLoading;
 	
-	if (!isOnLoad && inConvertMode) {
+	if (!isLoading && inConvertMode) {
 		if (field.className === "arm") {
 			field.value = convertValue(+field.value)
 		}
@@ -447,8 +452,7 @@ const saveAppData = function() {
 
 const printScreen = function() {
 	buttonBox.setAttribute("style", "visibility:hidden");
-	setTimeout(() => window.electronAPI.printscreen(), 300);
-	setTimeout(() => buttonBox.setAttribute("style", "visibility:visible"), 300);
+	setTimeout(() => window.electronAPI.printscreen(printpdf), 300);
 }
 
 function countClicks() {
@@ -529,6 +533,13 @@ function unsetArmsReadOnly() {
 	var arms = document.getElementsByClassName("arm");
 	for (var i = 0; i < arms.length; i++) {
 		arms[i].readOnly = false;
+	}
+}
+
+function togglePrintPDF(chkbox) {
+	if (!isLoading) {
+		printpdf = chkbox.checked;
+		appData.settings.printaspdf = printpdf;
 	}
 }
 // document.onmousedown = function(event){
