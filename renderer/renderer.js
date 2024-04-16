@@ -508,7 +508,8 @@ window.electronAPI.onConvertUnits(() => {
 	if (usemetric) {
 		alert("Convert Mode automatically converts inches to millimeters.\r\r" +
 		      "You must be in Weight in Pounds view to enter Convert Mode.\r" +
-			  "Enter your inch arm values in the arm entry fields.\r\r" +
+			  "Enter your Empty Weight inch arm values in the Left Main,\r" +
+			  "Right Main, and Nose Wheel arm entry fields.\r\r" +
 			  "The application will automatically translate those inch arm\r" +
 			  "values to millimeters on-the-fly. When you exit Convert Mode\r" +
 			  "you will be asked for confirmation to save your entries."
@@ -531,10 +532,12 @@ function stopConverting() {
 }
 
 function unsetArmsReadOnly() {
-	var arms = document.getElementsByClassName("arm");
-	for (var i = 0; i < arms.length; i++) {
-		arms[i].readOnly = false;
-	}
+	leftMainArm.readOnly = false;
+	leftMainArm.setAttribute("style", "background-color:yellow;");
+	rightMainArm.readOnly = false;
+	rightMainArm.setAttribute("style", "background-color:yellow;");
+	noseWheelArm.readOnly = false;
+	noseWheelArm.setAttribute("style", "background-color:yellow;");
 }
 
 function togglePrintPDF(chkbox) {
