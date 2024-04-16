@@ -20,7 +20,7 @@ See instructions in the wiki: [Zenith Zodiac Weight and Balance Wiki](../../wiki
 ### Two Units of Measurement modes - Weight in Pounds or Weight in Kilograms. (The "Light Theme" picture below shows the Weight in Kilograms view.)
 
 ## Convert Mode
-![printimage](https://github.com/N129BZ/zodiacwb/assets/47579080/30ec0576-5887-416a-ae6d-92d32700aada)
+![printimage](https://github.com/N129BZ/zodiacwb/assets/47579080/1bab529d-2a6e-4175-9a8f-7bedb1d138fe)
 
 ## Light Theme - shown in "Weight in Kilograms" mode
 ![printimage](https://github.com/N129BZ/zodiacwb/assets/47579080/85e3841a-213b-463c-bc43-87578984fcde)
