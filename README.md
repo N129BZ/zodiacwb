@@ -7,15 +7,15 @@
 - **Note that the official Zenith 602/650 Weight and Balance arms are given in millimeters**, since the aircraft design was metric to begin with.
 - **ALSO NOTE that the arm values for the aircraft loads are the official millimeter arms as designated by the designer, Chris Heintz**
 - **USA aircraft use pounds for weights, so they would use the Weight in Pounds view, Metric countries would use the Weight in Kilograms view.** 
-- **If your arm values are in inches,** (for example, the AMD Zodiac POH lists the empty weight arms in **inches**):
+- **If your Empty Weight arm values are in inches,** (for example, the AMD Zodiac POH lists the empty weight arms in **inches**):
   -  Enter **Convert Mode** via menu: Measurement Units -> Convert Mode - Inches to Millimeters.
-  -  Enter the inch arm values into the arm inputs. Entries will be immediately converted to millimeters.  
+  -  Enter the inch arm values into the Empty Weight arm inputs. Entries will be immediately converted to millimeters.  
   -  Exit Convert Mode by clicking anywhere on the red instruction box.
   -  You will get a confirmation dialog asking if you want to save the entries.
   -  The application will re-load and all moments will be re-calculated.
   -  **You'll never need to do that again!**  
 
-See instructions in the wiki: https://github.com/N129BZ/zodiacwb/wiki
+See instructions in the wiki: [Zenith Zodiac Weight and Balance Wiki](../../wiki)
 
 ### Two Units of Measurement modes - Weight in Pounds or Weight in Kilograms. (The "Light Theme" picture below shows the Weight in Kilograms view.)
 
