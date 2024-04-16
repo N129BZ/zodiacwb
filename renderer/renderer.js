@@ -474,13 +474,6 @@ function exitApp() {
 	window.electronAPI.exitapp();
 }
 
-function setButtonVisibility(isvisible) {
-	let vstring = isvisible === true ? "visibility:visible" : "visibility:hidden";
-	saveButton.setAttribute("style", vstring);
-	showAcButton.setAttribute("style", vstring);
-	exitButton.setAttribute("style", vstring);
-}
-
 window.matchMedia('(prefers-color-scheme: light)')
       .addEventListener('change',({ matches }) => {
     if (matches) {
@@ -491,7 +484,6 @@ window.matchMedia('(prefers-color-scheme: light)')
 	drawAirplane();
 	saveAppData();		
 });
-
 
 window.matchMedia('(prefers-color-scheme: dark)') 
 		.addEventListener('change', ({ matches }) => {
@@ -525,7 +517,6 @@ window.electronAPI.onConvertUnits(() => {
 function stopConverting() {
 	if (confirm("Do you want to save the converted arm data?")) {
 		inConvertMode = false;
-		calcWB();
 		saveAppData();
 	}
 	window.electronAPI.exitconvert();
