@@ -82,6 +82,36 @@ const template = [
         ]
     },
     {
+        label: "Aircraft Selections", 
+        submenu: [
+            {label: "Zenith ch601xl/ch650",
+                type: "radio",
+                checked: getChecked("ch650"),
+                click: () => mainWindow.webContents.send("acselect", "ch650")
+            },
+            {label: "Zenith ch701",
+                type: "radio",
+                checked: getChecked("ch701"),
+                click: () => mainWindow.webContents.send("acselect", "ch701")
+            },
+            {label: "Zenith ch750",
+                type: "radio",
+                checked: getChecked("ch750"),
+                click: () => mainWindow.webContents.send("acselect", "ch750")
+            },
+            {label: "Vans RV9a",
+                type: "radio",
+                checked:getChecked("rv9a"),
+                click: () => mainWindow.webContents.send("acselect", "rv9a")
+            },
+            {label: "Vans RV9",
+                type: "radio",
+                checked: getChecked("rv9"),
+                click: () => mainWindow.webContents.send("acselect", "rv9")
+            }
+        ]
+    },
+    {
         label: 'View',
         submenu: [
             { role: 'togglefullscreen' },
@@ -99,6 +129,7 @@ nativeTheme.themeSource = appData.settings.theme;
 
 function saveAppData() {
     fs.writeFileSync(jsonPath, JSON.stringify(appData, null, 4));
+    loadAppData();
 }
 
 const menu = Menu.buildFromTemplate(template);
@@ -212,15 +243,33 @@ app.on('window-all-closed', function () {
 ipcMain.on('appdata:save', (e, newappdata) => {
     appData = newappdata;
     saveAppData();
+    mainWindow.reload();
 });
 
 ipcMain.on('function:exitconvert', () => {
     mainWindow.reload(); 
 });
 
+ipcMain.on('function:selectaircraft', () => {
+    mainWindow.reload(); 
+});
+
+ipcMain.on('function:reload', () => {
+    mainWindow.reload(); 
+});
+
 ipcMain.on('function:print', (e, printpdf) => {
     handlePrinting(printpdf);
 });
+
+function getChecked(oneAirplane) {
+    if (oneAirplane === appData.settings.currentview) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 function handlePrinting() {
     if (appData.settings.printaspdf) {

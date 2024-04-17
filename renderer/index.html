@@ -41,20 +41,20 @@
             </tr>
             <tr>
               <td class="weightLabel">Right Main:</td>
-              <td><input type="text" class="weight" id="rightMainWeight" value="0" tabindex="1" onfocusout="calcWB()"></td>
-              <td><input type="text" class="arm" id="rightMainArm" value="0" tabindex="2" onfocusout="calcWB(this)" readonly></td>
+              <td><input type="text" class="weight" id="rightMainWeight" value="0" tabindex="1" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="rightMainArm" value="0" tabindex="2" oninput="calcWB(this)"></td>
               <td><input type="text" class="moment" id="rightMainMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Left Main:</td>
-              <td><input type="text" class="weight" id="leftMainWeight" value="0" tabindex="3" onfocusout="calcWB()"></td>
-              <td><input type="text" class="arm" id="leftMainArm" value="0" tabindex="4" onfocusout="calcWB(this)" readonly></td>
+              <td><input type="text" class="weight" id="leftMainWeight" value="0" tabindex="3" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="leftMainArm" value="0" tabindex="4" oninput="calcWB(this)"></td>
               <td><input type="text" class="moment" id="leftMainMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Nose Wheel:</td>
-              <td><input type="text" class="weight" id="noseWheelWeight" value="0" tabindex="5" onfocusout="calcWB()"></td>
-              <td><input type="text" class="arm" id="noseWheelArm" value="0" tabindex="6" onfocusout="calcWB(this)" readonly></td>
+              <td><input type="text" class="weight" id="noseWheelWeight" value="0" tabindex="5" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="noseWheelArm" value="0" tabindex="6" oninput="calcWB(this)"></td>
               <td><input type="text" class="moment" id="noseWheelMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <td></td>
@@ -72,39 +72,39 @@
             <tr>
               <td class="weightLabel">Pilot:</td>
               <td><input type="text" class="weight" id="pilotWeight" value="0" tabindex="7" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="pilotArm" value="0" tabindex="-1" onfocusout="calcWB()" readonly></td>
+              <td><input type="text" class="arm" id="pilotArm" value="0" tabindex="8" oninput="calcWB()"></td>
               <td><input type="text" class="moment" id="pilotMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Passenger:</td>
-              <td><input type="text" class="weight" id="passengerWeight" value="0" tabindex="8" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="passengerArm" value="0" tabindex="-1" onfocusout="calcWB()" readonly></td>
+              <td><input type="text" class="weight" id="passengerWeight" value="0" tabindex="9" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="passengerArm" value="0" tabindex="10" oninput="calcWB()"></td>
               <td><input type="text" class="moment" id="passengerMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Right Wing Locker:</td>
-              <td><input type="text" class="weight" id="rightWingLockerWeight" value="0" tabindex="9" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="rightWingLockerArm" value="0" tabindex="-1" onfocusout="calcWB()" readonly></td>
+              <td><input type="text" class="weight" id="rightWingLockerWeight" value="0" tabindex="11" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="rightWingLockerArm" value="0" tabindex="12" oninput="calcWB()"></td>
               <td><input type="text" class="moment" id="rightWingLockerMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="weightLabel">Left Wing Locker:</td>
-              <td><input type="text" class="weight" id="leftWingLockerWeight" value="0" tabindex="10" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="leftWingLockerArm" value="0" tabindex="-1" onfocusout="calcWB()" readonly></td>
+              <td><input type="text" class="weight" id="leftWingLockerWeight" value="0" tabindex="13" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="leftWingLockerArm" value="0" tabindex="14" oninput="calcWB()"></td>
               <td><input type="text" class="moment" id="leftWingLockerMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
               <td class="fuelUnitLabel" id="fuelUnitLabel"></td>
-              <td><input type="text" class="fuelUnits" id="fuelUnits" value="0" tabindex="11" oninput="calcWB()">
+              <td><input type="text" class="fuelUnits" id="fuelUnits" value="0" tabindex="15" oninput="calcWB()">
                   <input type="text" class="fuelWeight" id="fuelWeight" value="0" tabindex="-1" readonly>
               </td>
-              <td><input type="text" class="fuelArm" id="fuelArm" value="0" tabindex="-1" oninput="calcWB()" readonly></td>
-              <td><input type="text" class="fuelMoment" id="fuelMoment" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="fuelArm" id="fuelArm" value="0" tabindex="16" oninput="calcWB()"></td>
+              <td><input type="text" class="fuelMoment" id="fuelMoment" value="0" tabindex="-1"></td>
             </tr>
             <tr>
               <td class="weightLabel">Rear Baggage:</td>
-              <td><input type="text" class="weight" id="rearBaggageWeight" value="0" tabindex="12" oninput="calcWB()"></td>
-              <td><input type="text" class="arm" id="rearBaggageArm" value="0" tabindex="-1" oninput="calcWB()" readonly></td>
+              <td><input type="text" class="weight" id="rearBaggageWeight" value="0" tabindex="17" oninput="calcWB()"></td>
+              <td><input type="text" class="arm" id="rearBaggageArm" value="0" tabindex="18" oninput="calcWB()"></td>
               <td><input type="text" class="moment" id="rearBaggageMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
@@ -121,14 +121,28 @@
         </table>
       </div> 
     </div>
-    <div class="acview" id="acview">
-      <canvas id="accanvas" width="830" height="570"></canvas>
-        <div class="cgrectangle" id="cgrectangle">
-        <div id="acdot"><label id="crosshair">+</label></div>
+    <div class="ch650view" id="ch650view">
+      <canvas id="ch650canvas" width="830" height="570"></canvas>
+      <div class="ch650rectangle" id="ch650rectangle">
+        <div class="dot" id="ch650dot"><label id="ch650crosshair">+</label></div>
       </div>
+    </div>
+    <div class="rv9view" id="rv9view">
+      <canvas id="rv9canvas" width="830" height="570"></canvas>
+      <div class="rv9rectangle" id="rv9rectangle">
+        <div class="dot" id="rv9dot"><label id="rv9crosshair">+</label></div>
+      </div>
+    </div>
+    <div class="rv9aview" id="rv9aview">
+      <canvas id="rv9acanvas" width="830" height="570"></canvas>
+      <div class="rv9arectangle" id="rv9arectangle">
+        <div class="dot" id="rv9adot"><label id="rv9acrosshair">+</label></div>
+      </div>
+    </div>
+    <div id="cglabelbox">
       <label class="accoglabel" id="accoglabel">Computed CG:</label>
       <label class="accog" id="accog"></label>  
-    </div> 
+    </div>
     <table class="buttonContainer" id="buttonContainer">
       <tr>
         <td rowspan="3" class="checkboxrow">

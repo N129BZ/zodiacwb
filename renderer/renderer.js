@@ -17,9 +17,13 @@ const  momentMap = new Map();
 
 const  checkpdf = document.getElementById("printpdf");
 const  mainview = document.getElementById("mainview");
-const  acview = document.getElementById("acview");
+const  ch650view = document.getElementById("ch650view");
+const  ch650canvas = document.getElementById("ch650canvas");
+const  rv9view = document.getElementById("rv9view");
+const  rv9canvas = document.getElementById("rv9canvas");
+const  rv9aview = document.getElementById("rv9aview");
+const  rv9acanvas = document.getElementById("rv9acanvas");
 const  convertview = document.getElementById("convertview");
-const  accanvas = document.getElementById("accanvas");
 const  chartcanvas = document.getElementById("chartcanvas");  
 const  saveButton = document.getElementById("saveButton");
 const  showAcButton = document.getElementById("showAcButton");
@@ -39,6 +43,7 @@ const  rightMainWeight = document.getElementById("rightMainWeight")
 const  rightMainArm = document.getElementById("rightMainArm");
 const  rightMainMoment = document.getElementById("rightMainMoment");
 
+const  nosegearLimit = document.getElementById("nosegearLimit");
 const  noseWheelWeight = document.getElementById("noseWheelWeight");
 const  noseWheelArm = document.getElementById("noseWheelArm");
 const  noseWheelMoment = document.getElementById("noseWheelMoment"); 
@@ -96,42 +101,113 @@ const weightAxis = document.getElementById("weightAxis");
 const momentAxis = document.getElementById("momentAxis");
 const fuelUnitLabel = document.getElementById("fuelUnitLabel");
 
-function setBoundaryLabels() {
+var activeView;
+var activeCanvas;
 
+function setBoundaryLabels() {
+	switch (appData.settings.currentview) {
+		case "ch650":
+			weightMaxFloats.innerHTML = valData.maxfloats;
+			maxFloatsDashes.innerHTML = "- Max floats lb -----------------------------------------";
+			break;
+		case "rv9":
+			usemetric = false;
+			weightMaxFloats.innerHTML = "";
+			maxFloatsDashes.innerHTML = "";
+			break;
+		case "rv9a":
+			usemetric = false;
+			weightMaxFloats.innerHTML = "";
+			maxFloatsDashes.innerHTML = "";
+			break;
+	}
 	weightMin.innerHTML = valData.mingross;
 	weightNosegearMin.innerHTML = valData.ngstart;
 	weightMaxGross.innerHTML = valData.maxgross;
-	weightMaxFloats.innerHTML = valData.maxfloats;
 	maxGrossWeight.value = valData.maxgross;
 
-	if (usemetric) {
-		// adjust attributes for metric units
-		weightMaxFloats.innerHTML = valData.maxfloats;  
-		maxGrossDashes.innerHTML = "- Max gross kg ------";
-		maxFloatsDashes.innerHTML = "- Max floats kg -----------------------------------------";
-		momentMin.className = "momentMinMetric";
-		momentMax.className = "momentMaxMetric";
-		weightAxis.className = "weightAxisMetric";
-		weightAxis.innerHTML = "Weight (kilograms)";
-		fuelUnitLabel.innerHTML = "Fuel in Liters:";
-		momentMin.innerHTML = `|&nbsp;&nbsp;${valData.mincg}`;
-		momentMax.innerHTML = `${valData.maxcg}&nbsp;&nbsp;|`
-		momentAxis.innerHTML = "Acceptable CG Range (millimeters)";
-	}
-	else {
-		// adjust attributes for imperial units
-		weightMaxFloats.innerHTML = valData.maxfloats;
-		maxGrossDashes.innerHTML = "- Max gross lb ------";
-		maxFloatsDashes.innerHTML = "- Max floats lb -----------------------------------------";
+	if (appData.settings.currentview === "ch650") {
+		if (usemetric) {
+			// adjust attributes for metric units
+			weightMaxFloats.innerHTML = valData.maxfloats;  
+			maxGrossDashes.innerHTML = "- Max gross kg ------";
+			maxFloatsDashes.innerHTML = "- Max floats kg -----------------------------------------";
+			momentMin.className = "momentMinMetric";
+			momentMax.className = "momentMaxMetric";
+			weightAxis.className = "weightAxisMetric";
+			weightAxis.innerHTML = "Weight (kilograms)";
+			fuelUnitLabel.innerHTML = "Fuel in Liters:";
+			momentMin.innerHTML = `|&nbsp;&nbsp;${valData.mincg}`;
+			momentMax.innerHTML = `${valData.maxcg}&nbsp;&nbsp;|`
+			momentAxis.innerHTML = "Acceptable CG Range (millimeters)";
+		} else  {
+			// adjust attributes for imperial units
+			weightMaxFloats.innerHTML = valData.maxfloats;
+			maxGrossDashes.innerHTML = "- Max gross lb ------";
+			momentMin.className = "momentMinImperial";
+			momentMax.className = "momentMaxImperial";
+			weightAxis.className = "weightAxisImperial";
+			weightAxis.innerHTML = "Weight (pounds)";
+			fuelUnitLabel.innerHTML = "Fuel in Gallons:";
+			momentMin.innerHTML = `|&nbsp;&nbsp;${valData.mincg}`;
+			momentMax.innerHTML = `${valData.maxcg}&nbsp;&nbsp;|`
+			momentAxis.innerHTML = "Acceptable CG Range (inches)";
+		}
+	} else {
+		nosegearLimit.innerHTML = "";
+		maxGrossDashes.innerHTML = "";
 		momentMin.className = "momentMinImperial";
 		momentMax.className = "momentMaxImperial";
 		weightAxis.className = "weightAxisImperial";
 		weightAxis.innerHTML = "Weight (pounds)";
 		fuelUnitLabel.innerHTML = "Fuel in Gallons:";
-		momentMin.innerHTML = `|&nbsp;&nbsp;${valData.mincg}`;
-		momentMax.innerHTML = `${valData.maxcg}&nbsp;&nbsp;|`
+		momentMin.innerHTML = `|&nbsp;&nbsp;&nbsp;${valData.mincg}`;
+		momentMax.innerHTML = `${valData.maxcg}&nbsp;|`
 		momentAxis.innerHTML = "Acceptable CG Range (inches)";
 	}
+}
+
+function assignValData() {
+	switch (appData.settings.currentview) {
+		case "ch650":
+			valData =  usemetric ? appData.ch650.metric : appData.ch650.imperial;
+			break;
+		case "rv9":
+			appData.settings.usemetric = false;
+			valData = appData.rv9;
+			break;
+		case "rv9a":
+			appData.settings.usemetric = false;
+			valData = appData.rv9a;
+			break;
+	}
+	activateView();
+}
+
+function activateView() {
+	switch (appData.settings.currentview) {
+		case "ch650":
+			activeView = ch650view;
+			activeCanvas = ch650canvas;
+			ch650view.setAttribute("style", "visibility:visible")
+			rv9view.setAttribute("style", "visibility:hidden");	
+			rv9aview.setAttribute("style", "visibility:hidden;");
+			break;
+		case "rv9":
+			activeView = rv9view;
+			activeCanvas = rv9canvas;
+			ch650view.setAttribute("style", "visibility:hidden");	
+			rv9aview.setAttribute("style", "visibility:hidden");
+			break;
+		case "rv9a":
+			activeView = rv9aview;
+			activeCanvas = rv9acanvas;
+			ch650view.setAttribute("style", "visibility:hidden");	
+			rv9view.setAttribute("style", "visibility:hidden");
+			break;
+
+	}
+	activeView.setAttribute("style", "visibility:visible");	
 }
 
 window.onload = async () => {
@@ -139,15 +215,10 @@ window.onload = async () => {
 	isLoading = true;
 	console.log(data);
 	appData = JSON.parse(data);
-	usemetric = appData.settings.units === "metric";
+	usemetric = (appData.settings.currentview === "ch650" && appData.settings.units === "metric");
 	isdarktheme = appData.settings.theme === "dark";
 
-	if (appData.settings.units === "metric") {
-		valData = appData.metric;
-	}
-	else if (appData.settings.units === "imperial") {
-		valData = appData.imperial;
-	}
+	assignValData();
 
 	printpdf = appData.settings.printaspdf;
 	checkpdf.checked = printpdf;
@@ -169,46 +240,87 @@ window.onload = async () => {
 	passengerWeight.value = valData.psgrweight;
 	passengerArm.value = valData.psgrarm;
 	
-	rightWingLockerWeight.value = valData.rwlockweight;
-	rightWingLockerArm.value = valData.lwlockarm;
-	
-	leftWingLockerWeight.value = valData.lwlockweight;
-	leftWingLockerArm.value = valData.lwlockarm;
-	
+	if (appData.currentview === "ch650") {
+		rightWingLockerWeight.value = valData.rwlockweight;
+		rightWingLockerArm.value = valData.lwlockarm;
+		leftWingLockerWeight.value = valData.lwlockweight;
+		leftWingLockerArm.value = valData.lwlockarm;
+	}
+	else {
+		rightWingLockerWeight.value = 0;
+		rightWingLockerArm.value = 0;
+		leftWingLockerWeight.value = 0;
+		leftWingLockerArm.value = 0;
+	}
+
 	fuelUnits.value = valData.fuelunits;
 	fuelArm.value = valData.fuelarm;
 	
 	rearBaggageWeight.value = valData.rbagweight;
 	rearBaggageArm.value = valData.rbagarm;
 	
-	drawChart();
-	drawAirplane();
 	loadCgMaps();
+	drawChart();
 	calcWB(null, true);
+	drawAirplane();
 };
 
 function drawChart() {
 	const ctx = chartcanvas.getContext("2d");
+	var imgpath = "";
 	var img = new Image(); 
 	img.onload = function() {
 		ctx.drawImage(img, 0, 0); 
 	}
-	img.src = "chart.png";
+	switch (appData.settings.currentview) {
+		case "ch650":
+			imgpath = "ch650chart.png";
+			break;
+		case "rv9":
+		case "rv9a":
+			imgpath = "rv9chart.png";
+			break;
+	}
+	img.src = imgpath;
 }
 
 function drawAirplane() {
+	var imgsrcLight = "";
+	var imgsrcDark = "";
+	activeView.setAttribute("style", "visibility:hidden;");
+	switch(appData.settings.currentview) {
+		case "ch650":
+			activeView = ch650view;
+			activeCanvas = ch650canvas;
+			imgsrcLight = "ch650_light.png";
+			imgsrcDark = "ch650_dark.png";
+			break;
+		case "rv9":
+			activeView = rv9view;
+			activeCanvas = rv9canvas;
+			imgsrcLight = "rv9_light.png";
+			imgsrcDark = "rv9_dark.png";
+			break;
+		case "rv9a":
+			activeView = rv9aview;
+			activeCanvas = rv9acanvas;
+			imgsrcLight = "rv9a_light.png";
+			imgsrcDark = "rv9a_dark.png";
+			break;
+	}
+	activeView.setAttribute("style", "visibility:visible;");
 	const lbl = document.getElementById("accoglabel");	 
-	const apctx = accanvas.getContext("2d");
+	const apctx = activeCanvas.getContext("2d");
 	var apimg = new Image();
 	apimg.onload = function() {
 		apctx.drawImage(apimg, 0, 0);
 	}
 	if (isdarktheme) {
-		apimg.src = "airplane_dark.png";
+		apimg.src = imgsrcDark;
 		lbl.setAttribute("style", "color:white;")
 	}
 	else {
-		apimg.src = "airplane.png"
+		apimg.src = imgsrcLight;
 		lbl.setAttribute("style", "color:black;")
 	}
 }
@@ -222,6 +334,7 @@ const calcFuel = function() {
 	fuelMoment.value = Math.round(fuelmom);
 	valData.fuelunits = fuelunits;
 	valData.fuelweight = fuelwt;
+	valData.fuelarm = fuelarm;
 	return [fuelwt, fuelmom];
 }
 
@@ -248,27 +361,27 @@ const calcWB = function(field = null) {
 
 	let rtMainWt = +rightMainWeight.value;
 	let rtMainArm = +rightMainArm.value;
-	let rtMainMom = rtMainWt * rtMainArm;
-	rightMainMoment.value = rtMainMom;
 	valData.rmweight = rtMainWt;
 	valData.rmarm = rtMainArm;
+	let rtMainMom = Math.round(rtMainWt * rtMainArm);
+	rightMainMoment.value = rtMainMom;
 	
 	let lftMainmWt = +leftMainWeight.value; 
 	let lftMainArm = +leftMainArm.value;
-	let lftMainMom =  lftMainmWt * lftMainArm;
-	leftMainMoment.value = lftMainMom;
 	valData.lmweight = lftMainmWt;
 	valData.lmarm = lftMainArm;
+	let lftMainMom =  Math.round(lftMainmWt * lftMainArm);
+	leftMainMoment.value = lftMainMom;
 	
 	let noseWhlWt = +noseWheelWeight.value;
 	let noseWhlArm = +noseWheelArm.value;
-	let noseWhlMom = noseWhlWt * noseWhlArm;
-	noseWheelMoment.value = noseWhlMom;
 	valData.nwweight = noseWhlWt;
 	valData.nwarm = noseWhlArm;
+	let noseWhlMom = Math.round(noseWhlWt * noseWhlArm);
+	noseWheelMoment.value = noseWhlMom;
 	
 	let emptyWt = + lftMainmWt + rtMainWt + noseWhlWt;
-	let emptyMom = lftMainMom + rtMainMom + noseWhlMom;
+	let emptyMom = Math.round(lftMainMom + rtMainMom + noseWhlMom);
 	let emptyCg = Math.round(emptyMom / emptyWt);
 	emptyWeight.value = emptyWt;
 	emptyArm.value = `CG: ${emptyCg}`;
@@ -276,38 +389,43 @@ const calcWB = function(field = null) {
 	
 	let pltWt = +pilotWeight.value; 
 	let pltArm = +pilotArm.value;
-	let pltMom = pltWt * pltArm;
-	pilotMoment.value = pltMom;
 	valData.pilotweight = pltWt;
+	valData.pilotarm = pltArm;
+	let pltMom = Math.round(pltWt * pltArm);
+	pilotMoment.value = pltMom;
 	
 	let psgrWt = +passengerWeight.value;
 	let psgrArm = +passengerArm.value;
-	let psgrMom = psgrWt * psgrArm; 
-	passengerMoment.value = psgrMom;
 	valData.psgrweight = psgrWt;
+	valData.psgrarm = psgrArm;
+	let psgrMom = Math.round(psgrWt * psgrArm); 
+	passengerMoment.value = psgrMom;
 	
 	let rtWngLkrWt = +rightWingLockerWeight.value;
 	let rtWngLkrArm = +rightWingLockerArm.value;
-	let rtWngLkrMom = rtWngLkrWt * rtWngLkrArm;
-	rightWingLockerMoment.value = rtWngLkrMom;
 	valData.rwlockweight = rtWngLkrWt;
-	
+	valData.rwlockarm = rtWngLkrArm;
+	let rtWngLkrMom = Math.round(rtWngLkrWt * rtWngLkrArm);
+	rightWingLockerMoment.value = rtWngLkrMom;
+
 	let lftWngLkrWt = +leftWingLockerWeight.value; 
 	let lftWngLkrArm = +leftWingLockerArm.value;
-	let lftWngLkrMom = lftWngLkrWt * lftWngLkrArm;
-	leftWingLockerMoment.value = lftWngLkrMom;
+	valData.leftWingLockerArm = lftWngLkrArm;
 	valData.lwlockweight = lftWngLkrWt;
+	let lftWngLkrMom = Math.round(lftWngLkrWt * lftWngLkrArm);
+	leftWingLockerMoment.value = lftWngLkrMom;
 	
 	let fuelnums = calcFuel(); // returns [weight, moment]
 	
-	let rearBgWt = +rearBaggageWeight.value; 
-	let rearBgArm = +rearBaggageArm.value;  
-	let rearBgMom = rearBgWt * rearBgArm;
-	rearBaggageMoment.value = rearBgMom;
-	valData.rbagweight = rearBgWt;
+	let rearBagWt = +rearBaggageWeight.value; 
+	let rearBagArm = +rearBaggageArm.value;  
+	valData.rbagweight = rearBagWt;
+	valData.rbagarm = rearBagArm;
+	let rearBagMom = Math.round(rearBagWt * rearBagArm);
+	rearBaggageMoment.value = rearBagMom;
 	
-	let totalWtArray = [emptyWt, pltWt, psgrWt, rtWngLkrWt, lftWngLkrWt, fuelnums[0], rearBgWt];
-	let totalArmArray = [emptyMom, pltMom, psgrMom, rtWngLkrMom, lftWngLkrMom , fuelnums[1], rearBgMom];
+	let totalWtArray = [emptyWt, pltWt, psgrWt, rtWngLkrWt, lftWngLkrWt, fuelnums[0], rearBagWt];
+	let totalArmArray = [emptyMom, pltMom, psgrMom, rtWngLkrMom, lftWngLkrMom , fuelnums[1], rearBagMom];
 	let totalWt = addArray(totalWtArray);
 	let totalMom = addArray(totalArmArray);
 	let finalCog = Math.round(totalMom / totalWt);
@@ -319,7 +437,7 @@ const calcWB = function(field = null) {
 	let cogtxt = `(${Math.round(finalCog)}, ${Math.round(totalWt)})`;
 	mycog.innerHTML = cogtxt;
 	accog.innerHTML = cogtxt.replace("(", "").replace(")", "");
-	placeDots(totalWt, finalCog);
+	placeDots(+totalWeight.value, finalCog);
 	isLoading = false;
 }
 
@@ -363,7 +481,7 @@ function loadCgMaps() {
 	let pospx = -100;
 	let mompx = 48;
 
-	for (let w = 1500; w >= 720; w--) {
+	for (let w = 1800; w >= 720; w--) {
 		weightMap.set(w, pospx.toFixed(3));
 		pospx += .6;
 	}
@@ -381,69 +499,156 @@ function placeDots(weight, moment) {
 	let x = 0;
 	let y = 0;
 	let isoverwt = true;
+	let calcwt = Math.round(weight);
 	let mom = Math.round(moment);
+	let rgba = chartcanvas.getContext('2d', { willReadFrequently: true }).getImageData(x,y,1,1).data
+	let maxweight = valData.maxgross;
+	let minweight = valData.mingross;
+	let mincg = valData.mincg;
+	let maxcg = valData.maxcg;
+	let elements = getCogElements()
+	let heightRect = elements.rectangle;
+	let containerRect = container.getBoundingClientRect();
 	
-	x = momentMap.get(mom); 
-	
-	try {
-		if (usemetric) {
-			// apply metric conversion to weight 
-			weight = Math.round(+weight * 2.205) - 2;
-			y = weightMap.get(weight); 
-		}
-		else {
-			y = weightMap.get(weight) - 5; 
-		}
-		try {
-			let rgba = chartcanvas.getContext('2d', { willReadFrequently: true }).getImageData(x,y,1,1).data
-			if ((weight <= 1320 && weight >= 720) && (moment >= 270 && moment <= 455)) {
-				if ((rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) || 
-				    (rgba[0] === 0 && rgba[1] === 0 && rgba[2] === 0)) { // on the black border line counts!!
-					color = appData.settings.underbgcolor;
-					tcolor = appData.settings.underbgcolor;
-					bgcolor = appData.settings.underbgcolor;;
-					fgcolor = appData.settings.underfgcolor;
-					isoverwt = false;
-				}
-				console.log("point is on the chart!");
-			}
-		}
-		catch {
-			console.log("point is NOT on the chart!");
-		}
-		applyTextColors(isoverwt);
+	try {	
 		
+		y = weightMap.get(calcwt) - 5;
+
+		switch (appData.settings.currentview) {
+			case "ch650":
+				calcwt = usemetric ?  Math.round(weight * 2.204620) : calcwt;
+				mincg = usemetric ? valData.mincg : Math.round(valData.mincg * 25.4);
+				maxcg = usemetric ? valData.maxcg : Math.round(valData.maxcg * 25.4);
+				mom = usemetric ? moment : Math.round(moment * 25.4);
+				x = momentMap.get(mom);
+				y = (chartcanvas.height - weightMap.get(calcwt)) - 3; 
+				//y = chartRect.top + wt;
+				y = usemetric ? y - 30 : y - 5; 
+				break;
+			case "rv9":
+			case "rv9a":
+				mom = Math.round(moment * 25.4);
+				mincg = Math.round(valData.mincg * 25.4);
+				maxcg = Math.round(valData.maxcg * 25.4);
+				let yOffset = Math.round((heightRect.height * weight) / valData.maxgross) - 3;
+				let xOffset = Math.round((containerRect.width * mom) / maxcg) - 70;
+				x = containerRect.width - ((xOffset - containerRect.width) * -1); // + 4; // - rect.width;
+				y = heightRect.height - yOffset; 
+				break;
+		}
+
+		if ((weight <= maxweight && weight >= minweight) && (mom >= mincg && mom <= maxcg)) {
+			if ((rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) || 
+				(rgba[0] === 0 && rgba[1] === 0 && rgba[2] === 0)) { // on the black border line counts!!
+				color = appData.settings.underbgcolor;
+				tcolor = appData.settings.underbgcolor;
+				bgcolor = appData.settings.underbgcolor;;
+				fgcolor = appData.settings.underfgcolor;
+				isoverwt = false;
+			}
+			console.log("point is on the chart!");
+		}
+	}
+	catch (error){
+		console.log(error);
+	}
+	
+	applyTextColors(isoverwt);
+
+	chartDot.setAttribute("style", `height:14px;width:14px;border-radius:50%;position:absolute;top:${+y - 9}px;left:${+x - 5}px;background-color:${color};`);
+	
+	mycog.setAttribute("style", `font-size:x-small;color:${tcolor};position:absolute;top:${+y + 7}px;left:${+x - 25}px;`);
+	
+	let crosshair = document.getElementById("chartcrosshair");
+	crosshair.setAttribute("style", "font-size:25px;position:relative;top:-6px;left:0px;color:white;")
+	
+	placeAcDot(elements, weight, moment, bgcolor, fgcolor);
+}
+
+function placeAcDot(elements, weight, moment, bgcolor, fgcolor) {
+	let yFactor = 0.2533; 
+	let xFactor = 0.3027;
+	let rect = elements.rectangle;
+	let dot = elements.dot;
+	let crosshair = elements.crosshair;
+	let wfactor = 455;
+	let wdiff = 0;
+	let mdiff = 0;
+	let mom = moment;
+	let kgwt = 0;
+	let kgmax = 0;
+	let x, xx;
+	let y;
+
+	try {
+
+		switch (appData.settings.currentview) {
+			case "ch650":
+				mom = usemetric? moment : moment * 25.4;
+				mdiff = 455 - mom;
+				kgwt = usemetric ? weight : Math.round(weight * 0.453592);
+				kgmax = usemetric ? 600 : Math.round(1320 * 0.453592);
+				wdiff = kgwt - kgmax;
+				mdiff = 455 - mom;
+				x = rect.width - ((rect.width * mom) / 455) + 9; 
+				y = rect.height - (((rect.height * kgwt) / kgmax)) - 9;
+				break;
+			case "rv9":
+			case "rv9a":
+				mom = Math.round(((14.84 * moment) / 84.84) * 25.4);
+				mdiff = 455 - mom;
+				kgwt = Math.round(weight * 0.453592);
+				kgmax = Math.round(1750 * 0.453592);
+				wdiff = kgwt - kgmax;
+				let xcg = ((rect.width * mom) / 455)
+				x = rect.width - (rect.width - xcg); 
+				y = rect.height - (((rect.height * kgwt) / kgmax)) - 9;
+				break;
+		}
+
+		console.log(`cg offset = ${y}`);
+		
+		
+		
+		dot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:relative;top:${y}px;` +
+								`left:${x}px;background-color:${bgcolor};` + 
+								`padding:4px;border:2px; ${fgcolor};`);
+		
+								crosshair.setAttribute("style", "font-size:29px;position:relative;top:-13px;left:-5px;color:white;")
+
+		accog.setAttribute("style", `background-color:${bgcolor};color:${fgcolor};`);
 	}
 	catch (error) {
 		console.log(error);
 	}
-
-	if (usemetric) {
-		y -= 6
-	}
-	chartDot.setAttribute("style", `height:14px;width:14px;border-radius:50%;position:absolute;top:${+y - 9}px;left:${+x - 5}px;background-color:${color};`);
-	mycog.setAttribute("style", `font-size:x-small;color:${tcolor};position:absolute;top:${+y + 7}px;left:${+x - 25}px;`);
-    
-	let crosshair = document.getElementById("chartcrosshair");
-	crosshair.setAttribute("style", "font-size:25px;position:relative;top:-6px;left:0px;color:white;")
-	
-	placeAcDot(weight, moment, bgcolor, fgcolor);
 }
 
-function placeAcDot(weight, moment, bgcolor, fgcolor) {
-	let yFactor = .2533;
-	let xFactor = .3027;
-	let rect = document.getElementById("cgrectangle").getBoundingClientRect();
-	let xx = 455 - moment; //moment * xFactor; // * xFactor; // - rect.width ;
-	let x = (xx * xFactor) - 8;
-	let y = (rect.height - ((weight - 600) * yFactor)) + 10; 
-	acDot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:relative;top:${y}px;` +
-	                            `left:${x}px;background-color:${bgcolor};` + 
-								`padding:4px;border:2px; ${fgcolor};`);
-	let crosshair = document.getElementById("crosshair");
-	crosshair.setAttribute("style", "font-size:29px;position:relative;top:-13px;left:-5px;color:white;")
+function getCogElements() {
+	let crosshair;
+	let dot;
+	let rect; 
+	switch (appData.settings.currentview) {
+		case "ch650":
+			rect = document.getElementById("ch650rectangle").getBoundingClientRect();
+			rect.className = "cg650rectangle";
+			dot = document.getElementById("ch650dot");
+			crosshair = document.getElementById("ch650crosshair");
+			break;
+		case "rv9":
+			rect = document.getElementById("rv9rectangle").getBoundingClientRect();
+			rect.className = "cgrv9rectangle";
+			dot = document.getElementById("rv9dot");
+			crosshair = document.getElementById("rv9crosshair");
+			break;
+		case "rv9a":
+			rect = document.getElementById("rv9arectangle").getBoundingClientRect();
+			rect.className = "cgrv9arectangle";
+			dot = document.getElementById("rv9adot");
+			crosshair = document.getElementById("rv9acrosshair");
+			break;
+	}
 
-	accog.setAttribute("style", `background-color:${bgcolor};color:${fgcolor};`);
+	return { "rectangle": rect, "dot": dot, "crosshair":crosshair }
 }
 
 const saveAppData = function() {
@@ -458,7 +663,6 @@ const printScreen = function() {
 
 function countClicks() {
 	clickcount++;
-	console.log(`clickcount: ${clickcount}`);
 	if (clickcount === 10) {
 		devstate.state = !appData.settings.debug;
 		saveAppData();
@@ -480,9 +684,9 @@ window.matchMedia('(prefers-color-scheme: light)')
 		isdarktheme = false;
 		appData.settings.theme = "light";	
 	}
-	drawChart();
-	drawAirplane();
-	saveAppData();		
+	saveAppData();	
+	window.electronAPI.reload();
+		
 });
 
 window.matchMedia('(prefers-color-scheme: dark)') 
@@ -491,9 +695,8 @@ window.matchMedia('(prefers-color-scheme: dark)')
 		isdarktheme = true;
 		appData.settings.theme = "dark";
 	}
-	drawChart();
-	drawAirplane();
-	saveAppData();		
+	saveAppData();
+	window.electronAPI.reload();	
 });
 
 window.electronAPI.onConvertUnits(() => {
@@ -511,7 +714,13 @@ window.electronAPI.onConvertUnits(() => {
 	inConvertMode = true;
 	let blinker = document.getElementById("blinkercontainer");
 	blinker.setAttribute("style", "visibility:visible;");
-	unsetArmsReadOnly();
+});
+
+window.electronAPI.onAircraftSelect((aircraft) => {
+	console.log(aircraft);
+	appData.settings.currentview = aircraft;
+	saveAppData();
+	window.electronAPI.selectaircraft();
 });
 
 function stopConverting() {
@@ -520,15 +729,6 @@ function stopConverting() {
 		saveAppData();
 	}
 	window.electronAPI.exitconvert();
-}
-
-function unsetArmsReadOnly() {
-	leftMainArm.readOnly = false;
-	leftMainArm.setAttribute("style", "background-color:yellow;");
-	rightMainArm.readOnly = false;
-	rightMainArm.setAttribute("style", "background-color:yellow;");
-	noseWheelArm.readOnly = false;
-	noseWheelArm.setAttribute("style", "background-color:yellow;");
 }
 
 function togglePrintPDF(chkbox) {
