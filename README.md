@@ -5,7 +5,7 @@
 
 ### Print Screen button prints out a copy for your records - the FAA won't bust you for not knowing your numbers!
 
-See instructions in the wiki: [Zenith Zodiac Weight and Balance Wiki](../../wiki)
+See instructions in the wiki: [Zodiac Weight and Balance Wiki](../../wiki)
 
 ## Light Theme - shown in "Weight in Kilograms" mode
 ![printimage](https://github.com/N129BZ/zodiacwb/assets/47579080/85e3841a-213b-463c-bc43-87578984fcde)

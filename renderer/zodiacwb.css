@@ -17,6 +17,8 @@ body {
     position: absolute;
     top: 521px;
     left: 70px;
+    width: 700px;
+    height: 447px;
     background-color: white;
     visibility: hidden;
 }
@@ -51,7 +53,7 @@ body {
     top: 579px;
     left: 62px;
     height: 332px;
-    width: 706px;
+    width: 754px;
     background-color: white;
     visibility: hidden;
 }

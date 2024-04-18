@@ -16,7 +16,7 @@ const print = require("print");
 const fs = require("fs");
 const path = require("path");
 const userPath = app.getPath("userData");
-const jsonPath = path.join(userPath, "zodiacwb.json");
+const jsonPath = path.join(userPath, "aircraftwb.json");
 const printImagePath = path.join(userPath, "printimage.jpg");
 const printImageURL = url.pathToFileURL(printImagePath);
 const isSWin32 = process.platform === "win32" ? true : false;
