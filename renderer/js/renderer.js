@@ -10,10 +10,9 @@ var isdarktheme = false;
 var ismainview = true;
 var printpdf = false;
 var isLoading = false;
+var currentview = "";
 
 const  logEntryType = {"error": "err", "debug": "debug", "information": "info"};
-const  weightMap = new Map();
-const  momentMap = new Map();
 
 const  checkpdf = document.getElementById("printpdf");
 const  mainview = document.getElementById("mainview");
@@ -105,7 +104,7 @@ var activeView;
 var activeCanvas;
 
 function setBoundaryLabels() {
-	switch (appData.settings.currentview) {
+	switch (currentview) {
 		case "ch650":
 			weightMaxFloats.innerHTML = valData.maxfloats;
 			maxFloatsDashes.innerHTML = "- Max floats lb -----------------------------------------";
@@ -122,11 +121,11 @@ function setBoundaryLabels() {
 			break;
 	}
 	weightMin.innerHTML = valData.mingross;
-	weightNosegearMin.innerHTML = valData.ngstart;
+	weightNosegearMin.innerHTML = currentview === "ch650" ? valData.ngstart : "";
 	weightMaxGross.innerHTML = valData.maxgross;
 	maxGrossWeight.value = valData.maxgross;
 
-	if (appData.settings.currentview === "ch650") {
+	if (currentview === "ch650") {
 		if (usemetric) {
 			// adjust attributes for metric units
 			weightMaxFloats.innerHTML = valData.maxfloats;  
@@ -168,7 +167,7 @@ function setBoundaryLabels() {
 }
 
 function assignValData() {
-	switch (appData.settings.currentview) {
+	switch (currentview) {
 		case "ch650":
 			valData =  usemetric ? appData.ch650.metric : appData.ch650.imperial;
 			break;
@@ -185,7 +184,7 @@ function assignValData() {
 }
 
 function activateView() {
-	switch (appData.settings.currentview) {
+	switch (currentview) {
 		case "ch650":
 			activeView = ch650view;
 			activeCanvas = ch650canvas;
@@ -208,14 +207,16 @@ function activateView() {
 
 	}
 	activeView.setAttribute("style", "visibility:visible");	
-	electronAPI.logentry(logEntryType.information, `Aircraft selected: ${appData.settings.currentview}`);
+	electronAPI.logentry(logEntryType.information, `Aircraft selected: ${currentview}`);
 }
 
 window.onload = async () => {
 	const data = await window.electronAPI.getappdata();
 	isLoading = true;
 	appData = JSON.parse(data);
-	usemetric = (appData.settings.currentview === "ch650" && appData.settings.units === "metric");
+	if (appData.settings.debug) console.log(appData);
+	currentview = appData.settings.currentview;
+	usemetric = (currentview === "ch650" && appData.settings.units === "metric");
 	isdarktheme = appData.settings.theme === "dark";
 	printpdf = appData.settings.printaspdf;
 	checkpdf.checked = printpdf;
@@ -257,7 +258,6 @@ window.onload = async () => {
 	rearBaggageWeight.value = valData.rbagweight;
 	rearBaggageArm.value = valData.rbagarm;
 	
-	loadCgMaps();
 	drawChart();
 	calcWB(null, true);
 	drawAirplane();
@@ -270,13 +270,13 @@ function drawChart() {
 	img.onload = function() {
 		ctx.drawImage(img, 0, 0); 
 	}
-	switch (appData.settings.currentview) {
+	switch (currentview) {
 		case "ch650":
-			imgpath = "ch650chart.png";
+			imgpath = "img/ch650chart.png";
 			break;
 		case "rv9":
 		case "rv9a":
-			imgpath = "rv9chart.png";
+			imgpath = "img/rv9chart.png";
 			break;
 	}
 	img.src = imgpath;
@@ -286,24 +286,24 @@ function drawAirplane() {
 	var imgsrcLight = "";
 	var imgsrcDark = "";
 	activeView.setAttribute("style", "visibility:hidden;");
-	switch(appData.settings.currentview) {
+	switch(currentview) {
 		case "ch650":
 			activeView = ch650view;
 			activeCanvas = ch650canvas;
-			imgsrcLight = "ch650_light.png";
-			imgsrcDark = "ch650_dark.png";
+			imgsrcLight = "img/ch650_light.png";
+			imgsrcDark = "img/ch650_dark.png";
 			break;
 		case "rv9":
 			activeView = rv9view;
 			activeCanvas = rv9canvas;
-			imgsrcLight = "rv9_light.png";
-			imgsrcDark = "rv9_dark.png";
+			imgsrcLight = "img/rv9_light.png";
+			imgsrcDark = "img/rv9_dark.png";
 			break;
 		case "rv9a":
 			activeView = rv9aview;
 			activeCanvas = rv9acanvas;
-			imgsrcLight = "rv9a_light.png";
-			imgsrcDark = "rv9a_dark.png";
+			imgsrcLight = "img/rv9a_light.png";
+			imgsrcDark = "img/rv9a_dark.png";
 			break;
 	}
 	activeView.setAttribute("style", "visibility:visible;");
@@ -329,7 +329,7 @@ const calcFuel = function() {
 	fuelWeight.value = fuelwt;
 	let fuelarm = handleNaN(fuelArm.value);
 	let fuelmom = fuelwt * fuelarm; 
-	fuelMoment.value = Math.round(fuelmom);
+	fuelMoment.value = +(fuelmom).toFixed(2);
 	valData.fuelunits = fuelunits;
 	valData.fuelweight = fuelwt;
 	valData.fuelarm = fuelarm;
@@ -343,27 +343,28 @@ const calcWB = function(field = null) {
 	let rtMainArm = +rightMainArm.value;
 	valData.rmweight = rtMainWt;
 	valData.rmarm = rtMainArm;
-	let rtMainMom = Math.round(rtMainWt * rtMainArm);
+	let rtMainMom = +(rtMainWt * rtMainArm).toFixed(2);
 	rightMainMoment.value = rtMainMom;
 	
 	let lftMainmWt = +leftMainWeight.value; 
 	let lftMainArm = +leftMainArm.value;
 	valData.lmweight = lftMainmWt;
 	valData.lmarm = lftMainArm;
-	let lftMainMom =  Math.round(lftMainmWt * lftMainArm);
+	let lftMainMom =  +(lftMainmWt * lftMainArm).toFixed(2);
 	leftMainMoment.value = lftMainMom;
 	
 	let noseWhlWt = +noseWheelWeight.value;
 	let noseWhlArm = +noseWheelArm.value;
 	valData.nwweight = noseWhlWt;
 	valData.nwarm = noseWhlArm;
-	let noseWhlMom = Math.round(noseWhlWt * noseWhlArm);
+	let noseWhlMom = +(noseWhlWt * noseWhlArm).toFixed(2);
 	noseWheelMoment.value = noseWhlMom;
 	
 	let emptyWt = + lftMainmWt + rtMainWt + noseWhlWt;
-	let emptyMom = Math.round(lftMainMom + rtMainMom + noseWhlMom);
-	let emptyCg = Math.round(emptyMom / emptyWt);
+	let emptyMom = +(lftMainMom + rtMainMom + noseWhlMom).toFixed(2);
+	let emptyCg = +(emptyMom / emptyWt).toFixed(2);
 	emptyWeight.value = emptyWt;
+	valData.mingross = currentview != "ch650" ? emptyWt : valData.mingross;
 	emptyArm.value = `CG: ${emptyCg}`;
 	emptyMoment.value = emptyMom; 
 	
@@ -371,14 +372,14 @@ const calcWB = function(field = null) {
 	let pltArm = +pilotArm.value;
 	valData.pilotweight = pltWt;
 	valData.pilotarm = pltArm;
-	let pltMom = Math.round(pltWt * pltArm);
+	let pltMom = +(pltWt * pltArm).toFixed(1);
 	pilotMoment.value = pltMom;
 	
 	let psgrWt = +passengerWeight.value;
 	let psgrArm = +passengerArm.value;
 	valData.psgrweight = psgrWt;
 	valData.psgrarm = psgrArm;
-	let psgrMom = Math.round(psgrWt * psgrArm); 
+	let psgrMom = +(psgrWt * psgrArm).toFixed(1); 
 	passengerMoment.value = psgrMom;
 	
 	let rtWngLkrWt = +rightWingLockerWeight.value;
@@ -401,20 +402,20 @@ const calcWB = function(field = null) {
 	let rearBagArm = +rearBaggageArm.value;  
 	valData.rbagweight = rearBagWt;
 	valData.rbagarm = rearBagArm;
-	let rearBagMom = Math.round(rearBagWt * rearBagArm);
+	let rearBagMom = +(rearBagWt * rearBagArm).toFixed(2);
 	rearBaggageMoment.value = rearBagMom;
 	
 	let totalWtArray = [emptyWt, pltWt, psgrWt, rtWngLkrWt, lftWngLkrWt, fuelnums[0], rearBagWt];
 	let totalArmArray = [emptyMom, pltMom, psgrMom, rtWngLkrMom, lftWngLkrMom , fuelnums[1], rearBagMom];
 	let totalWt = addArray(totalWtArray);
 	let totalMom = addArray(totalArmArray);
-	let finalCog = Math.round(totalMom / totalWt);
+	let finalCog = +(totalMom / totalWt).toFixed(1);
 	
 	totalWeight.value = Math.round(totalWt);
-	totalCog.value = `CG: ${Math.round(finalCog)}`;
-	totalMoment.value = Math.round(totalMom); 
+	totalCog.value = `CG: ${finalCog}`;
+	totalMoment.value = +totalMom.toFixed(2); 
 	
-	let cogtxt = `(${Math.round(finalCog)}, ${Math.round(totalWt)})`;
+	let cogtxt = `(${finalCog}, ${totalWt})`;
 	mycog.innerHTML = cogtxt;
 	accog.innerHTML = cogtxt.replace("(", "").replace(")", "");
 	placeDots(+totalWeight.value, finalCog);
@@ -456,66 +457,44 @@ function addArray(theArray) {
 	return outval;
 }
 
-function loadCgMaps() {
-	let rect = chartcanvas.getBoundingClientRect();
-	let pospx = -100;
-	let mompx = 48;
-
-	for (let w = 1800; w >= 720; w--) {
-		weightMap.set(w, pospx.toFixed(3));
-		pospx += .6;
-	}
-	for (let m = 270; m <= 455; m++) {
-		momentMap.set(m, mompx.toFixed(3));
-		mompx += 2;
-	}
-}
-
 function placeDots(weight, moment) {
+	let rgba = chartcanvas.getContext('2d', { willReadFrequently: true }).getImageData(20,20,1,1).data
 	let color = appData.settings.overbgcolor;
 	let tcolor = appData.settings.overbgcolor;
 	let bgcolor = appData.settings.overbgcolor;
 	let fgcolor = appData.settings.overfgcolor;
-	let x = 0;
-	let y = 0;
-	let isoverwt = true;
-	let mom = Math.round(moment);
-	let rgba = chartcanvas.getContext('2d', { willReadFrequently: true }).getImageData(x,y,1,1).data
 	let maxweight = valData.maxgross;
 	let minweight = valData.mingross;
-	let mincg = valData.mincg;
-	let maxcg = valData.maxcg;
-	let elements = getCogElements()
-	let heightRect = elements.rectangle;
-	let containerRect = container.getBoundingClientRect();
-	let yOffset = 0;
-	let xOffset = 0;
+	let isoverwt = true;
+	let plotleft = false;
+	let plotdown = true;
+	let mincg = 0;
+	let maxcg = 0;
+	let mom = 0;
+	let x = 0;
+	let y = 0;
+	
 	try {	
 		
-		y = weightMap.get(Math.round(weight)) - 5;
-
-		switch (appData.settings.currentview) {
+		switch (currentview) {
 			case "ch650":
 				mincg = usemetric ? valData.mincg : Math.round(valData.mincg * 25.4);
 				maxcg = usemetric ? valData.maxcg : Math.round(valData.maxcg * 25.4);
 				mom = usemetric ? moment : Math.round(moment * 25.4);
-				yOffset = Math.round((containerRect.height * weight) / valData.maxgross) - 3;
-				xOffset = Math.round((containerRect.width * mom) / maxcg);
-				x = containerRect.width - ((xOffset - containerRect.width) * -1);
-				y = containerRect.height - yOffset; 
+				// ch650 on-aircraft cg dot is plotted from the right
+				plotleft = false;
 				break;
 			case "rv9":
 			case "rv9a":
-				mom = Math.round(moment * 25.4);
-				mincg = Math.round(valData.mincg * 25.4);
-				maxcg = Math.round(valData.maxcg * 25.4);
-				yOffset = Math.round((heightRect.height * weight) / valData.maxgross) - 3;
-				xOffset = Math.round((containerRect.width * mom) / maxcg) - 70;
-				x = containerRect.width - ((xOffset - containerRect.width) * -1); 
-				y = heightRect.height - yOffset; 
+				mom = +(moment * 25.4).toFixed(2);
+				mincg = +(valData.mincg * 25.4).toFixed(2);
+				maxcg = +(valData.maxcg * 25.4).toFixed(2);
 				break;
 		}
 
+		x = plotX(chartcanvas, maxcg, mincg, mom, plotleft);
+		y = plotY(chartcanvas, maxweight, minweight, weight, plotdown);
+		
 		if ((weight <= maxweight && weight >= minweight) && (mom >= mincg && mom <= maxcg)) {
 			if ((rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) || 
 				(rgba[0] === 0 && rgba[1] === 0 && rgba[2] === 0)) { // on the black border line counts!!
@@ -535,60 +514,36 @@ function placeDots(weight, moment) {
 
 	chartDot.setAttribute("style", `height:14px;width:14px;border-radius:50%;position:absolute;top:${+y - 9}px;left:${+x - 5}px;background-color:${color};`);
 	
-	mycog.setAttribute("style", `font-size:x-small;color:${tcolor};position:absolute;top:${+y + 7}px;left:${+x - 25}px;`);
+	mycog.setAttribute("style", `font-size:x-small;color:${tcolor};position:absolute;top:${+y + 7}px;left:${+x - 25}px;width:fit-content`);
 	
 	let crosshair = document.getElementById("chartcrosshair");
 	crosshair.setAttribute("style", "font-size:25px;position:relative;top:-6px;left:0px;color:white;")
 	
-	placeAcDot(elements, weight, moment, bgcolor, fgcolor);
+	placeAcDot(plotleft, plotdown, maxcg, mincg, maxweight, minweight, weight, mom, bgcolor, fgcolor);
 }
 
-function placeAcDot(elements, weight, moment, bgcolor, fgcolor) {
-	let yFactor = 0.2533; 
-	let xFactor = 0.3027;
+function placeAcDot(plotleft, plotdown, maxcg, mincg, maxweight, minweight, weight, moment, bgcolor, fgcolor) {
+	let elements = getCogElements();
 	let rect = elements.rectangle;
 	let dot = elements.dot;
 	let crosshair = elements.crosshair;
-	let wfactor = 455;
-	let wdiff = 0;
-	let mdiff = 0;
-	let mom = moment;
-	let kgwt = 0;
-	let kgmax = 0;
-	let x, xx;
+	let x;
 	let y;
 
 	try {
 
-		switch (appData.settings.currentview) {
-			case "ch650":
-				mom = usemetric? moment : moment * 25.4;
-				mdiff = 455 - mom;
-				kgwt = usemetric ? weight : Math.round(weight * 0.453592);
-				kgmax = usemetric ? 600 : Math.round(1320 * 0.453592);
-				wdiff = kgwt - kgmax;
-				mdiff = 455 - mom;
-				x = rect.width - ((rect.width * mom) / 455) + 9; 
-				y = rect.height - (((rect.height * kgwt) / kgmax)) - 9;
-				break;
-			case "rv9":
-			case "rv9a":
-				mom = Math.round(((14.84 * moment) / 84.84) * 25.4);
-				mdiff = 455 - mom;
-				kgwt = Math.round(weight * 0.453592);
-				kgmax = Math.round(1750 * 0.453592);
-				wdiff = kgwt - kgmax;
-				let xcg = ((rect.width * mom) / 455)
-				x = rect.width - (rect.width - xcg); 
-				y = rect.height - (((rect.height * kgwt) / kgmax)) - 9;
-				break;
-		}
+		if (currentview === "ch650") plotleft = true;
+
+		x = plotX(rect, maxcg, mincg, moment, plotleft);
+		y = plotY(rect, maxweight, minweight, weight, plotdown);
+
+		dot.setAttribute(
+			"style", `height:7px;width:7px;border-radius:50%;position:relative;top:${y-9}px;` +
+					 `left:${x-5}px;background-color:${bgcolor};` + 
+					 `padding:4px;border:2px; ${fgcolor};`
+		);
 		
-		dot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:relative;top:${y}px;` +
-								`left:${x}px;background-color:${bgcolor};` + 
-								`padding:4px;border:2px; ${fgcolor};`);
-		
-								crosshair.setAttribute("style", "font-size:29px;position:relative;top:-13px;left:-5px;color:white;")
+		crosshair.setAttribute("style", "font-size:29px;position:relative;top:-13px;left:-5px;color:white;")
 
 		accog.setAttribute("style", `background-color:${bgcolor};color:${fgcolor};`);
 	}
@@ -601,7 +556,7 @@ function getCogElements() {
 	let crosshair;
 	let dot;
 	let rect; 
-	switch (appData.settings.currentview) {
+	switch (currentview) {
 		case "ch650":
 			rect = document.getElementById("ch650rectangle").getBoundingClientRect();
 			rect.className = "cg650rectangle";
@@ -675,6 +630,7 @@ window.matchMedia('(prefers-color-scheme: dark)')
 
 window.electronAPI.onAircraftSelect((aircraft) => {
 	console.log(aircraft);
+	currentview = aircraft;
 	appData.settings.currentview = aircraft;
 	saveAppData();
 	window.electronAPI.selectaircraft();
@@ -687,3 +643,50 @@ function togglePrintPDF(chkbox) {
 		saveAppData();
 	}
 }
+
+/**
+ * Plot Y based on height of destination object
+ * @param {object} chart canvas or rectangle 
+ * @param {number} maxGross
+ * @param {number} minGross
+ * @param {number} acWeight 
+ * @param {boolean} plotDown 
+ * @returns {number} 
+ */
+function plotY(chart, maxGross, minGross, acWeight, plotDown = true) {
+	let output = 0;
+	let range = maxGross - minGross; 
+	let pxfactor = chart.height / range;
+	let diff = maxGross - acWeight;
+	let offset = diff * pxfactor;
+	if (plotDown) {
+		output = offset;
+	} else {
+		output = chart.height - offset;
+	}
+	return output;
+}
+
+/**
+ * Plot X based on width of destination object
+ * @param {object} chart canvas or rectangle
+ * @param {number} maxCg 
+ * @param {number} minCg 
+ * @param {number} acMoment 
+ * @param {boolean} plotLeft 
+ * @returns {number} 
+ */
+function plotX(chart, maxCg, minCg, acMoment, plotLeft = true) {
+	let output = 0;
+	let range = maxCg - minCg; 
+	let pxfactor = chart.width / range;
+	let diff = maxCg - acMoment;
+	let offset = diff * pxfactor;
+	if (plotLeft) {
+		output = offset;
+	} else {
+		output = chart.width - offset;
+	}
+	return output;
+}
+

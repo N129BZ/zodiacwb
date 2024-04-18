@@ -67,48 +67,6 @@ body {
     border-width: thin;
     background: rgba(222, 236, 228, 0.5);
 }
-.blinkercontainer {
-	position:absolute;
-	top: 302px;
-	left: 110px;
-	width: 200px;
-	height: 100px;
-	visibility: hidden;
-}
-.blinkerinfo {
-    position: relative;
-    top: 219px;
-    width: 668px;
-    left: 0px;
-	text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: x-large;
-	text-align: center;
-    vertical-align: middle;
-    border: 1px solid black;
-    border-radius: 4px;
-    border-color: gray;
-    background-color: red;
-    color: white;
-    opacity: 1;
-    z-index: 20;
-}
-.blinker {
-    position: relative;
-    top: 0px;
-    width: 268px;
-    left: 0px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: x-large;
-	border: 1px solid black;
-    border-radius: 4px;
-    border-color: gray;
-    background-color: red;
-    color: white;
-    animation: opacity 2s ease-in-out infinite;
-    opacity: 1;
-    z-index: 20;
-}
 .dot {
 	height:10px;
 	width:10px;
@@ -322,7 +280,7 @@ body {
 }
 .cgTotals {
 	font-family: Arial, Helvetica, sans-serif;
-	text-align: center;
+	text-align: right;
 	font-weight: bold;
 	width: 60px;
 }
@@ -383,9 +341,9 @@ body {
 }
 .cglabelbox {
     position: absolute;
-    top: 551px;
-    left: 70px;
-    width: 164px;
+    top: 530px;
+    left: 136px;
+    width: 170px;
 }
 .accoglabel {
     font-size: large;

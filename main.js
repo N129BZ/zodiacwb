@@ -16,7 +16,8 @@ const print = require("print");
 const fs = require("fs");
 const path = require("path");
 const userPath = app.getPath("userData");
-const jsonPath = path.join(userPath, "aircraftwb.json");
+const jsonPath = path.join(userPath, "zodiacwb.json");
+const logpath = path.join(userPath, "zodiacwb.log");
 const printImagePath = path.join(userPath, "printimage.jpg");
 const printImageURL = url.pathToFileURL(printImagePath);
 const isSWin32 = process.platform === "win32" ? true : false;
@@ -28,8 +29,9 @@ app.commandLine.appendSwitch ("disable-http-cache");
 var mainWindow;
 
 var appData = loadAppData();
+
 const isDebug = appData.settings.debug;
-const logpath = path.join(userPath, "zodiacwb.log");
+
 
 function loadAppData() {
     let adf = "";

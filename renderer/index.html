@@ -2,14 +2,9 @@
 <html lang="en">
   <head>
     <title>Zodiac Weight and Balance</title>
-    <link rel="stylesheet" type="text/css" href="zodiacwb.css" />
+    <link rel="stylesheet" type="text/css" href="css/zodiacwb.css" />
   </head>
   <body id="body"> 
-    <div class="blinkercontainer" id="blinkercontainer">
-      <div class="blinkerinfo" id="blinkerinfo" readonly onclick="stopConverting()">
-        Instructions: Enter your <b>Empty Weight</b> arm values in inches. They will be converted to millimeters on-the-fly.<br>Click here when done...</br></div>
-      <div class="blinker" id="blinker">&nbsp;&nbsp;IN CONVERT MODE!!&nbsp;&nbsp;</div>
-    </div>
     <div id="mainview">  
       <div class="container" id="container">  
         <canvas id="chartcanvas" width="370" height="360"></canvas> 
@@ -139,8 +134,8 @@
         <div class="dot" id="rv9adot"><label id="rv9acrosshair">+</label></div>
       </div>
     </div>
-    <div id="cglabelbox">
-      <label class="accoglabel" id="accoglabel">Computed CG:</label>
+    <div class=cglabelbox id="cglabelbox">
+      <label class="accoglabel" id="accoglabel">CG:</label>
       <label class="accog" id="accog"></label>  
     </div>
     <table class="buttonContainer" id="buttonContainer">
@@ -156,6 +151,6 @@
         <td><button class="exitButton" id="exitButton" tabindex="14" onclick="exitApp()" >Exit</button></td>
       </tr>
     </table>  
-    <script type="text/javascript" src="renderer.js"></script>
+    <script type="text/javascript" src="js/renderer.js"></script>
   </body>
 </html>
