@@ -29,6 +29,7 @@ var mainWindow;
 
 var appData = loadAppData();
 const isDebug = appData.settings.debug;
+const logpath = path.join(userPath, "zodiacwb.log");
 
 function loadAppData() {
     let adf = "";
@@ -70,19 +71,16 @@ const template = [
     { 
         label: 'Units of Measure',
         submenu: [
-            { label: "Weight in Pounds",
+            { label: "Pounds/Inches",
                 click: () => app.emit('toggleimperial')
             },
-            { label: "Weight in Kilograms",
+            { label: "Kilograms/Millimeters",
                 click: () => app.emit('togglemetric')
-            },
-            { label: "Convert Mode - Inches to Millimeters", 
-                click: () => mainWindow.webContents.send("convert", "convertvalues")
             }
         ]
     },
     {
-        label: "Aircraft Selections", 
+        label: "Select Aircraft", 
         submenu: [
             {label: "Zenith ch601xl/ch650",
                 type: "radio",
@@ -246,10 +244,6 @@ ipcMain.on('appdata:save', (e, newappdata) => {
     mainWindow.reload();
 });
 
-ipcMain.on('function:exitconvert', () => {
-    mainWindow.reload(); 
-});
-
 ipcMain.on('function:selectaircraft', () => {
     mainWindow.reload(); 
 });
@@ -402,10 +396,29 @@ function printToPdf() {
             })
         })
         .catch(error => {
-            console.log(`Failed to write PDF to ${pdfPath}: `, error)
+            logEntry(logEntryType.error, `Failed to write PDF to ${pdfPath}: ${error}`);
         })
         .finally(() => {
             mainWindow.reload();
         })
     }
 }
+
+ipcMain.on("function:logentry", (e, entrytype, entry) => {
+    let logdate = new Date().toLocaleString();
+    let logline = "Unknown Entry: ";
+    if (entrytype === "error") {
+        logline = `Error: ${entry}`;
+    } else if (entrytype === "debug") {
+        logline = `Debug: ${entry}`;
+    } else {
+        logline = `Info: ${entry}`
+    }
+
+    let logdata = `${logdate}:  ${logline}\r`; 
+    fs.appendFile(logpath, logdata, function (err) {
+        if (err) {
+            console.log(err);
+        }
+    });
+});

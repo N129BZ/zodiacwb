@@ -2,13 +2,12 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 
 contextBridge.exposeInMainWorld('electronAPI', {
-   onConvertUnits: (callback) => ipcRenderer.on("convert", (_event) => callback()), 
    onAircraftSelect: (callback) => ipcRenderer.on("acselect", (_event, selection) => callback(selection)), 
    saveappdata: (newappdata) => ipcRenderer.send('appdata:save', newappdata),
+   logentry: (entrytype, entry) => ipcRenderer.send('function:logentry', entrytype, entry),
    getappdata: () => ipcRenderer.invoke('appdata:get'),
    showdev: (devstate) => ipcRenderer.send('menu:showdev', devstate),
    printscreen: (printpdf) => ipcRenderer.send('function:print', printpdf),
-   exitconvert: () => ipcRenderer.send('function:exitconvert'),
    selectaircraft: () => ipcRenderer.send('function:selectaircraft'),
    reload: () => ipcRenderer.send('function:reload'),
    exitapp: () => ipcRenderer.send('function:exit'),

@@ -8,10 +8,10 @@ var clickcount = 0;
 var usemetric = false;
 var isdarktheme = false; 
 var ismainview = true;
-var inConvertMode = false;
 var printpdf = false;
 var isLoading = false;
 
+const  logEntryType = {"error": "err", "debug": "debug", "information": "info"};
 const  weightMap = new Map();
 const  momentMap = new Map();
 
@@ -137,8 +137,8 @@ function setBoundaryLabels() {
 			weightAxis.className = "weightAxisMetric";
 			weightAxis.innerHTML = "Weight (kilograms)";
 			fuelUnitLabel.innerHTML = "Fuel in Liters:";
-			momentMin.innerHTML = `|&nbsp;&nbsp;${valData.mincg}`;
-			momentMax.innerHTML = `${valData.maxcg}&nbsp;&nbsp;|`
+			momentMin.innerHTML = valData.mincg;
+			momentMax.innerHTML = valData.maxcg;
 			momentAxis.innerHTML = "Acceptable CG Range (millimeters)";
 		} else  {
 			// adjust attributes for imperial units
@@ -149,8 +149,8 @@ function setBoundaryLabels() {
 			weightAxis.className = "weightAxisImperial";
 			weightAxis.innerHTML = "Weight (pounds)";
 			fuelUnitLabel.innerHTML = "Fuel in Gallons:";
-			momentMin.innerHTML = `|&nbsp;&nbsp;${valData.mincg}`;
-			momentMax.innerHTML = `${valData.maxcg}&nbsp;&nbsp;|`
+			momentMin.innerHTML = valData.mincg;
+			momentMax.innerHTML = valData.maxcg;
 			momentAxis.innerHTML = "Acceptable CG Range (inches)";
 		}
 	} else {
@@ -161,8 +161,8 @@ function setBoundaryLabels() {
 		weightAxis.className = "weightAxisImperial";
 		weightAxis.innerHTML = "Weight (pounds)";
 		fuelUnitLabel.innerHTML = "Fuel in Gallons:";
-		momentMin.innerHTML = `|&nbsp;&nbsp;&nbsp;${valData.mincg}`;
-		momentMax.innerHTML = `${valData.maxcg}&nbsp;|`
+		momentMin.innerHTML = valData.mincg;
+		momentMax.innerHTML = valData.maxcg
 		momentAxis.innerHTML = "Acceptable CG Range (inches)";
 	}
 }
@@ -208,21 +208,19 @@ function activateView() {
 
 	}
 	activeView.setAttribute("style", "visibility:visible");	
+	electronAPI.logentry(logEntryType.information, `Aircraft selected: ${appData.settings.currentview}`);
 }
 
 window.onload = async () => {
 	const data = await window.electronAPI.getappdata();
 	isLoading = true;
-	console.log(data);
 	appData = JSON.parse(data);
 	usemetric = (appData.settings.currentview === "ch650" && appData.settings.units === "metric");
 	isdarktheme = appData.settings.theme === "dark";
-
-	assignValData();
-
 	printpdf = appData.settings.printaspdf;
 	checkpdf.checked = printpdf;
 
+	assignValData();
 	setBoundaryLabels();
 
 	rightMainWeight.value = valData.rmweight;
@@ -338,27 +336,9 @@ const calcFuel = function() {
 	return [fuelwt, fuelmom];
 }
 
-function convertValue(someNumber, unit) {
-	let realnum = handleNaN(someNumber);
-	if (!inConvertMode) {
-		return realnum;
-	} else {
-		return Math.round(realnum * 25.4)
-	}
-}
-
-
 const calcWB = function(field = null) {	
-	
 	saveButton.disabled = isLoading;
 	
-	if (!isLoading && inConvertMode) {
-		if (field.className === "arm") {
-			field.value = convertValue(+field.value)
-		}
-		return;
-	}
-
 	let rtMainWt = +rightMainWeight.value;
 	let rtMainArm = +rightMainArm.value;
 	valData.rmweight = rtMainWt;
@@ -459,13 +439,13 @@ function applyTextColors(isoverwt) {
 }
 
 function handleNaN(theNumber) {
-	var tv = 0;
+	var tn = 0;
 	if (theNumber === "" || isNaN(theNumber)) {
 		// do nothing
 	} else {
-		tv = +theNumber
+		tn = +theNumber
 	}
-	return tv;
+	return tn;
 }
 
 function addArray(theArray) {
@@ -499,7 +479,6 @@ function placeDots(weight, moment) {
 	let x = 0;
 	let y = 0;
 	let isoverwt = true;
-	let calcwt = Math.round(weight);
 	let mom = Math.round(moment);
 	let rgba = chartcanvas.getContext('2d', { willReadFrequently: true }).getImageData(x,y,1,1).data
 	let maxweight = valData.maxgross;
@@ -509,30 +488,30 @@ function placeDots(weight, moment) {
 	let elements = getCogElements()
 	let heightRect = elements.rectangle;
 	let containerRect = container.getBoundingClientRect();
-	
+	let yOffset = 0;
+	let xOffset = 0;
 	try {	
 		
-		y = weightMap.get(calcwt) - 5;
+		y = weightMap.get(Math.round(weight)) - 5;
 
 		switch (appData.settings.currentview) {
 			case "ch650":
-				calcwt = usemetric ?  Math.round(weight * 2.204620) : calcwt;
 				mincg = usemetric ? valData.mincg : Math.round(valData.mincg * 25.4);
 				maxcg = usemetric ? valData.maxcg : Math.round(valData.maxcg * 25.4);
 				mom = usemetric ? moment : Math.round(moment * 25.4);
-				x = momentMap.get(mom);
-				y = (chartcanvas.height - weightMap.get(calcwt)) - 3; 
-				//y = chartRect.top + wt;
-				y = usemetric ? y - 30 : y - 5; 
+				yOffset = Math.round((containerRect.height * weight) / valData.maxgross) - 3;
+				xOffset = Math.round((containerRect.width * mom) / maxcg);
+				x = containerRect.width - ((xOffset - containerRect.width) * -1);
+				y = containerRect.height - yOffset; 
 				break;
 			case "rv9":
 			case "rv9a":
 				mom = Math.round(moment * 25.4);
 				mincg = Math.round(valData.mincg * 25.4);
 				maxcg = Math.round(valData.maxcg * 25.4);
-				let yOffset = Math.round((heightRect.height * weight) / valData.maxgross) - 3;
-				let xOffset = Math.round((containerRect.width * mom) / maxcg) - 70;
-				x = containerRect.width - ((xOffset - containerRect.width) * -1); // + 4; // - rect.width;
+				yOffset = Math.round((heightRect.height * weight) / valData.maxgross) - 3;
+				xOffset = Math.round((containerRect.width * mom) / maxcg) - 70;
+				x = containerRect.width - ((xOffset - containerRect.width) * -1); 
 				y = heightRect.height - yOffset; 
 				break;
 		}
@@ -546,11 +525,10 @@ function placeDots(weight, moment) {
 				fgcolor = appData.settings.underfgcolor;
 				isoverwt = false;
 			}
-			console.log("point is on the chart!");
 		}
 	}
 	catch (error){
-		console.log(error);
+		electronAPI.logentry(logEntryType.error, error.toString());
 	}
 	
 	applyTextColors(isoverwt);
@@ -605,10 +583,6 @@ function placeAcDot(elements, weight, moment, bgcolor, fgcolor) {
 				y = rect.height - (((rect.height * kgwt) / kgmax)) - 9;
 				break;
 		}
-
-		console.log(`cg offset = ${y}`);
-		
-		
 		
 		dot.setAttribute("style", `height:7px;width:7px;border-radius:50%;position:relative;top:${y}px;` +
 								`left:${x}px;background-color:${bgcolor};` + 
@@ -619,7 +593,7 @@ function placeAcDot(elements, weight, moment, bgcolor, fgcolor) {
 		accog.setAttribute("style", `background-color:${bgcolor};color:${fgcolor};`);
 	}
 	catch (error) {
-		console.log(error);
+		electronAPI.logentry(logEntryType.error, error.toString());
 	}
 }
 
@@ -699,37 +673,12 @@ window.matchMedia('(prefers-color-scheme: dark)')
 	window.electronAPI.reload();	
 });
 
-window.electronAPI.onConvertUnits(() => {
-	if (usemetric) {
-		alert("Convert Mode automatically converts inches to millimeters.\r\r" +
-		      "You must be in Weight in Pounds view to enter Convert Mode.\r" +
-			  "Enter your Empty Weight inch arm values in the Left Main,\r" +
-			  "Right Main, and Nose Wheel arm entry fields.\r\r" +
-			  "The application will automatically translate those inch arm\r" +
-			  "values to millimeters on-the-fly. When you exit Convert Mode\r" +
-			  "you will be asked for confirmation to save your entries."
-			);
-		return;
-	}
-	inConvertMode = true;
-	let blinker = document.getElementById("blinkercontainer");
-	blinker.setAttribute("style", "visibility:visible;");
-});
-
 window.electronAPI.onAircraftSelect((aircraft) => {
 	console.log(aircraft);
 	appData.settings.currentview = aircraft;
 	saveAppData();
 	window.electronAPI.selectaircraft();
 });
-
-function stopConverting() {
-	if (confirm("Do you want to save the converted arm data?")) {
-		inConvertMode = false;
-		saveAppData();
-	}
-	window.electronAPI.exitconvert();
-}
 
 function togglePrintPDF(chkbox) {
 	if (!isLoading) {
@@ -738,6 +687,3 @@ function togglePrintPDF(chkbox) {
 		saveAppData();
 	}
 }
-// document.onmousedown = function(event){
-// 	alert("clientX: " + event.clientX + " - clientY: " + event.clientY);
-//}
