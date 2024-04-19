@@ -104,6 +104,7 @@ var activeView;
 var activeCanvas;
 
 function setBoundaryLabels() {
+	
 	switch (currentview) {
 		case "ch650":
 			weightMaxFloats.innerHTML = valData.maxfloats;
@@ -120,6 +121,7 @@ function setBoundaryLabels() {
 			maxFloatsDashes.innerHTML = "";
 			break;
 	}
+
 	weightMin.innerHTML = valData.mingross;
 	weightNosegearMin.innerHTML = currentview === "ch650" ? valData.ngstart : "";
 	weightMaxGross.innerHTML = valData.maxgross;
@@ -184,8 +186,16 @@ function assignValData() {
 }
 
 function activateView() {
+	let nw = document.getElementById("nosewheel");
+	let rightwl = document.getElementById("rightlocker");
+	let leftwl = document.getElementById("leftlocker");
+	let nwtext = "Nose Wheel:"
+	let hideWL = false;
 	switch (currentview) {
 		case "ch650":
+			if (appData.ch650.taildragger) {
+				nwtext = "Tail Wheel:"
+			}
 			activeView = ch650view;
 			activeCanvas = ch650canvas;
 			ch650view.setAttribute("style", "visibility:visible")
@@ -193,12 +203,15 @@ function activateView() {
 			rv9aview.setAttribute("style", "visibility:hidden;");
 			break;
 		case "rv9":
+			hideWL = true;
+			nwtext = "Tail Wheel";
 			activeView = rv9view;
 			activeCanvas = rv9canvas;
 			ch650view.setAttribute("style", "visibility:hidden");	
 			rv9aview.setAttribute("style", "visibility:hidden");
 			break;
 		case "rv9a":
+			hideWL = true;
 			activeView = rv9aview;
 			activeCanvas = rv9acanvas;
 			ch650view.setAttribute("style", "visibility:hidden");	
@@ -207,6 +220,14 @@ function activateView() {
 
 	}
 	activeView.setAttribute("style", "visibility:visible");	
+
+	nw.innerHTML = nwtext;
+	
+	if (hideWL) {
+		rightwl.setAttribute("style", "visibility:hidden;");
+		leftwl.setAttribute("style", "visibility:hidden;");
+	}
+	
 	electronAPI.logentry(logEntryType.information, `Aircraft selected: ${currentview}`);
 }
 
@@ -238,19 +259,6 @@ window.onload = async () => {
 	
 	passengerWeight.value = valData.psgrweight;
 	passengerArm.value = valData.psgrarm;
-	
-	if (appData.currentview === "ch650") {
-		rightWingLockerWeight.value = valData.rwlockweight;
-		rightWingLockerArm.value = valData.lwlockarm;
-		leftWingLockerWeight.value = valData.lwlockweight;
-		leftWingLockerArm.value = valData.lwlockarm;
-	}
-	else {
-		rightWingLockerWeight.value = 0;
-		rightWingLockerArm.value = 0;
-		leftWingLockerWeight.value = 0;
-		leftWingLockerArm.value = 0;
-	}
 
 	fuelUnits.value = valData.fuelunits;
 	fuelArm.value = valData.fuelarm;
@@ -258,6 +266,20 @@ window.onload = async () => {
 	rearBaggageWeight.value = valData.rbagweight;
 	rearBaggageArm.value = valData.rbagarm;
 	
+	
+	if (currentview === "ch650") {
+		rightWingLockerWeight.value = valData.rwlockweight;
+		rightWingLockerArm.value = valData.lwlockarm;
+		leftWingLockerWeight.value = valData.lwlockweight;
+		leftWingLockerArm.value = valData.lwlockarm;
+	}
+	else if (currentview === "rv9" || currentview === "rv9a") {
+		rightWingLockerWeight.value = 0;
+		rightWingLockerArm.value = 0;
+		leftWingLockerWeight.value = 0;
+		leftWingLockerArm.value = 0;
+	}
+
 	drawChart();
 	calcWB(null, true);
 	drawAirplane();
@@ -329,7 +351,7 @@ const calcFuel = function() {
 	fuelWeight.value = fuelwt;
 	let fuelarm = handleNaN(fuelArm.value);
 	let fuelmom = fuelwt * fuelarm; 
-	fuelMoment.value = +(fuelmom).toFixed(2);
+	fuelMoment.value = +(fuelmom).toFixed(1);
 	valData.fuelunits = fuelunits;
 	valData.fuelweight = fuelwt;
 	valData.fuelarm = fuelarm;
@@ -343,25 +365,25 @@ const calcWB = function(field = null) {
 	let rtMainArm = +rightMainArm.value;
 	valData.rmweight = rtMainWt;
 	valData.rmarm = rtMainArm;
-	let rtMainMom = +(rtMainWt * rtMainArm).toFixed(2);
+	let rtMainMom = +(rtMainWt * rtMainArm).toFixed(1);
 	rightMainMoment.value = rtMainMom;
 	
 	let lftMainmWt = +leftMainWeight.value; 
 	let lftMainArm = +leftMainArm.value;
 	valData.lmweight = lftMainmWt;
 	valData.lmarm = lftMainArm;
-	let lftMainMom =  +(lftMainmWt * lftMainArm).toFixed(2);
+	let lftMainMom =  +(lftMainmWt * lftMainArm).toFixed(1);
 	leftMainMoment.value = lftMainMom;
 	
 	let noseWhlWt = +noseWheelWeight.value;
 	let noseWhlArm = +noseWheelArm.value;
 	valData.nwweight = noseWhlWt;
 	valData.nwarm = noseWhlArm;
-	let noseWhlMom = +(noseWhlWt * noseWhlArm).toFixed(2);
+	let noseWhlMom = +(noseWhlWt * noseWhlArm).toFixed(1);
 	noseWheelMoment.value = noseWhlMom;
 	
 	let emptyWt = + lftMainmWt + rtMainWt + noseWhlWt;
-	let emptyMom = +(lftMainMom + rtMainMom + noseWhlMom).toFixed(2);
+	let emptyMom = +(lftMainMom + rtMainMom + noseWhlMom).toFixed(1);
 	let emptyCg = +(emptyMom / emptyWt).toFixed(2);
 	emptyWeight.value = emptyWt;
 	valData.mingross = currentview != "ch650" ? emptyWt : valData.mingross;
@@ -402,7 +424,7 @@ const calcWB = function(field = null) {
 	let rearBagArm = +rearBaggageArm.value;  
 	valData.rbagweight = rearBagWt;
 	valData.rbagarm = rearBagArm;
-	let rearBagMom = +(rearBagWt * rearBagArm).toFixed(2);
+	let rearBagMom = +(rearBagWt * rearBagArm).toFixed(1);
 	rearBaggageMoment.value = rearBagMom;
 	
 	let totalWtArray = [emptyWt, pltWt, psgrWt, rtWngLkrWt, lftWngLkrWt, fuelnums[0], rearBagWt];

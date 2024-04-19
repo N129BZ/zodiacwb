@@ -47,7 +47,7 @@
               <td><input type="text" class="moment" id="leftMainMoment" value="0" tabindex="-1" readonly></td>
             </tr>
             <tr>
-              <td class="weightLabel">Nose Wheel:</td>
+              <td class="weightLabel" id="nosewheel">Nose Wheel:</td>
               <td><input type="text" class="weight" id="noseWheelWeight" value="0" tabindex="5" oninput="calcWB()"></td>
               <td><input type="text" class="arm" id="noseWheelArm" value="0" tabindex="6" oninput="calcWB(this)"></td>
               <td><input type="text" class="moment" id="noseWheelMoment" value="0" tabindex="-1" readonly></td>
@@ -76,13 +76,13 @@
               <td><input type="text" class="arm" id="passengerArm" value="0" tabindex="10" oninput="calcWB()"></td>
               <td><input type="text" class="moment" id="passengerMoment" value="0" tabindex="-1" readonly></td>
             </tr>
-            <tr>
+            <tr id="rightlocker">
               <td class="weightLabel">Right Wing Locker:</td>
               <td><input type="text" class="weight" id="rightWingLockerWeight" value="0" tabindex="11" oninput="calcWB()"></td>
               <td><input type="text" class="arm" id="rightWingLockerArm" value="0" tabindex="12" oninput="calcWB()"></td>
               <td><input type="text" class="moment" id="rightWingLockerMoment" value="0" tabindex="-1" readonly></td>
             </tr>
-            <tr>
+            <tr id="leftlocker">
               <td class="weightLabel">Left Wing Locker:</td>
               <td><input type="text" class="weight" id="leftWingLockerWeight" value="0" tabindex="13" oninput="calcWB()"></td>
               <td><input type="text" class="arm" id="leftWingLockerArm" value="0" tabindex="14" oninput="calcWB()"></td>
