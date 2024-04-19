@@ -586,7 +586,7 @@ const saveAppData = function() {
 }
 
 const printScreen = function() {
-	buttonBox.setAttribute("style", "visibility:hidden");
+	//buttonBox.setAttribute("style", "visibility:hidden");
 	setTimeout(() => window.electronAPI.printscreen(printpdf), 300);
 }
 

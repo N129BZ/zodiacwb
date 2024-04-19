@@ -134,7 +134,6 @@ nativeTheme.themeSource = appData.settings.theme;
 
 function saveAppData() {
     fs.writeFileSync(jsonPath, JSON.stringify(appData, null, 4));
-    //loadAppData();
 }
 
 const menu = Menu.buildFromTemplate(template);
