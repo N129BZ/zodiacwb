@@ -15,17 +15,17 @@ body {
 }
 .ch650view {
     position: absolute;
-    top: 527px;
-    left: 70px;
+    top: 569px;
+    left: 85px;
     width: 700px;
-    height: 447px;
+    height: 337px;
     background-color: white;
     visibility: hidden;
 }
 .ch650rectangle {
     position: absolute;
-    top: 117px;
-    left: 220px;
+    top: 31px;
+    left: 214px;
     width: 56px;
     height: 164px;
     background: rgba(222, 236, 228, 0.5);
