@@ -15,7 +15,7 @@ body {
 }
 .ch650view {
     position: absolute;
-    top: 521px;
+    top: 527px;
     left: 70px;
     width: 700px;
     height: 447px;
@@ -25,14 +25,15 @@ body {
 .ch650rectangle {
     position: absolute;
     top: 117px;
-    left: 428px;
+    left: 220px;
     width: 56px;
     height: 164px;
+    background: rgba(222, 236, 228, 0.5);
 }
 .rv9view {
     position: absolute;
     top: 587px;
-    left: 81px;
+    left: 64px;
     height: 332px;
     width: 706px;
     background-color: white;
@@ -51,7 +52,7 @@ body {
 .rv9aview {
     position: absolute;
     top: 579px;
-    left: 62px;
+    left: 29px;
     height: 332px;
     width: 754px;
     background-color: white;

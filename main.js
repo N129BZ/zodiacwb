@@ -27,17 +27,16 @@ const isLinux = process.platform === "linux" ? true : false;
 app.commandLine.appendSwitch ("disable-http-cache");
 
 var mainWindow;
-
 var appData = loadAppData();
-
-const isDebug = appData.settings.debug;
+var usemetric = appData.settings.units === "metric";
+var isDebug = appData.settings.debug;
 
 
 function loadAppData() {
     let adf = "";
     // make sure the file is stored in userData folder
     if (!fs.existsSync(jsonPath)) {
-        fs.copyFileSync(path.join(__dirname, "aircraftwb.json"), jsonPath);
+        fs.copyFileSync(path.join(__dirname, "zodiacwb.json"), jsonPath);
     }
     adf = fs.readFileSync(jsonPath, "utf8");
     return JSON.parse(adf);
@@ -74,10 +73,16 @@ const template = [
         label: 'Units of Measure',
         submenu: [
             { label: "Pounds/Inches",
-                click: () => app.emit('toggleimperial')
+                id: "pi",
+                type: "radio",
+                checked: getUOMChecked("imperial"), 
+                click: () => app.emit('toggleuom')
             },
             { label: "Kilograms/Millimeters",
-                click: () => app.emit('togglemetric')
+                id: "km",
+                type: "radio",
+                checked: getUOMChecked("metric"),
+                click: () => app.emit('toggleuom')
             }
         ]
     },
@@ -86,27 +91,27 @@ const template = [
         submenu: [
             {label: "Zenith ch601xl/ch650",
                 type: "radio",
-                checked: getChecked("ch650"),
+                checked: getAircraftChecked("ch650"),
                 click: () => mainWindow.webContents.send("acselect", "ch650")
             },
             {label: "Zenith ch701",
                 type: "radio",
-                checked: getChecked("ch701"),
+                checked: getAircraftChecked("ch701"),
                 click: () => mainWindow.webContents.send("acselect", "ch701")
             },
             {label: "Zenith ch750",
                 type: "radio",
-                checked: getChecked("ch750"),
+                checked: getAircraftChecked("ch750"),
                 click: () => mainWindow.webContents.send("acselect", "ch750")
             },
             {label: "Vans RV9a",
                 type: "radio",
-                checked:getChecked("rv9a"),
+                checked:getAircraftChecked("rv9a"),
                 click: () => mainWindow.webContents.send("acselect", "rv9a")
             },
             {label: "Vans RV9",
                 type: "radio",
-                checked: getChecked("rv9"),
+                checked: getAircraftChecked("rv9"),
                 click: () => mainWindow.webContents.send("acselect", "rv9")
             }
         ]
@@ -129,11 +134,15 @@ nativeTheme.themeSource = appData.settings.theme;
 
 function saveAppData() {
     fs.writeFileSync(jsonPath, JSON.stringify(appData, null, 4));
-    loadAppData();
+    //loadAppData();
 }
 
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
+if (appData.settings.currentview != "ch650") {
+    let mi = menu.getMenuItemById("km");
+    mi.visible = false;
+}
 
 if (require('electron-squirrel-startup')) app.quit();
 
@@ -171,16 +180,6 @@ function createWindow () {
         saveAppData();
         mainWindow.webContents.send('toggletheme');
     });
-    app.on('toggleimperial', () => {
-        appData.settings.units = "imperial";
-        saveAppData();
-        mainWindow.reload(); 
-    });
-    app.on('togglemetric', () => {
-        appData.settings.units = "metric";
-        saveAppData();
-        mainWindow.reload(); 
-    });
     app.on('filesave', () => {
         mainWindow.webContents.capturePage()
     });
@@ -209,6 +208,23 @@ function createWindow () {
         inConvertMode = !inConvertMode;
         mainWindow.webContents.send("convert");
     });
+    app.on('toggleuom', function() {
+        var uom = appData.settings.units;
+        switch (uom) {
+            case "metric":
+                appData.settings.units = "imperial";
+                break;
+            case "imperial": 
+                if (appData.settings.currentview === "ch650") {   
+                    appData.settings.units = "metric"; 
+                    setMetricOptionProperties(true);
+                } else {
+                    setMetricOptionProperties(false)
+                }
+        } 
+        saveAppData();
+        mainWindow.reload();
+    }); 
 }
 
 function toggleTheme() {
@@ -246,7 +262,13 @@ ipcMain.on('appdata:save', (e, newappdata) => {
     mainWindow.reload();
 });
 
-ipcMain.on('function:selectaircraft', () => {
+ipcMain.on('function:selectaircraft',(e, aircraft) => {
+    console.log(aircraft);
+    if (aircraft === "ch650") {
+        setMetricOptionProperties(true);
+    } else {
+        setMetricOptionProperties(false);
+    }
     mainWindow.reload(); 
 });
 
@@ -258,13 +280,30 @@ ipcMain.on('function:print', (e, printpdf) => {
     handlePrinting(printpdf);
 });
 
-function getChecked(oneAirplane) {
+function setMetricOptionProperties(isvisible) {
+    let mi = menu.getMenuItemById("km");
+    mi.visible = isvisible;
+    mi.enabled = isvisible;
+}
+
+function getAircraftChecked(oneAirplane) {
     if (oneAirplane === appData.settings.currentview) {
         return true;
     }
     else {
         return false;
     }
+}
+
+function getUOMChecked(uom) {
+    let state = false;
+    let valid = true;
+    if (appData.settings.currentview === "ch650") {
+        state = uom === appData.settings.units;
+    } else {
+        state = uom === "imperial";
+    }
+    return state;
 }
 
 function handlePrinting() {

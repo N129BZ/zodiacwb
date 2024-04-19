@@ -459,15 +459,13 @@ function addArray(theArray) {
 
 function placeDots(weight, moment) {
 	let rgba = chartcanvas.getContext('2d', { willReadFrequently: true }).getImageData(20,20,1,1).data
-	let color = appData.settings.overbgcolor;
-	let tcolor = appData.settings.overbgcolor;
-	let bgcolor = appData.settings.overbgcolor;
-	let fgcolor = appData.settings.overfgcolor;
+	let color; 
+	let tcolor;
+	let bgcolor;
+	let fgcolor;
 	let maxweight = valData.maxgross;
 	let minweight = valData.mingross;
 	let isoverwt = true;
-	let plotleft = false;
-	let plotdown = true;
 	let mincg = 0;
 	let maxcg = 0;
 	let mom = 0;
@@ -481,8 +479,6 @@ function placeDots(weight, moment) {
 				mincg = usemetric ? valData.mincg : Math.round(valData.mincg * 25.4);
 				maxcg = usemetric ? valData.maxcg : Math.round(valData.maxcg * 25.4);
 				mom = usemetric ? moment : Math.round(moment * 25.4);
-				// ch650 on-aircraft cg dot is plotted from the right
-				plotleft = false;
 				break;
 			case "rv9":
 			case "rv9a":
@@ -492,8 +488,8 @@ function placeDots(weight, moment) {
 				break;
 		}
 
-		x = plotX(chartcanvas, maxcg, mincg, mom, plotleft);
-		y = plotY(chartcanvas, maxweight, minweight, weight, plotdown);
+		x = plotX(chartcanvas, maxcg, mincg, mom);
+		y = plotY(chartcanvas, maxweight, minweight, weight);
 		
 		if ((weight <= maxweight && weight >= minweight) && (mom >= mincg && mom <= maxcg)) {
 			if ((rgba[0] === 221 && rgba[1] === 238 && rgba[2] === 235) || 
@@ -504,7 +500,13 @@ function placeDots(weight, moment) {
 				fgcolor = appData.settings.underfgcolor;
 				isoverwt = false;
 			}
+		} else {
+			color = appData.settings.overbgcolor;
+			tcolor = appData.settings.overbgcolor;
+			bgcolor = appData.settings.overbgcolor;
+			fgcolor = appData.settings.overfgcolor;
 		}
+
 	}
 	catch (error){
 		electronAPI.logentry(logEntryType.error, error.toString());
@@ -519,10 +521,10 @@ function placeDots(weight, moment) {
 	let crosshair = document.getElementById("chartcrosshair");
 	crosshair.setAttribute("style", "font-size:25px;position:relative;top:-6px;left:0px;color:white;")
 	
-	placeAcDot(plotleft, plotdown, maxcg, mincg, maxweight, minweight, weight, mom, bgcolor, fgcolor);
+	placeAcDot(maxcg, mincg, maxweight, minweight, weight, mom, bgcolor, fgcolor);
 }
 
-function placeAcDot(plotleft, plotdown, maxcg, mincg, maxweight, minweight, weight, moment, bgcolor, fgcolor) {
+function placeAcDot(maxcg, mincg, maxweight, minweight, weight, moment, bgcolor, fgcolor) {
 	let elements = getCogElements();
 	let rect = elements.rectangle;
 	let dot = elements.dot;
@@ -532,10 +534,8 @@ function placeAcDot(plotleft, plotdown, maxcg, mincg, maxweight, minweight, weig
 
 	try {
 
-		if (currentview === "ch650") plotleft = true;
-
-		x = plotX(rect, maxcg, mincg, moment, plotleft);
-		y = plotY(rect, maxweight, minweight, weight, plotdown);
+		x = plotX(rect, maxcg, mincg, moment);
+		y = plotY(rect, maxweight, minweight, weight);
 
 		dot.setAttribute(
 			"style", `height:7px;width:7px;border-radius:50%;position:relative;top:${y-9}px;` +
@@ -632,8 +632,9 @@ window.electronAPI.onAircraftSelect((aircraft) => {
 	console.log(aircraft);
 	currentview = aircraft;
 	appData.settings.currentview = aircraft;
+	if (aircraft != "ch650") appData.settings.usemetric = false;
 	saveAppData();
-	window.electronAPI.selectaircraft();
+	window.electronAPI.selectaircraft(aircraft);
 });
 
 function togglePrintPDF(chkbox) {
@@ -650,21 +651,14 @@ function togglePrintPDF(chkbox) {
  * @param {number} maxGross
  * @param {number} minGross
  * @param {number} acWeight 
- * @param {boolean} plotDown 
- * @returns {number} 
+  * @returns {number} 
  */
-function plotY(chart, maxGross, minGross, acWeight, plotDown = true) {
-	let output = 0;
+function plotY(chart, maxGross, minGross, acWeight) {
 	let range = maxGross - minGross; 
 	let pxfactor = chart.height / range;
 	let diff = maxGross - acWeight;
 	let offset = diff * pxfactor;
-	if (plotDown) {
-		output = offset;
-	} else {
-		output = chart.height - offset;
-	}
-	return output;
+	return offset;
 }
 
 /**
@@ -673,20 +667,13 @@ function plotY(chart, maxGross, minGross, acWeight, plotDown = true) {
  * @param {number} maxCg 
  * @param {number} minCg 
  * @param {number} acMoment 
- * @param {boolean} plotLeft 
  * @returns {number} 
  */
-function plotX(chart, maxCg, minCg, acMoment, plotLeft = true) {
-	let output = 0;
+function plotX(chart, maxCg, minCg, acMoment) {
 	let range = maxCg - minCg; 
 	let pxfactor = chart.width / range;
 	let diff = maxCg - acMoment;
 	let offset = diff * pxfactor;
-	if (plotLeft) {
-		output = offset;
-	} else {
-		output = chart.width - offset;
-	}
-	return output;
+	return offset;
 }
 
