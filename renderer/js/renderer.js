@@ -480,7 +480,8 @@ function addArray(theArray) {
 }
 
 function placeDots(weight, moment) {
-	let rgba = chartcanvas.getContext('2d', { willReadFrequently: true }).getImageData(20,20,1,1).data
+	let ctx = chartcanvas.getContext('2d', { willReadFrequently: true });
+	let rgba = ctx.getImageData(5,5,1,1).data
 	let color; 
 	let tcolor;
 	let bgcolor;
@@ -695,7 +696,7 @@ function plotX(chart, maxCg, minCg, acMoment) {
 	let range = maxCg - minCg; 
 	let pxfactor = chart.width / range;
 	let diff = maxCg - acMoment;
-	let offset = diff * pxfactor;
+	let offset = chart.width - (diff * pxfactor);
 	return offset;
 }
 
