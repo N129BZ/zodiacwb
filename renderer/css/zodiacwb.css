@@ -4,7 +4,7 @@ body {
     top: -49px;
 	left: -14px;
 	overflow-x: hidden;
-	overflow-y: hidden;
+	overflow-y: scroll;
     position: absolute;
 	background-color: white;
 	-webkit-print-color-adjust: exact;

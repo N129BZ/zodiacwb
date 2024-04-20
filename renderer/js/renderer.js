@@ -106,10 +106,6 @@ var activeCanvas;
 function setBoundaryLabels() {
 	
 	switch (currentview) {
-		case "ch650":
-			weightMaxFloats.innerHTML = valData.maxfloats;
-			maxFloatsDashes.innerHTML = "- Max floats lb -----------------------------------------";
-			break;
 		case "rv9":
 			usemetric = false;
 			weightMaxFloats.innerHTML = "";
@@ -123,16 +119,16 @@ function setBoundaryLabels() {
 	}
 
 	weightMin.innerHTML = valData.mingross;
-	weightNosegearMin.innerHTML = currentview === "ch650" ? valData.ngstart : "";
 	weightMaxGross.innerHTML = valData.maxgross;
 	maxGrossWeight.value = valData.maxgross;
-
+	
 	if (currentview === "ch650") {
+		maxFloatsDashes.innerHTML = "&nbsp;Max floats --------------------------------------------";
+		maxGrossDashes.innerHTML = "&nbsp;&nbsp;Max gross ---------";
+		weightNosegearMin.innerHTML = valData.ngstart;
 		if (usemetric) {
 			// adjust attributes for metric units
 			weightMaxFloats.innerHTML = valData.maxfloats;  
-			maxGrossDashes.innerHTML = "- Max gross kg ------";
-			maxFloatsDashes.innerHTML = "- Max floats kg -----------------------------------------";
 			momentMin.className = "momentMinMetric";
 			momentMax.className = "momentMaxMetric";
 			weightAxis.className = "weightAxisMetric";
@@ -144,7 +140,6 @@ function setBoundaryLabels() {
 		} else  {
 			// adjust attributes for imperial units
 			weightMaxFloats.innerHTML = valData.maxfloats;
-			maxGrossDashes.innerHTML = "- Max gross lb ------";
 			momentMin.className = "momentMinImperial";
 			momentMax.className = "momentMaxImperial";
 			weightAxis.className = "weightAxisImperial";
@@ -224,8 +219,8 @@ function activateView() {
 	nw.innerHTML = nwtext;
 	
 	if (hideWL) {
-		rightwl.setAttribute("style", "visibility:hidden;");
-		leftwl.setAttribute("style", "visibility:hidden;");
+		rightwl.setAttribute("style", "visibility:hidden;height:0px;");
+		leftwl.setAttribute("style", "visibility:hidden;height:0px;");
 	}
 	
 	electronAPI.logentry(logEntryType.information, `Aircraft selected: ${currentview}`);

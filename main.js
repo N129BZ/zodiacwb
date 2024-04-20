@@ -89,10 +89,15 @@ const template = [
     {
         label: "Select Aircraft", 
         submenu: [
-            {label: "Zenith ch601xl/ch650",
+            {label: "Zodiac ch601xl/ch650 Tricycle",
                 type: "radio",
                 checked: getAircraftChecked("ch650"),
-                click: () => mainWindow.webContents.send("acselect", "ch650")
+                click: () => mainWindow.webContents.send("acselect", "ch650"),
+            },  
+            { label: "Zodiac ch601xl/ch650 Taildragger",
+                type: "radio",
+                checked: getAircraftChecked("ch650td"),
+                click: () => mainWindow.webContents.send("acselect", "cn650td")
             },
             {label: "Zenith ch701",
                 type: "radio",
@@ -151,7 +156,7 @@ function createWindow () {
     wh = pd.workAreaSize;
     var dtoggled = false;
 
-    var w = 830;
+    var w = 840;
     var h = wh.height - 40; 
     if (isDebug) {
         w = wh.width;
