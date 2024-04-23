@@ -123,7 +123,7 @@ function setBoundaryLabels() {
 	maxGrossWeight.value = valData.maxgross;
 	
 	if (currentview === "ch650") {
-		maxFloatsDashes.innerHTML = "&nbsp;Max floats --------------------------------------------";
+		maxFloatsDashes.innerHTML = !valData.taildragger ? "&nbsp;Max floats --------------------------------------------" : "";
 		maxGrossDashes.innerHTML = "&nbsp;&nbsp;Max gross ---------";
 		weightNosegearMin.innerHTML = valData.ngstart;
 		if (usemetric) {
@@ -139,7 +139,33 @@ function setBoundaryLabels() {
 			momentAxis.innerHTML = "Acceptable CG Range (millimeters)";
 		} else  {
 			// adjust attributes for imperial units
-			weightMaxFloats.innerHTML = valData.maxfloats;
+			weightMaxFloats.innerHTML = valData.maxfloats; 
+			momentMin.className = "momentMinImperial";
+			momentMax.className = "momentMaxImperial";
+			weightAxis.className = "weightAxisImperial";
+			weightAxis.innerHTML = "Weight (pounds)";
+			fuelUnitLabel.innerHTML = "Fuel in Gallons:";
+			momentMin.innerHTML = valData.mincg;
+			momentMax.innerHTML = valData.maxcg;
+			momentAxis.innerHTML = "Acceptable CG Range (inches)";
+		}
+	} else if (currentview === "ch650td") {
+		maxGrossDashes.innerHTML = "";
+		nosegearLimit.innerHTML = "";
+		if (usemetric) {
+			// adjust attributes for metric units
+			weightMaxFloats.innerHTML = "";  
+			momentMin.className = "momentMinMetric";
+			momentMax.className = "momentMaxMetric";
+			weightAxis.className = "weightAxisMetric";
+			weightAxis.innerHTML = "Weight (kilograms)";
+			fuelUnitLabel.innerHTML = "Fuel in Liters:";
+			momentMin.innerHTML = valData.mincg;
+			momentMax.innerHTML = valData.maxcg;
+			momentAxis.innerHTML = "Acceptable CG Range (millimeters)";
+		} else  {
+			// adjust attributes for imperial units
+			weightMaxFloats.innerHTML = ""; 
 			momentMin.className = "momentMinImperial";
 			momentMax.className = "momentMaxImperial";
 			weightAxis.className = "weightAxisImperial";
@@ -168,6 +194,9 @@ function assignValData() {
 		case "ch650":
 			valData =  usemetric ? appData.ch650.metric : appData.ch650.imperial;
 			break;
+		case "ch650td":
+			valData =  usemetric ? appData.ch650td.metric : appData.ch650td.imperial;
+			break;
 		case "rv9":
 			appData.settings.usemetric = false;
 			valData = appData.rv9;
@@ -188,10 +217,15 @@ function activateView() {
 	let hideWL = false;
 	switch (currentview) {
 		case "ch650":
-			if (appData.ch650.taildragger) {
-				nwtext = "Tail Wheel:"
-			}
 			activeView = ch650view;
+			activeCanvas = ch650canvas;
+			ch650view.setAttribute("style", "visibility:visible")
+			rv9view.setAttribute("style", "visibility:hidden");	
+			rv9aview.setAttribute("style", "visibility:hidden;");
+			break;
+		case "ch650td":
+			nwtext = "Tail Wheel:"
+			activeView = ch650view; // use the same view and canvas for taildragger
 			activeCanvas = ch650canvas;
 			ch650view.setAttribute("style", "visibility:visible")
 			rv9view.setAttribute("style", "visibility:hidden");	
@@ -291,9 +325,12 @@ function drawChart() {
 		case "ch650":
 			imgpath = "img/ch650chart.png";
 			break;
+		case "ch650td":
+			imgpath = "img/noBevelChart.png";
+			break;
 		case "rv9":
 		case "rv9a":
-			imgpath = "img/rv9chart.png";
+			imgpath = "img/noBevelChart.png";
 			break;
 	}
 	img.src = imgpath;
@@ -309,6 +346,12 @@ function drawAirplane() {
 			activeCanvas = ch650canvas;
 			imgsrcLight = "img/ch650_light.png";
 			imgsrcDark = "img/ch650_dark.png";
+			break;
+		case "ch650td":
+			activeView = ch650view;
+			activeCanvas = ch650canvas;
+			imgsrcLight = "img/ch650td_light.png";
+			imgsrcDark = "img/ch650td_dark.png";
 			break;
 		case "rv9":
 			activeView = rv9view;
@@ -493,7 +536,7 @@ function placeDots(weight, moment) {
 	try {	
 		
 		switch (currentview) {
-			case "ch650":
+			case "ch650", "ch650td":
 				mincg = usemetric ? valData.mincg : Math.round(valData.mincg * 25.4);
 				maxcg = usemetric ? valData.maxcg : Math.round(valData.maxcg * 25.4);
 				mom = usemetric ? moment : Math.round(moment * 25.4);
@@ -575,7 +618,7 @@ function getCogElements() {
 	let dot;
 	let rect; 
 	switch (currentview) {
-		case "ch650":
+		case "ch650", "ch650td":
 			rect = document.getElementById("ch650rectangle").getBoundingClientRect();
 			rect.className = "cg650rectangle";
 			dot = document.getElementById("ch650dot");
@@ -604,7 +647,7 @@ const saveAppData = function() {
 }
 
 const printScreen = function() {
-	//buttonBox.setAttribute("style", "visibility:hidden");
+	buttonBox.setAttribute("style", "visibility:hidden");
 	setTimeout(() => window.electronAPI.printscreen(printpdf), 300);
 }
 

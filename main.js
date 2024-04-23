@@ -97,7 +97,7 @@ const template = [
             { label: "Zodiac ch601xl/ch650 Taildragger",
                 type: "radio",
                 checked: getAircraftChecked("ch650td"),
-                click: () => mainWindow.webContents.send("acselect", "cn650td")
+                click: () => mainWindow.webContents.send("acselect", "ch650td")
             },
             {label: "Zenith ch701",
                 type: "radio",
