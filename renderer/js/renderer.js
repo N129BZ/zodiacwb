@@ -18,6 +18,12 @@ const  checkpdf = document.getElementById("printpdf");
 const  mainview = document.getElementById("mainview");
 const  ch650view = document.getElementById("ch650view");
 const  ch650canvas = document.getElementById("ch650canvas");
+const  ch650tdview = document.getElementById("ch650tdview");
+const  ch650tdcanvas = document.getElementById("ch650tdcanvas");
+const  ch750view = document.getElementById("ch750view");
+const  ch750canvas = document.getElementById("ch750canvas");
+const  ch750Cruzerview = document.getElementById("ch750Cruzerview");
+const  ch750Cruzercanvas = document.getElementById("ch750Cruzercanvas");
 const  rv9view = document.getElementById("rv9view");
 const  rv9canvas = document.getElementById("rv9canvas");
 const  rv9aview = document.getElementById("rv9aview");
@@ -122,8 +128,10 @@ function setBoundaryLabels() {
 	weightMaxGross.innerHTML = valData.maxgross;
 	maxGrossWeight.value = valData.maxgross;
 	
-	if (currentview === "ch650") {
-		maxFloatsDashes.innerHTML = !valData.taildragger ? "&nbsp;Max floats --------------------------------------------" : "";
+	if (currentview === "ch650" || 
+	    currentview === "ch750" || 
+		currentview === "ch750Cruzer") {
+		maxFloatsDashes.innerHTML = "&nbsp;Max floats --------------------------------------------";
 		maxGrossDashes.innerHTML = "&nbsp;&nbsp;Max gross ---------";
 		weightNosegearMin.innerHTML = valData.ngstart;
 		if (usemetric) {
@@ -197,6 +205,12 @@ function assignValData() {
 		case "ch650td":
 			valData =  usemetric ? appData.ch650td.metric : appData.ch650td.imperial;
 			break;
+		case "ch750":
+			valData =  usemetric ? appData.ch750.metric : appData.ch750.imperial;
+			break;
+		case "ch750Cruzer":
+			valData =  usemetric ? appData.ch750Cruzer.metric : appData.ch750Cruzer.imperial;
+			break;
 		case "rv9":
 			appData.settings.usemetric = false;
 			valData = appData.rv9;
@@ -219,32 +233,56 @@ function activateView() {
 		case "ch650":
 			activeView = ch650view;
 			activeCanvas = ch650canvas;
-			ch650view.setAttribute("style", "visibility:visible")
-			rv9view.setAttribute("style", "visibility:hidden");	
+			ch750view.setAttribute("style", "visibility:hidden;")
+			ch750Cruzerview.setAttribute("style", "visibility:hidden;")	
+			rv9view.setAttribute("style", "visibility:hidden;");	
 			rv9aview.setAttribute("style", "visibility:hidden;");
 			break;
 		case "ch650td":
 			nwtext = "Tail Wheel:"
-			activeView = ch650view; // use the same view and canvas for taildragger
-			activeCanvas = ch650canvas;
-			ch650view.setAttribute("style", "visibility:visible")
-			rv9view.setAttribute("style", "visibility:hidden");	
+			activeView = ch650tdview; // use the same view and canvas for taildragger
+			activeCanvas = ch650tdcanvas;
+			ch750view.setAttribute("style", "visibility:hidden;")
+			ch750Cruzerview.setAttribute("style", "visibility:hidden;")	
+			rv9view.setAttribute("style", "visibility:hidden;");	
+			rv9aview.setAttribute("style", "visibility:hidden;");
+			break;
+		case "ch750":
+			hideWL = true;
+			activeView = ch750view;
+			activeCanvas = ch750canvas;
+			ch650view.setAttribute("style", "visibility:hidden;")
+			ch750Cruzerview.setAttribute("style", "visibility:hidden;")	
+			rv9view.setAttribute("style", "visibility:hidden;");	
+			rv9aview.setAttribute("style", "visibility:hidden;");
+			break;
+		case "ch750Cruzer":
+			hideWL = true;
+			activeView = ch750Cruzerview;
+			activeCanvas = ch750Cruzercanvas;
+			ch750view.setAttribute("style", "visibility:hidden;")
+			ch650view.setAttribute("style", "visibility:hidden;")
+			rv9view.setAttribute("style", "visibility:hidden;");	
 			rv9aview.setAttribute("style", "visibility:hidden;");
 			break;
 		case "rv9":
 			hideWL = true;
-			nwtext = "Tail Wheel";
+			nwtext = "Tail Wheel:";
 			activeView = rv9view;
 			activeCanvas = rv9canvas;
-			ch650view.setAttribute("style", "visibility:hidden");	
-			rv9aview.setAttribute("style", "visibility:hidden");
+			ch650view.setAttribute("style", "visibility:hidden;");
+			ch750view.setAttribute("style", "visibility:hidden;")
+			ch750Cruzerview.setAttribute("style", "visibility:hidden;")	
+			rv9aview.setAttribute("style", "visibility:hidden;");
 			break;
 		case "rv9a":
 			hideWL = true;
 			activeView = rv9aview;
 			activeCanvas = rv9acanvas;
-			ch650view.setAttribute("style", "visibility:hidden");	
-			rv9view.setAttribute("style", "visibility:hidden");
+			ch650view.setAttribute("style", "visibility:hidden;");
+			ch750view.setAttribute("style", "visibility:hidden;")	
+			ch750Cruzerview.setAttribute("style", "visibility:hidden;")	
+			rv9view.setAttribute("style", "visibility:hidden;");
 			break;
 
 	}
@@ -266,7 +304,10 @@ window.onload = async () => {
 	appData = JSON.parse(data);
 	if (appData.settings.debug) console.log(appData);
 	currentview = appData.settings.currentview;
-	usemetric = (currentview === "ch650" && appData.settings.units === "metric");
+	usemetric = ((currentview === "ch650" || 
+	              currentview === "ch650td" ||
+	              currentview === "ch750" || 
+				  currentview === "ch750Cruzer") && appData.settings.units === "metric");
 	isdarktheme = appData.settings.theme === "dark";
 	printpdf = appData.settings.printaspdf;
 	checkpdf.checked = printpdf;
@@ -296,13 +337,13 @@ window.onload = async () => {
 	rearBaggageArm.value = valData.rbagarm;
 	
 	
-	if (currentview === "ch650") {
+	if (currentview === "ch650" || currentview === "ch650td") {
 		rightWingLockerWeight.value = valData.rwlockweight;
 		rightWingLockerArm.value = valData.lwlockarm;
 		leftWingLockerWeight.value = valData.lwlockweight;
 		leftWingLockerArm.value = valData.lwlockarm;
 	}
-	else if (currentview === "rv9" || currentview === "rv9a") {
+	else { //no other a/c use wing lockers
 		rightWingLockerWeight.value = 0;
 		rightWingLockerArm.value = 0;
 		leftWingLockerWeight.value = 0;
@@ -323,6 +364,8 @@ function drawChart() {
 	}
 	switch (currentview) {
 		case "ch650":
+		case "ch750":
+		case "ch750Cruzer":
 			imgpath = "img/ch650chart.png";
 			break;
 		case "ch650td":
@@ -348,10 +391,22 @@ function drawAirplane() {
 			imgsrcDark = "img/ch650_dark.png";
 			break;
 		case "ch650td":
-			activeView = ch650view;
-			activeCanvas = ch650canvas;
+			activeView = ch650tdview;
+			activeCanvas = ch650tdcanvas;
 			imgsrcLight = "img/ch650td_light.png";
 			imgsrcDark = "img/ch650td_dark.png";
+			break;
+		case "ch750":
+			activeView = ch750view;
+			activeCanvas = ch750canvas;
+			imgsrcLight = "img/ch750_light.png";
+			imgsrcDark = "img/ch750_dark.png";
+			break;
+		case "ch750Cruzer":
+			activeView = ch750Cruzerview;
+			activeCanvas = ch750Cruzercanvas;
+			imgsrcLight = "img/ch750Cruzer_light.png";
+			imgsrcDark = "img/ch750Cruzer_dark.png";
 			break;
 		case "rv9":
 			activeView = rv9view;
@@ -424,7 +479,9 @@ const calcWB = function(field = null) {
 	let emptyMom = +(lftMainMom + rtMainMom + noseWhlMom).toFixed(1);
 	let emptyCg = +(emptyMom / emptyWt).toFixed(2);
 	emptyWeight.value = emptyWt;
-	valData.mingross = currentview != "ch650" ? emptyWt : valData.mingross;
+	if (currentview === "rv9" || currentview === "rv9a") {
+		valData.mingross = emptyWt;
+	}
 	emptyArm.value = `CG: ${emptyCg}`;
 	emptyMoment.value = emptyMom; 
 	
@@ -536,7 +593,10 @@ function placeDots(weight, moment) {
 	try {	
 		
 		switch (currentview) {
-			case "ch650", "ch650td":
+			case "ch650":
+			case "ch650td":
+			case "ch750":
+			case "ch750Cruzer":
 				mincg = usemetric ? valData.mincg : Math.round(valData.mincg * 25.4);
 				maxcg = usemetric ? valData.maxcg : Math.round(valData.maxcg * 25.4);
 				mom = usemetric ? moment : Math.round(moment * 25.4);
@@ -618,11 +678,29 @@ function getCogElements() {
 	let dot;
 	let rect; 
 	switch (currentview) {
-		case "ch650", "ch650td":
+		case "ch650":
 			rect = document.getElementById("ch650rectangle").getBoundingClientRect();
 			rect.className = "cg650rectangle";
 			dot = document.getElementById("ch650dot");
 			crosshair = document.getElementById("ch650crosshair");
+			break;
+		case "ch650td":
+			rect = document.getElementById("ch650tdrectangle").getBoundingClientRect();
+			rect.className = "cg650tdrectangle";
+			dot = document.getElementById("ch650tddot");
+			crosshair = document.getElementById("ch650tdcrosshair");
+			break;
+		case "ch750":
+			rect = document.getElementById("ch750rectangle").getBoundingClientRect();
+			rect.className = "cg750rectangle";
+			dot = document.getElementById("ch750dot");
+			crosshair = document.getElementById("ch750crosshair");
+			break;
+		case "ch750Cruzer":
+			rect = document.getElementById("ch750Cruzerrectangle").getBoundingClientRect();
+			rect.className = "cg750Cruzerrectangle";
+			dot = document.getElementById("ch750Cruzerdot");
+			crosshair = document.getElementById("ch750Cruzercrosshair");
 			break;
 		case "rv9":
 			rect = document.getElementById("rv9rectangle").getBoundingClientRect();
@@ -693,7 +771,9 @@ window.electronAPI.onAircraftSelect((aircraft) => {
 	console.log(aircraft);
 	currentview = aircraft;
 	appData.settings.currentview = aircraft;
-	if (aircraft != "ch650") appData.settings.usemetric = false;
+	// if (aircraft === "rv9" || aircraft === "rv9a") {
+	// 	appData.settings.usemetric = false;
+	// }
 	saveAppData();
 	window.electronAPI.selectaircraft(aircraft);
 });

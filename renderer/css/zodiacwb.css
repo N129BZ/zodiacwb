@@ -4,7 +4,7 @@ body {
     top: -49px;
 	left: -14px;
 	overflow-x: hidden;
-	overflow-y: scroll;
+	overflow-y: hidden;
     position: absolute;
 	background-color: white;
 	-webkit-print-color-adjust: exact;
@@ -24,9 +24,60 @@ body {
 }
 .ch650rectangle {
     position: absolute;
-    top: 31px;
-    left: 214px;
+    top: 21px;
+    left: 199px;
     width: 56px;
+    height: 164px;
+    background: rgba(222, 236, 228, 0.5);
+}
+.ch650tdview {
+    position: absolute;
+    top: 569px;
+    left: 63px;
+    width: 686px;
+    height: 337px;
+    background-color: white;
+    visibility: hidden;
+}
+.ch650tdrectangle {
+    position: absolute;
+    top: 29px;
+    left: 209px;
+    width: 56px;
+    height: 164px;
+    background: rgba(222, 236, 228, 0.5);
+}
+.ch750view {
+    position: absolute;
+    top: 559px;
+    left: 105px;
+    width: 700px;
+    height: 337px;
+    background-color: white;
+    visibility: hidden;
+}
+.ch750rectangle {
+    position: absolute;
+    top: 76px;
+    left: 175px;
+    width: 56px;
+    height: 164px;
+    background: rgba(222, 236, 228, 0.5);
+}
+.ch750Cruzerview {
+    position: absolute;
+    top: 559px;
+    left: 70px;
+    width: 700px;
+    height: 337px;
+    background-color: white;
+    visibility: hidden;
+}
+.ch750Cruzerrectangle {
+    position: absolute;
+    top: 58px;
+    left: 204px;
+    width: 47px;
     height: 164px;
     background: rgba(222, 236, 228, 0.5);
 }

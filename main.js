@@ -109,6 +109,11 @@ const template = [
                 checked: getAircraftChecked("ch750"),
                 click: () => mainWindow.webContents.send("acselect", "ch750")
             },
+            {label: "Zenith ch750 CruZer",
+                type: "radio",
+                checked: getAircraftChecked("ch750Cruzer"),
+                click: () => mainWindow.webContents.send("acselect", "ch750Cruzer")
+            },
             {label: "Vans RV9a",
                 type: "radio",
                 checked:getAircraftChecked("rv9a"),
@@ -143,7 +148,7 @@ function saveAppData() {
 
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
-if (appData.settings.currentview != "ch650") {
+if (appData.settings.currentview === "rv9" || appData.settings.currentview === "rv9a") {
     let mi = menu.getMenuItemById("km");
     mi.visible = false;
 }
@@ -214,12 +219,16 @@ function createWindow () {
     });
     app.on('toggleuom', function() {
         var uom = appData.settings.units;
+        var view = appData.settings.currentview;
         switch (uom) {
             case "metric":
                 appData.settings.units = "imperial";
                 break;
             case "imperial": 
-                if (appData.settings.currentview === "ch650") {   
+                if (view === "ch650" ||
+                    view === "ch650td" || 
+                    view === "ch750" || 
+                    view === "ch750Cruzer") {   
                     appData.settings.units = "metric"; 
                     setMetricOptionProperties(true);
                 } else {
@@ -268,7 +277,7 @@ ipcMain.on('appdata:save', (e, newappdata) => {
 
 ipcMain.on('function:selectaircraft',(e, aircraft) => {
     console.log(aircraft);
-    if (aircraft === "ch650") {
+    if (aircraft.search("ch") > -1) {
         setMetricOptionProperties(true);
     } else {
         setMetricOptionProperties(false);
@@ -301,11 +310,16 @@ function getAircraftChecked(oneAirplane) {
 
 function getUOMChecked(uom) {
     let state = false;
-    let valid = true;
-    if (appData.settings.currentview === "ch650") {
-        state = uom === appData.settings.units;
-    } else {
-        state = uom === "imperial";
+    switch (appData.settings.currentview) {
+        case "ch650":
+        case "ch650td":
+        case "ch750":
+        case "ch750Cruzer":
+            state = uom === appData.settings.units;
+            break;
+        default:
+            state = uom === "imperial";
+            break;
     }
     return state;
 }
