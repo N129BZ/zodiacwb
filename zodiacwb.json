@@ -1,5 +1,6 @@
 {
     "ch650": {
+        "units": "imperial",
         "metric": {
             "maxfloats": 654,
             "maxgross": 600,
@@ -62,6 +63,7 @@
         }
     },
     "ch650td": {
+        "units": "imperial",
         "metric": {
             "maxfloats": 600,
             "maxgross": 544,
@@ -120,7 +122,69 @@
             "nwarm": 121
         }
     },
+    "ch701": {
+        "units": "metric",
+        "metric": {
+            "maxfloats": 520,
+            "maxgross": 480,
+            "ngstart": 490,
+            "mingross": 326,
+            "mincg": 270,
+            "maxcg": 455,
+            "rmweight": 91,
+            "rmarm": 725,
+            "lmweight": 92,
+            "lmarm": 725,
+            "nwweight": 75,
+            "nwarm": -700,
+            "emptyweight": 377,
+            "emptyarm": 269,
+            "pilotweight": 92,
+            "pilotarm": 600,
+            "psgrweight": 0,
+            "psgrarm": 600,
+            "fuelunits": 20,
+            "fuelweight": 15.8,
+            "fuelarm": -200,
+            "rbagweight": 0,
+            "rbagarm": 1450,
+            "rwlockweight": 0,
+            "rwlockarm": 0,
+            "leftWingLockerArm": 0,
+            "lwlockweight": 0
+        },
+        "imperial": {
+            "maxfloats": 1440,
+            "maxgross": 1320,
+            "ngstart": 1120,
+            "mingross": 720,
+            "mincg": 11,
+            "maxcg": 20,
+            "rmweight": 292,
+            "rmarm": 25,
+            "lmweight": 286,
+            "lmarm": 25,
+            "nwweight": 260,
+            "nwarm": -21,
+            "emptyweight": 838,
+            "emptycog": 272,
+            "pilotweight": 210,
+            "pilotarm": 650,
+            "psgrweight": 0,
+            "psgrarm": 28,
+            "fuelunits": 24,
+            "fuelweight": 144,
+            "fuelarm": 630,
+            "rbagweight": 30,
+            "rbagarm": 1600,
+            "rwlockweight": 0,
+            "rwlockarm": 0,
+            "leftWingLockerArm": 0,
+            "lwlockweight": 0
+        }
+    },
     "ch750": {
+        "units": "metric",
         "metric": {
             "maxfloats": 654,
             "maxgross": 600,
@@ -181,6 +245,7 @@
         }
     },
     "ch750Cruzer": {
+        "units": "metric",
         "metric": {
             "maxfloats": 654,
             "maxgross": 600,
@@ -241,6 +306,7 @@
         }
     },
     "rv9": {
+        "units": "imperial",
         "maxgross": 1750,
         "ngstart": 1475,
         "mingross": 1108,
@@ -270,6 +336,7 @@
         "nwarm": 172
     },
     "rv9a": {
+        "units": "imperial",
         "maxgross": 1750,
         "ngstart": 1475,
         "mingross": 1071,
@@ -298,15 +365,14 @@
         "lwlockweight": 0
     },
     "settings": {
-        "currentview": "rv9",
+        "currentview": "ch750",
         "underbgcolor": "#006633",
         "underfgcolor": "white",
         "overbgcolor": "red",
         "overfgcolor": "white",
-        "units": "metric",
         "printaspdf": false,
         "theme": "light",
-        "debug": false,
+        "debug": true,
         "usemetric": false
     }
 }

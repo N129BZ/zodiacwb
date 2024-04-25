@@ -218,23 +218,47 @@ function createWindow () {
         mainWindow.webContents.send("convert");
     });
     app.on('toggleuom', function() {
-        var uom = appData.settings.units;
+        var uom = "imperial";
+        var allowmetric = true;
+        var valdata = {};
         var view = appData.settings.currentview;
-        switch (uom) {
-            case "metric":
-                appData.settings.units = "imperial";
+        switch (view) {
+            case "ch650":
+                valdata = appData.ch650; 
                 break;
-            case "imperial": 
-                if (view === "ch650" ||
-                    view === "ch650td" || 
-                    view === "ch750" || 
-                    view === "ch750Cruzer") {   
-                    appData.settings.units = "metric"; 
-                    setMetricOptionProperties(true);
-                } else {
-                    setMetricOptionProperties(false)
-                }
-        } 
+            case "ch650td":
+                valdata = appData.ch650td; 
+                break;
+            case "ch750":
+                valdata = appData.ch750; 
+                break;
+            case "ch750Cruzer":
+                valdata = appData.ch750Cruzer; 
+                break;
+            case "rv9":
+                allowmetric = false;
+                valdata = appData.rv9;
+                break;    
+            case "rv9a":
+                allowmetric = false;
+                valdata = appData.rv9a;
+                break;
+        }
+        
+        if (view === "rv9" && view === "rv9a") {
+            uom = "imperial";
+            valdata.units = "imperial";
+        } else {
+            uom = valdata.units;
+            valdata.units = uom === "imperial" ? "metric" : "imperial";
+        }
+       
+        if (allowmetric) {
+            setMetricOptionProperties(true);
+        } else {
+            setMetricOptionProperties(false)
+        }
+        
         saveAppData();
         mainWindow.reload();
     }); 
@@ -277,10 +301,10 @@ ipcMain.on('appdata:save', (e, newappdata) => {
 
 ipcMain.on('function:selectaircraft',(e, aircraft) => {
     console.log(aircraft);
-    if (aircraft.search("ch") > -1) {
-        setMetricOptionProperties(true);
-    } else {
+    if (aircraft === "rv9" || aircraft === "rv9a") {
         setMetricOptionProperties(false);
+    } else {
+        setMetricOptionProperties(true);
     }
     mainWindow.reload(); 
 });
@@ -312,10 +336,16 @@ function getUOMChecked(uom) {
     let state = false;
     switch (appData.settings.currentview) {
         case "ch650":
+            state = uom === appData.ch650.units;
+            break;
         case "ch650td":
+            state = uom === appData.ch650td.units;
+            break;
         case "ch750":
+            state = uom === appData.ch750.units;
+            break;
         case "ch750Cruzer":
-            state = uom === appData.settings.units;
+            state = uom === appData.ch750Cruzer.units;
             break;
         default:
             state = uom === "imperial";

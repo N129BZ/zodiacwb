@@ -47,6 +47,23 @@ body {
     height: 164px;
     background: rgba(222, 236, 228, 0.5);
 }
+.ch701view {
+    position: absolute;
+    top: 559px;
+    left: 105px;
+    width: 700px;
+    height: 337px;
+    background-color: white;
+    visibility: hidden;
+}
+.ch701rectangle {
+    position: absolute;
+    top: 76px;
+    left: 175px;
+    width: 56px;
+    height: 164px;
+    background: rgba(222, 236, 228, 0.5);
+}
 .ch750view {
     position: absolute;
     top: 559px;
