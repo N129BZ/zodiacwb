@@ -231,6 +231,7 @@ class Aircraft {
     }
 
     show() {
+        this.appData.currentview = this.name;
         this.view.setAttribute("style", "visibility:visible;");
     } 
 
