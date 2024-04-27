@@ -28,7 +28,6 @@ app.commandLine.appendSwitch ("disable-http-cache");
 
 var mainWindow;
 var appData = loadAppData();
-var usemetric = appData.settings.units === "metric";
 var isDebug = appData.settings.debug;
 
 /**
@@ -569,20 +568,18 @@ function printToPdf() {
  * Log entries from renderer process
  */
 ipcMain.on("function:logentry", (e, entrytype, entry) => {
-    let logdate = new Date().toLocaleString();
-    let logline = "Unknown Entry: ";
-    if (entrytype === "error") {
-        logline = `Error: ${entry}`;
-    } else if (entrytype === "debug") {
-        logline = `Debug: ${entry}`;
-    } else {
-        logline = `Info: ${entry}`
-    }
-
-    let logdata = `${logdate}:  ${logline}\r`; 
-    fs.appendFile(logpath, logdata, function (err) {
-        if (err) {
-            console.log(err);
+    if (appData.debug) {
+        let logdate = new Date().toLocaleString();
+        let logline = "Unknown Entry: ";
+        if (entrytype === "error") {
+            logline = `Error: ${entry}`;
+        } else if (entrytype === "debug") {
+            logline = `Debug: ${entry}`;
+        } else {
+            logline = `Info: ${entry}`
         }
-    });
+
+        let logdata = `${logdate}:  ${logline}\r`; 
+        fs.appendFileSync(logpath, logdata);
+    }
 });

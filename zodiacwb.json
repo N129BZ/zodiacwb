@@ -376,7 +376,6 @@
         "overfgcolor": "white",
         "printaspdf": false,
         "theme": "light",
-        "debug": true,
-        "usemetric": false
+        "debug": true
     }
 }

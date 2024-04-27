@@ -7,11 +7,8 @@ var isdarktheme = false;
 var ismainview = true;
 var printpdf = false;
 var isLoading = false;
-var currentview = "";
 var aircraftList = new Map();
 var currentAircraft = {};
-var activeView;
-var activeCanvas;
 
 const  logEntryType = {"error": "err", "debug": "debug", "information": "info"};
 
@@ -81,16 +78,16 @@ const  cog = document.getElementById("cog");
  */
 const actypes = {"chTricycle": 1, "chTaildragger": 2, "rv": 3 }
 function loadAircraft() {
-	aircraftList.set("ch650", new Aircraft("ch650", actypes.chTricycle, appData)); //.ch650, appData));
-	aircraftList.set("ch650td", new Aircraft("ch650td", actypes.chTaildragger, appData)); //.ch650td));
-	aircraftList.set("ch701", new Aircraft("ch701", actypes.chTricycle, appData)); //.ch701));
-	aircraftList.set("ch750", new Aircraft("ch750", actypes.chTricycle, appData)); //.ch750));
-	aircraftList.set("chCruzer", new Aircraft("chCruzer", actypes.chTricycle, appData)); //.chCruzer));
-	aircraftList.set("rv9", new Aircraft("rv9", actypes.rv, appData)); //.rv9));
-	aircraftList.set("rv9a", new Aircraft("rv9a", actypes.rv, appData)); //.rv9a));
+	aircraftList.set("ch650", new Aircraft("ch650", actypes.chTricycle, appData)); 
+	aircraftList.set("ch650td", new Aircraft("ch650td", actypes.chTaildragger, appData)); 
+	aircraftList.set("ch701", new Aircraft("ch701", actypes.chTricycle, appData)); 
+	aircraftList.set("ch750", new Aircraft("ch750", actypes.chTricycle, appData)); 
+	aircraftList.set("chCruzer", new Aircraft("chCruzer", actypes.chTricycle, appData));
+	aircraftList.set("rv9", new Aircraft("rv9", actypes.rv, appData)); 
+	aircraftList.set("rv9a", new Aircraft("rv9a", actypes.rv, appData)); 
 
 	aircraftList.forEach(aircraft => {
-		if (aircraft.name === currentview) {
+		if (aircraft.name === appData.currentview) {
 			currentAircraft = aircraft;
 			return;
 		}
@@ -104,21 +101,16 @@ function activateView() {
 	let nw = document.getElementById("nosewheel");
 	let rightwl = document.getElementById("rightlocker");
 	let leftwl = document.getElementById("leftlocker");
-	let nwtext = currentAircraft.nwtext;
-	let hideWL = currentAircraft.hideWL;
 
 	currentAircraft.show();
-	activeView = currentAircraft.view;
-	activeCanvas = currentAircraft.canvas;
-	hideWL = currentAircraft.hideWL;
-	nw.innerHTML = nwtext;
+	nw.innerHTML = currentAircraft.nwtext;
 	
-	if (hideWL) {
+	if (currentAircraft.hideWL) {
 		rightwl.setAttribute("style", "visibility:hidden;height:0px;");
 		leftwl.setAttribute("style", "visibility:hidden;height:0px;");
 	}
 	
-	electronAPI.logentry(logEntryType.information, `Aircraft selected: ${currentview}`);
+	electronAPI.logentry(logEntryType.information, `Aircraft selected: ${currentAircraft.name}`);
 }
 
 /**
@@ -129,7 +121,6 @@ window.onload = async () => {
 	isLoading = true;
 	appData = JSON.parse(data);
 	if (appData.settings.debug) console.log(appData);
-	currentview = appData.settings.currentview;
 	drawChart();
 	loadAircraft();
 	drawAllObjects();
@@ -203,8 +194,6 @@ function drawChart() {
  * light or dark theme preference
  */
 function drawAirplane() {
-	var imgsrcLight = currentAircraft.lightImage;
-	var imgsrcDark = currentAircraft.darkImage;
 	const lbl = document.getElementById("accoglabel");	 
 	const apctx = currentAircraft.canvas.getContext('2d', { willReadFrequently: true });
 	var apimg = new Image();
@@ -212,11 +201,11 @@ function drawAirplane() {
 		apctx.drawImage(apimg, 0, 0);
 	}
 	if (isdarktheme) {
-		apimg.src = imgsrcDark;
+		apimg.src = currentAircraft.darkImage;
 		lbl.setAttribute("style", "color:white;")
 	}
 	else {
-		apimg.src = imgsrcLight;
+		apimg.src = currentAircraft.lightImage;
 		lbl.setAttribute("style", "color:black;")
 	}
 }
@@ -314,8 +303,8 @@ function calcWB() {
 	
 	let totalWtArray = [emptyWt, pltWt, psgrWt, rtWngLkrWt, lftWngLkrWt, fuelnums[0], rearBagWt];
 	let totalArmArray = [emptyMom, pltMom, psgrMom, rtWngLkrMom, lftWngLkrMom , fuelnums[1], rearBagMom];
-	let totalWt = addArray(totalWtArray);
-	let totalMom = addArray(totalArmArray);
+	let totalWt = addArrayElements(totalWtArray);
+	let totalMom = addArrayElements(totalArmArray);
 	let finalCog = +(totalMom / totalWt).toFixed(1);
 	
 	totalWeight.value = Math.round(totalWt);
@@ -373,7 +362,7 @@ function handleNaN(theNumber) {
  * @param {array} theArray 
  * @returns {number}
  */
-function addArray(theArray) {
+function addArrayElements(theArray) {
 	var outval = 0;
 	theArray.forEach( val => {
 		outval = !isNaN(val) ? outval + val : outval;
