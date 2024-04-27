@@ -9,9 +9,9 @@
       <div class="container" id="container">  
         <canvas id="chartcanvas" width="370" height="360"></canvas> 
         <div id="dot"><label id="chartcrosshair">+</label></div>  
-        <label class="nosegearLimit" id="nosegearLimit">Nose gear structural limit</label>
+        <label class="nosegearLimit" id="nosegearLimit"></label>
         <label class="weightMin" id="weightMin"></label>
-        <label class="weightNosegearMin" id="weightNosegearMin"></label>
+        <label class="weightNgStart" id="weightNgStart"></label>
         <label class="weightMaxGross" id="weightMaxGross"></label><label class="maxGrossDashes" id="maxGrossDashes"></label>
         <label class="weightMaxFloats" id="weightMaxFloats"></label><label class="maxFloatsDashes" id="maxFloatsDashes"></label>
         <label class="momentMinImperial" id="momentMin"></label>
@@ -31,7 +31,7 @@
           <tbody>
             <tr>
               <td class="weightLabel" id="maxgross" >Max Gross:</td>
-              <td><input type="text" class="weight" id="maxGrossWeight" value="0" tabindex="-1" readonly></td>
+              <td><input type="text" class="weight" id="maxGrossWeight" value="0" tabindex="-1"></td>
               <td></td>
             </tr>
             <tr>
@@ -134,10 +134,10 @@
         <div class="dot" id="ch750dot"><label id="ch750crosshair">+</label></div>
       </div>
     </div>
-    <div class="ch750Cruzerview" id="ch750Cruzerview">
-      <canvas id="ch750Cruzercanvas" width="830" height="570"></canvas>
-      <div class="ch750Cruzerrectangle" id="ch750Cruzerrectangle">
-        <div class="dot" id="ch750Cruzerdot"><label id="ch750Cruzercrosshair">+</label></div>
+    <div class="chCruzerview" id="chCruzerview">
+      <canvas id="chCruzercanvas" width="830" height="570"></canvas>
+      <div class="chCruzerrectangle" id="chCruzerrectangle">
+        <div class="dot" id="chCruzerdot"><label id="chCruzercrosshair">+</label></div>
       </div>
     </div>
     <div class="ch701view" id="ch701view">
@@ -174,7 +174,8 @@
         <td><button class="saveButton" id="saveButton" disabled tabindex="14" onclick="saveAppData()" >Save</button></td>
         <td><button class="exitButton" id="exitButton" tabindex="14" onclick="exitApp()" >Exit</button></td>
       </tr>
-    </table>  
+    </table> 
+    <script type="text/javascript" src="js/aircraft.js"></script> 
     <script type="text/javascript" src="js/renderer.js"></script>
   </body>
 </html>

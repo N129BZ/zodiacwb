@@ -17,8 +17,8 @@ body {
     position: absolute;
     top: 569px;
     left: 60px;
-    width: 700px;
-    height: 337px;
+    width: 671px;
+    height: 289px;
     background-color: white;
     visibility: hidden;
 }
@@ -51,8 +51,8 @@ body {
     position: absolute;
     top: 559px;
     left: 105px;
-    width: 700px;
-    height: 337px;
+    width: 648px;
+    height: 329px;
     background-color: white;
     visibility: hidden;
 }
@@ -68,8 +68,8 @@ body {
     position: absolute;
     top: 559px;
     left: 105px;
-    width: 700px;
-    height: 337px;
+    width: 648px;
+    height: 329px;
     background-color: white;
     visibility: hidden;
 }
@@ -81,7 +81,7 @@ body {
     height: 164px;
     background: rgba(222, 236, 228, 0.5);
 }
-.ch750Cruzerview {
+.chCruzerview {
     position: absolute;
     top: 559px;
     left: 70px;
@@ -90,7 +90,7 @@ body {
     background-color: white;
     visibility: hidden;
 }
-.ch750Cruzerrectangle {
+.chCruzerrectangle {
     position: absolute;
     top: 58px;
     left: 204px;
@@ -199,7 +199,7 @@ body {
     top: 354px;
     left: -34px;
 }
-.weightNosegearMin {
+.weightNgStart {
 	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
 	font-size:10px;

@@ -31,7 +31,10 @@ var appData = loadAppData();
 var usemetric = appData.settings.units === "metric";
 var isDebug = appData.settings.debug;
 
-
+/**
+ * Read the zodiacwb.json file and parse it into an object
+ * @returns {object}
+ */
 function loadAppData() {
     let adf = "";
     // make sure the file is stored in userData folder
@@ -42,6 +45,9 @@ function loadAppData() {
     return JSON.parse(adf);
 };
 
+/**
+ * The top-line menu template
+ */
 const template = [
     ...(isMac
         ? [{
@@ -109,10 +115,10 @@ const template = [
                 checked: getAircraftChecked("ch750"),
                 click: () => mainWindow.webContents.send("acselect", "ch750")
             },
-            {label: "Zenith ch750 CruZer",
+            {label: "Zenith CruZer",
                 type: "radio",
-                checked: getAircraftChecked("ch750Cruzer"),
-                click: () => mainWindow.webContents.send("acselect", "ch750Cruzer")
+                checked: getAircraftChecked("chCruzer"),
+                click: () => mainWindow.webContents.send("acselect", "chCruzer")
             },
             {label: "Vans RV9a",
                 type: "radio",
@@ -140,14 +146,24 @@ const template = [
     }
 ]
 
+/**
+ * Build the menu from the template and instantiate it
+ */
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
+
 nativeTheme.themeSource = appData.settings.theme;
 
+/**
+ * Save the zodiacwb.json file
+ */
 function saveAppData() {
     fs.writeFileSync(jsonPath, JSON.stringify(appData, null, 4));
 }
 
-const menu = Menu.buildFromTemplate(template);
-Menu.setApplicationMenu(menu);
+/**
+ * Hide the Kilograms/Millimeters UOM radio button for RV aircraft 
+ */
 if (appData.settings.currentview === "rv9" || appData.settings.currentview === "rv9a") {
     let mi = menu.getMenuItemById("km");
     mi.visible = false;
@@ -155,6 +171,9 @@ if (appData.settings.currentview === "rv9" || appData.settings.currentview === "
 
 if (require('electron-squirrel-startup')) app.quit();
 
+/**
+ * Create the application window
+ */
 function createWindow () {
     const pd = screen.getPrimaryDisplay();
     var wh = {};
@@ -184,17 +203,26 @@ function createWindow () {
     if (isDebug) {
         mainWindow.webContents.openDevTools();
     } 
+
     app.on('toggletheme', () => {
         toggleTheme();
-        saveAppData();
         mainWindow.webContents.send('toggletheme');
     });
+
     app.on('filesave', () => {
         mainWindow.webContents.capturePage()
     });
+
+    /**
+     * Call from renderer to print
+     */
     app.on('printpage', () => {
         handlePrinting();
     });
+
+    /**
+     * Call from renderer to toggle "developer mode"
+     */
     app.on('toggledev', () => {
         if (!dtoggled) {
             appData.settings.debug = true;
@@ -213,10 +241,10 @@ function createWindow () {
         }
         mainWindow.setSize(w, h, true);
     });
-    app.on('convert', () => {
-        inConvertMode = !inConvertMode;
-        mainWindow.webContents.send("convert");
-    });
+
+    /**
+     * User has toggled Units of Measurement option
+     */
     app.on('toggleuom', function() {
         var uom = "imperial";
         var allowmetric = true;
@@ -228,6 +256,9 @@ function createWindow () {
                 break;
             case "ch650td":
                 valdata = appData.ch650td; 
+                break;
+            case "ch701":
+                valdata = appData.ch701; 
                 break;
             case "ch750":
                 valdata = appData.ch750; 
@@ -248,12 +279,12 @@ function createWindow () {
         if (view === "rv9" && view === "rv9a") {
             uom = "imperial";
             valdata.units = "imperial";
-        } else {
+        } else { // flip UOM 
             uom = valdata.units;
             valdata.units = uom === "imperial" ? "metric" : "imperial";
         }
        
-        if (allowmetric) {
+        if (allowmetric) { // Zeniths are always allowed, rv's not
             setMetricOptionProperties(true);
         } else {
             setMetricOptionProperties(false)
@@ -264,6 +295,9 @@ function createWindow () {
     }); 
 }
 
+/**
+ * Toggle the theme from light to dark or vice-versa
+ */
 function toggleTheme() {
     // toggling the opposite of the current theme
     let isDark = nativeTheme.shouldUseDarkColors
@@ -293,36 +327,57 @@ app.on('window-all-closed', function () {
     app.quit()
 });
 
+/**
+ * Call from renderer to save the zodiacwb.json file
+ */
 ipcMain.on('appdata:save', (e, newappdata) => {
     appData = newappdata;
     saveAppData();
     mainWindow.reload();
 });
 
+/**
+ * Call from renderer that the user has selected a different aircraft
+ */
 ipcMain.on('function:selectaircraft',(e, aircraft) => {
     console.log(aircraft);
-    if (aircraft === "rv9" || aircraft === "rv9a") {
+    if (aircraft === "rv9" || aircraft === "rv9a") { // rv's are always imperial
         setMetricOptionProperties(false);
-    } else {
+    } else { // Zenith aircraft can be either metric or imperial
         setMetricOptionProperties(true);
     }
     mainWindow.reload(); 
 });
 
+/**
+ * Call from renderer to reload the html page
+ */
 ipcMain.on('function:reload', () => {
     mainWindow.reload(); 
 });
 
+/**
+ * Called from renderer to print screen shot
+ */
 ipcMain.on('function:print', (e, printpdf) => {
     handlePrinting(printpdf);
 });
 
+/**
+ * Set Units of Measurement menu item visibility
+ * @param {boolean} isvisible 
+ */
 function setMetricOptionProperties(isvisible) {
     let mi = menu.getMenuItemById("km");
     mi.visible = isvisible;
     mi.enabled = isvisible;
 }
 
+/**
+ * Called by menu to put check in selected airplane checkbox
+ * @param {string} oneAirplane 
+ * @returns {boolean}
+ */
 function getAircraftChecked(oneAirplane) {
     if (oneAirplane === appData.settings.currentview) {
         return true;
@@ -332,6 +387,11 @@ function getAircraftChecked(oneAirplane) {
     }
 }
 
+/**
+ * Called by Menu to set the UOM radio button to the view's current UOM
+ * @param {string} uom 
+ * @returns {boolean}
+ */
 function getUOMChecked(uom) {
     let state = false;
     switch (appData.settings.currentview) {
@@ -340,6 +400,9 @@ function getUOMChecked(uom) {
             break;
         case "ch650td":
             state = uom === appData.ch650td.units;
+            break;
+        case "ch701":
+            state = uom === appData.ch701.units;
             break;
         case "ch750":
             state = uom === appData.ch750.units;
@@ -393,6 +456,9 @@ ipcMain.on('function:exit', () => {
     mainWindow = null;
 });
 
+/**
+ * User clicked 10 times on the WEIGHT heading, toggle developer mode
+ */
 ipcMain.on('menu:showdev', (e, devstate) => {
     appData.settings.debug = devstate.state;
     saveAppData();
@@ -407,6 +473,9 @@ function createScreenshotHtmlPage() {
     fs.writeFileSync(path.join(userPath, "printpage.html"), html);
 }
 
+/**
+ * Take a snapshot of the app window and print it
+ */
 function printScreenShot() {
     const w = 850;
     const h = 930;
@@ -470,6 +539,9 @@ function printScreenShot() {
    
 }
 
+/**
+ * User selected Print to PDF 
+ */
 function printToPdf() {
     let options = {
         title: "Save Screenshot As PDF",
@@ -493,6 +565,9 @@ function printToPdf() {
     }
 }
 
+/**
+ * Log entries from renderer process
+ */
 ipcMain.on("function:logentry", (e, entrytype, entry) => {
     let logdate = new Date().toLocaleString();
     let logline = "Unknown Entry: ";
