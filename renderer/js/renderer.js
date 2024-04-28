@@ -87,7 +87,7 @@ function loadAircraft() {
 	aircraftList.set("rv9a", new Aircraft("rv9a", actypes.rv, appData)); 
 
 	aircraftList.forEach(aircraft => {
-		if (aircraft.name === appData.currentview) {
+		if (aircraft.name === appData.settings.currentview) {
 			currentAircraft = aircraft;
 			return;
 		}
@@ -121,8 +121,8 @@ window.onload = async () => {
 	isLoading = true;
 	appData = JSON.parse(data);
 	if (appData.settings.debug) console.log(appData);
-	drawChart();
 	loadAircraft();
+	drawChart();
 	drawAllObjects();
 };
 
