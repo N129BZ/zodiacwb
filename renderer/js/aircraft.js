@@ -5,6 +5,7 @@ class Aircraft {
         this.name = name;
         this.appData = appdata;
         this.jsondata = this.#assignData();
+        this.aircraftTitle = document.getElementById("aircraftTitle");
         this.view = document.getElementById(`${name}view`);
         this.canvas = document.getElementById(`${name}canvas`);
         this.rectangle = document.getElementById(`${name}rectangle`); 
@@ -231,6 +232,19 @@ class Aircraft {
     }
 
     show() {
+        var title = "";
+        if (this.name.search("ch") > -1) {
+            if (this.name === "chCruzer") {
+                title = "Zenith ch750 CruZer";
+            } else if (this.name === "ch650td") {
+                title = `Zenith ch6xx Tail Dragger`;
+            } else {
+                title = `Zenith ${this.name}`;
+            }
+        } else {
+            title = `Vans ${this.name.toUpperCase()}`;
+        }    
+        this.aircraftTitle.innerHTML = title;
         this.appData.currentview = this.name;
         this.view.setAttribute("style", "visibility:visible;");
     } 
