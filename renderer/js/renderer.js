@@ -121,15 +121,15 @@ window.onload = async () => {
 	isLoading = true;
 	appData = JSON.parse(data);
 	if (appData.settings.debug) console.log(appData);
+
 	loadAircraft();
-	drawChart();
+	currentAircraft.setLabels();
+	
 	drawAllObjects();
 };
 
 function drawAllObjects() {
-	
-	currentAircraft.setLabels();
-	
+	drawChart();
 	activateView();
 	
 	isdarktheme = appData.settings.theme === "dark";
